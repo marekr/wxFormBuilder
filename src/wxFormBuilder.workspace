@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="wxFormBuilder workspace">
+		<Project filename="wxFormBuilder.cbp" active="1">
+			<Depends filename="plugins/standard/layout.cbp" />
+			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="plugins/standard/additional.cbp" />
+			<Depends filename="plugins/standard/contrib.cbp" />
+			<Depends filename="plugins/standard/standard.cbp" />
+		</Project>
+		<Project filename="plugins/standard/layout.cbp">
+			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+		</Project>
+		<Project filename="plugins/standard/additional.cbp">
+			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+		</Project>
+		<Project filename="plugins/standard/contrib.cbp">
+			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+		</Project>
+		<Project filename="plugins/standard/standard.cbp">
+			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+		</Project>
+		<Project filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

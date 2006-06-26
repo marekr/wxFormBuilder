@@ -1,0 +1,124 @@
+<codegen language="C++">
+	 
+	<templates class="wxPlotWindow">
+		<template name="declaration">wxPlotWindow* $name;</template>
+		<template name="construction">
+			$name = new wxPlotWindow(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );
+		  #ifnotnull $titleText
+			@{ #nl @#ifndef __WXGTX__ #nl $name->AddChartTitle( $titleText, $titleFont, $titleColour ); #nl @#endif @}
+		</template>
+		<template name="include">@#include &lt;wx/plot/plot.h&gt;</template>
+		<template name="library">plot</template>
+	</templates>
+  
+	<templates class="wxPropertyGrid">
+		<template name="declaration">wxPropertyGrid* $name;</template>
+		<template name="construction">$name = new wxPropertyGrid(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="include">
+			@#include &lt;wx/propgrid/propgrid.h&gt;
+			#ifequal $include_advanced "1"
+				@{ #nl @#include &lt;wx/propgrid/advprops.h&gt; @}
+		</template>
+		<template name="library">propgrid</template>
+		<template name="settings">
+		    #ifnotnull $extra_style
+		    @{ $name->SetExtraStyle( $extra_style ) @}
+		</template>
+	</templates>
+	
+	<templates class="wxPropertyGridManager">
+		<template name="declaration">wxPropertyGridManager* $name;</template>
+		<template name="construction">$name = new wxPropertyGridManager(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="include">
+			@#include &lt;wx/propgrid/propgrid.h&gt; #nl
+			@#include &lt;wx/propgrid/manager.h&gt;
+			#ifequal $include_advanced "1"
+				@{ #nl @#include &lt;wx/propgrid/advprops.h&gt; @}
+		</template>
+		<template name="settings">
+		    #ifnotnull $extra_style
+		    @{ $name->SetExtraStyle( $extra_style ) @}
+		</template>
+		<template name="library">propgrid</template>
+	</templates>
+	
+	
+	<templates class="wxFlatNotebook">
+		<template name="declaration">
+			wxFlatNotebook* $name;
+			#ifequal $has_images "1"
+			@{
+				#nl wxFlatNotebookImageList $name #append Images;
+			@}
+		</template>
+		<template name="construction">$name = new wxFlatNotebook(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="include">
+			@#include &lt;wx/wxFlatNotebook/wxFlatNotebook.h&gt;
+			#ifequal $auto_scale_images "1"
+	        @{
+	            #nl @#include &lt;wx/image.h&gt;
+	        @}
+		</template>
+		<template name="library">flatnotebook</template>
+		<template name="settings">
+	        #ifequal $has_images "1"
+			@{
+	    		int $name #append Index = 0; #nl
+	    		$name->SetImageList( &amp;$name #append Images );
+				#ifequal $auto_scale_images "1"
+				@{
+			 		#nl wxBitmap $name #append Bitmap; #nl
+	    			wxImage $name #append Image;
+	    		@}
+			@}
+		</template>
+	</templates>
+
+	<templates class="flatnotebookpage">
+		<template name="page_add">
+			#ifequal #parent $has_images "1"
+	        @{
+	            #ifnotnull $bitmap
+	            @{
+			        #ifequal #parent $auto_scale_images "1"
+			        @{
+	                	#parent $name #append Bitmap = $bitmap; #nl
+		                if ( #parent $name #append Bitmap.Ok() ) #nl
+		                @{ #nl
+			                #parent $name #append Image = #parent $name #append Bitmap.ConvertToImage(); #nl
+			                #parent $name #append Images.Add( #parent $name #append Image.Scale( 16, 16 ) ); #nl
+                        @} #nl
+					@}
+					#ifnotequal #parent $auto_scale_images "1"
+			        @{
+			            #parent $name #append Images.Add( $bitmap ); #nl
+			        @}
+				    #parent $name->AddPage( #child $name, $label, $select, #parent $name #append Index ); #nl
+					#parent $name #append Index++;
+	            @}
+	            #ifnull $bitmap
+	        	@{
+	        	    #parent $name->AddPage( #child $name, $label, $select );
+	        	@}
+	        @}
+	        #ifnotequal #parent $has_images "1"
+	        @{
+				#parent $name->AddPage( #child $name, $label, $select );
+   			@}
+		</template>
+	</templates>
+	
+	<templates class="awxLed">
+		<template name="declaration">awxLed* $name;</template>
+		<template name="construction">
+			$name = new awxLed(#wxparent $name, $id, $pos, $size, $color, $window_style );
+		    #ifnotnull $state
+			  @{ #nl $name->SetState( $state ); @}
+		</template>
+		<template name="include">@#include &lt;wx/awx/led.h&gt;</template>
+		<template name="library">awx</template>
+	</templates>
+
+	
+
+</codegen>

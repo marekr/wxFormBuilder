@@ -1,0 +1,20 @@
+TODO:
+
+*Cuando hay un elemento seleccionado y se pulsa Nuevo, el object inspector mantiene la información de dicho elemento y en la barra de título sigue apareciendo el nombre del fichero anterior
+
+*El undo/redo no actualiza la información en el inspector
+
+*Al cambiar la fuente de un widget, no se puede volver a la fuente por defecto
+
+*¿Mecanismo para heredar flags de estilo?
+Por ejemplo, el control wxStaticText debe tener los flags de estilo de wxWindow (sunkenborder, staticborder,...)
+
+*Enable/disable de los widgets. Sería conveniente tener una directiva en las plantillas de generación de código que generase el código o no dependiendo del valor de una propiedad.
+
+*Los menús y la statusbar sólo deben ser hijos de wxFrame
+
+*wxFrame debería tener color de fondo oscuro
+
+*Al intentar cortar el nodo raíz del ObjectTree falla un aserto
+
+*Los \t de los menuitems salen con dos barras (\\t) en el código de C++ generado

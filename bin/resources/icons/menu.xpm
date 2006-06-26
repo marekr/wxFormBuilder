@@ -1,0 +1,34 @@
+/* XPM */
+static char *menu_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"22 22 6 1",
+"  c black",
+". c #0066CC",
+"X c magenta",
+"o c #808080",
+"O c gray100",
+"+ c None",
+/* pixels */
+"++++++++++++++++++++++",
+"++ooooooooooooo+++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++oO......O..Oo ++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++oO...OOOOOOOo ++++++",
+"++o...........o ++++++",
+"++o.OOOO......o ++++++",
+"++o...........o ++++++",
+"++oO.....OOOOOo ++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++oO....OOOO.Oo ++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++oO...OOOO..Oo ++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++ooooooooooooo ++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++oO......OO.Oo ++++++",
+"++oOOOOOOOOOOOo ++++++",
+"++ooooooooooooo ++++++",
+"+++             ++++++",
+"++++++++++++++++++++++"
+};

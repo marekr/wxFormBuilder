@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="Common Components Plugin" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../bin/xml/libcommon.so" />
+				<Option working_dir="../../../bin/xml" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="-DBUILD_DLL" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DNOPCH" />
+			<Add option="-DNO_GCC_PRAGMA" />
+			<Add option="-DTIXML_USE_STL" />
+			<Add directory="../../../libs/tinyxml" />
+			<Add directory="../.." />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="tinyxml" />
+			<Add directory="../../../libs/tinyxml/Release" />
+		</Linker>
+		<Unit filename="../component.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="../plugin.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="common.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="../../utils/xrcconv.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="../../utils/xrcconv.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
