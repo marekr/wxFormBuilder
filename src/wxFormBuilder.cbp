@@ -28,7 +28,7 @@
 			<Target title="Debug (Unicode)">
 				<Option output="..\bin\wxFormBuilderd.exe" />
 				<Option working_dir="..\bin" />
-				<Option object_output=".objsdu" />
+				<Option object_output=".objsud" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />

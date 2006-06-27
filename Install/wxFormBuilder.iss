@@ -4,7 +4,7 @@
 ; Date:     02/07/2006
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#define MyAppVer "2.0.55"
+#define MyAppVer "2.0.56"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.sourceforge.net/index_en.html"
