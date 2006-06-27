@@ -1,9 +1,9 @@
 
 bugs:
 
+- No good way to set default values for inherited properties in xml
 - Spaces on the begining are being trimed from the generated code in the text of the
   wxStaticText control.
-- The property manager in Lunix looses the buttons on the top.
 - wxFlatNotebook doesn't seem to have the right size in Linux with wxWidgets v2.6.1
 - wxFont and wxPlotWindow - wierd
 
@@ -49,3 +49,4 @@ Finished:
 - Added icon support to wxListbook.
 - Added icon support to wxNotebook.
 - Added icon support to wxFlatNotebook.
+- The property manager in Linux loses the buttons on the top.
