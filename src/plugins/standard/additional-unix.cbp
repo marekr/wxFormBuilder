@@ -2,14 +2,15 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
-		<Option title="Contributed Components Plugin" />
+		<Option title="Additional Components Plugin (Unix)" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../bin/xml/libcontrib.so" />
+				<Option output="../../../bin/xml/libadditional.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="/usr/src/wxfb2/bin/wxformbuilder" />
 				<Option includeInTargetAll="1" />
 			</Target>
 		</Build>
@@ -22,21 +23,13 @@
 			<Add option="-DNOPCH" />
 			<Add option="-DNO_GCC_PRAGMA" />
 			<Add option="-DTIXML_USE_STL" />
-			<Add option="-D__WXGTK__" />
-			<Add directory="$(#wxadditions.include)" />
 			<Add directory="../../../libs/tinyxml" />
 			<Add directory="../.." />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add library="wx_gtk2u_flatnotebook-2.6" />
-			<Add library="wx_gtk2u_propgrid-2.6" />
-			<Add library="wx_gtk2u_plot-2.6" />
-			<Add library="wx_gtk2u_awx-2.6" />
 			<Add library="tinyxml" />
 			<Add directory="../../../libs/tinyxml/Release" />
-			<Add directory="$(#wxadditions.lib)/gcc_dll" />
-			<Add directory="$(#wxadditions.lib)/gcc_lib" />
 		</Linker>
 		<Unit filename="../component.h">
 			<Option compilerVar="" />
@@ -50,7 +43,7 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="contrib.cpp">
+		<Unit filename="additional.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>

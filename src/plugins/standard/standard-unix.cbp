@@ -2,15 +2,15 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
-		<Option title="Additional Components Plugin" />
+		<Option title="Common Components Plugin (Unix)" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../bin/xml/libadditional.so" />
+				<Option output="../../../bin/xml/libcommon.so" />
+				<Option working_dir="../../../bin/xml" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="/usr/src/wxfb2/bin/wxformbuilder" />
 				<Option includeInTargetAll="1" />
 			</Target>
 		</Build>
@@ -43,7 +43,7 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="additional.cpp">
+		<Unit filename="common.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
