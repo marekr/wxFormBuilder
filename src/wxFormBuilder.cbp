@@ -3,368 +3,668 @@
 	<FileVersion major="1" minor="4" />
 	<Project>
 		<Option title="wxFormBuilder" />
-		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="default">
-				<Option output="../bin/wxformbuilder" />
-				<Option working_dir="../bin" />
-				<Option object_output="_objs" />
+			<Target title="Debug">
+				<Option output="..\bin\wxFormBuilderd.exe" />
+				<Option working_dir="..\bin" />
+				<Option object_output=".objsd" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add library="tinyxmld" />
+				</Linker>
+				<Environment>
+					<Variable name="WX_SUFFIX" value="d" />
+				</Environment>
 			</Target>
+			<Target title="Debug (Unicode)">
+				<Option output="..\bin\wxFormBuilderd.exe" />
+				<Option working_dir="..\bin" />
+				<Option object_output=".objsdu" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXDEBUG" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DUNICODE" />
+				</Compiler>
+				<Linker>
+					<Add library="tinyxmld" />
+				</Linker>
+				<Environment>
+					<Variable name="WX_SUFFIX" value="ud" />
+				</Environment>
+			</Target>
+			<Target title="Release">
+				<Option output="..\bin\wxFformBuilder.exe" />
+				<Option working_dir="..\bin" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-march=i486" />
+					<Add option="-O3" />
+					<Add option="-O" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="tinyxml" />
+				</Linker>
+			</Target>
+			<Target title="Release (Unicode)">
+				<Option output="..\bin\wxformbuilder.exe" />
+				<Option working_dir="..\bin" />
+				<Option object_output=".objsu" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-march=i486" />
+					<Add option="-O3" />
+					<Add option="-O" />
+					<Add option="-DNDEBUG" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DUNICODE" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="tinyxml" />
+				</Linker>
+				<Environment>
+					<Variable name="WX_SUFFIX" value="u" />
+				</Environment>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="" />
+				<Variable name="WX_VER" value="26" />
+				<Variable name="tinyxml" value="..\libs\tinyxml" />
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
-			<Add option="`wx-config --cflags`" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DNOPCH" />
-			<Add option="-DNO_GCC_PRAGMA" />
+			<Add option="-Winvalid-pch" />
+			<Add option='-include &quot;pch.h&quot;' />
+			<Add option="-DUSE_PCH" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-DWIN32" />
+			<Add option="-D_WINDOWS" />
 			<Add option="-DTIXML_USE_STL" />
-			<Add option="-D__WXGTK__" />
-			<Add option="-DUSE_WXNOTEBOOK" />
-			<Add directory="../libs/boost_1_31_0_smart_ptr" />
-			<Add directory="../src" />
+			<Add option="-D__WX__" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
-			<Add directory="$(#tinyxml)" />
+			<Add directory="$(tinyxml)" />
+			<Add directory="..\libs\boost_1_31_0_smart_ptr" />
+			<Add directory="..\src" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(WXWIN)/include" />
+			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
-			<Add library="wx_gtk2u_flatnotebook-2.6" />
-			<Add library="wx_gtk2u_propgrid-2.6" />
-			<Add library="wx_gtk2u_scintilla-2.6" />
-			<Add library="tinyxml" />
-			<Add directory="$(#tinyxml.lib)" />
-			<Add directory="$(#wxadditions.lib)/gcc_dll" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_flatnotebook" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_propgrid" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_scintilla" />
+			<Add library="advapi32" />
+			<Add library="comctl32" />
+			<Add library="comdlg32" />
+			<Add library="ctl3d32" />
+			<Add library="gdi32" />
+			<Add library="glu32" />
+			<Add library="odbc32" />
+			<Add library="odbccp32" />
+			<Add library="ole32" />
+			<Add library="oleaut32" />
+			<Add library="opengl32" />
+			<Add library="rpcrt4" />
+			<Add library="shell32" />
+			<Add library="shlwapi" />
+			<Add library="uuid" />
+			<Add library="version" />
+			<Add library="winmm" />
+			<Add library="winspool" />
+			<Add library="wsock32" />
+			<Add directory="$(#WX.lib)\gcc_dll" />
+			<Add directory="$(#wxadditions.lib)\gcc_dll" />
+			<Add directory="$(tinyxml)\lib" />
 		</Linker>
-		<Unit filename="codegen/codegen.cpp">
+		<Unit filename="codegen\codegen.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="codegen/codegen.h">
+		<Unit filename="codegen\codegen.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="codegen/cppcg.cpp">
+		<Unit filename="codegen\cppcg.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="codegen/cppcg.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="codegen/xrccg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="codegen/xrccg.h">
+		<Unit filename="codegen\cppcg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="codegen\xrccg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="codegen\xrccg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
 		<Unit filename="maingui.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="model/database.cpp">
+		<Unit filename="model\database.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="model/database.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/objectbase.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/objectbase.h">
+		<Unit filename="model\database.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="model/types.cpp">
+		<Unit filename="model\objectbase.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="model/types.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/xrcfilter.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/xrcfilter.h">
+		<Unit filename="model\objectbase.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="plugins/component.h">
+		<Unit filename="model\types.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="model\types.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/about.cpp">
+		<Unit filename="model\xrcfilter.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/about.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/appdata.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/appdata.h">
+		<Unit filename="model\xrcfilter.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/appobserver.cpp">
+		<Unit filename="pch.h">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option link="0" />
+			<Option weight="0" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
 		</Unit>
-		<Unit filename="rad/appobserver.h">
+		<Unit filename="plugins\component.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/bitmaps.cpp">
+		<Unit filename="rad\about.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/bitmaps.h">
+		<Unit filename="rad\about.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/cmdproc.cpp">
+		<Unit filename="rad\appdata.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/cmdproc.h">
+		<Unit filename="rad\appdata.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\appobserver.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\appobserver.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\bitmaps.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\bitmaps.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\cmdproc.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\cmdproc.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/cpppanel/cpppanel.cpp">
+		<Unit filename="rad\cpppanel\cpppanel.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/cpppanel/cpppanel.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/customkeys.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/customkeys.h">
+		<Unit filename="rad\cpppanel\cpppanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/designer/menubar.cpp">
+		<Unit filename="rad\customkeys.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/designer/menubar.h">
+		<Unit filename="rad\customkeys.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/designer/resizablepanel.cpp">
+		<Unit filename="rad\designer\menubar.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/designer/resizablepanel.h">
+		<Unit filename="rad\designer\menubar.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\designer\resizablepanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\designer\resizablepanel.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/designer/visualeditor.cpp">
+		<Unit filename="rad\designer\visualeditor.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/designer/visualeditor.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/designer/visualobj.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/designer/visualobj.h">
+		<Unit filename="rad\designer\visualeditor.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/genericpanel.cpp">
+		<Unit filename="rad\designer\visualobj.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/genericpanel.h">
+		<Unit filename="rad\designer\visualobj.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/global.cpp">
+		<Unit filename="rad\genericpanel.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/global.h">
+		<Unit filename="rad\genericpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\global.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\global.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/inspector/objinspect2.cpp">
+		<Unit filename="rad\inspector\objinspect2.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/inspector/objinspect2.h">
+		<Unit filename="rad\inspector\objinspect2.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/mainframe.cpp">
+		<Unit filename="rad\mainframe.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/mainframe.h">
+		<Unit filename="rad\mainframe.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/menueditor.cpp">
+		<Unit filename="rad\menueditor.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/menueditor.h">
+		<Unit filename="rad\menueditor.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/objecttree/objecttree.cpp">
+		<Unit filename="rad\objecttree\objecttree.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/objecttree/objecttree.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/palette.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/palette.h">
+		<Unit filename="rad\objecttree\objecttree.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/title.cpp">
+		<Unit filename="rad\palette.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad/title.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/xrcpanel/xrcpanel.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/xrcpanel/xrcpanel.h">
+		<Unit filename="rad\palette.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="utils/debug.cpp">
+		<Unit filename="rad\title.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="utils/debug.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="utils/notebookchooser.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="utils/stringutils.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="utils/stringutils.h">
+		<Unit filename="rad\title.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="utils/typeconv.cpp">
+		<Unit filename="rad\xrcpanel\xrcpanel.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="utils/typeconv.h">
+		<Unit filename="rad\xrcpanel\xrcpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\debug.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\debug.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\notebookchooser.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\stringutils.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\stringutils.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\typeconv.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\typeconv.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
 		<Unit filename="wxFormBuilder.rc">
 			<Option compilerVar="WINDRES" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option objectName="wxFormBuilder.res" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+			<Option target="Debug (Unicode)" />
 		</Unit>
 		<Extensions />
 	</Project>

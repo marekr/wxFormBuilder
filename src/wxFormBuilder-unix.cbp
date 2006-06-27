@@ -7,14 +7,17 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../bin/wxformbuilder" />
-				<Option working_dir="../bin" />
+				<Option output="..\bin\wxformbuilder" />
+				<Option working_dir="..\bin" />
 				<Option object_output="_objs" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
+			<Environment>
+				<Variable name="tinyxml" value="..\libs\tinyxml" />
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -26,13 +29,13 @@
 			<Add option="-DTIXML_USE_STL" />
 			<Add option="-D__WXGTK__" />
 			<Add option="-DUSE_WXNOTEBOOK" />
-			<Add directory="../libs/boost_1_31_0_smart_ptr" />
-			<Add directory="../src" />
+			<Add directory="..\libs\boost_1_31_0_smart_ptr" />
+			<Add directory="..\src" />
 			<Add directory="$(#wxadditions.include)" />
-			<Add directory="$(#tinyxml)" />
+			<Add directory="$(tinyxml)" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(WXWIN)/include" />
+			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -40,34 +43,34 @@
 			<Add library="wx_gtk2u_propgrid-2.6" />
 			<Add library="wx_gtk2u_scintilla-2.6" />
 			<Add library="tinyxml" />
-			<Add directory="$(#tinyxml.lib)" />
-			<Add directory="$(#wxadditions.lib)/gcc_dll" />
+			<Add directory="$(tinyxml)\lib" />
+			<Add directory="$(#wxadditions.lib)\gcc_dll" />
 		</Linker>
-		<Unit filename="codegen/codegen.cpp">
+		<Unit filename="codegen\codegen.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="codegen/codegen.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="codegen/cppcg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="codegen/cppcg.h">
+		<Unit filename="codegen\codegen.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="codegen/xrccg.cpp">
+		<Unit filename="codegen\cppcg.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="codegen/xrccg.h">
+		<Unit filename="codegen\cppcg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="codegen\xrccg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="codegen\xrccg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -77,283 +80,283 @@
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="model/database.cpp">
+		<Unit filename="model\database.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="model/database.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/objectbase.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/objectbase.h">
+		<Unit filename="model\database.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="model/types.cpp">
+		<Unit filename="model\objectbase.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="model/types.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/xrcfilter.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="model/xrcfilter.h">
+		<Unit filename="model\objectbase.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="plugins/component.h">
+		<Unit filename="model\types.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="model\types.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/about.cpp">
+		<Unit filename="model\xrcfilter.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/about.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/appdata.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/appdata.h">
+		<Unit filename="model\xrcfilter.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/appobserver.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/appobserver.h">
+		<Unit filename="plugins\component.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/bitmaps.cpp">
+		<Unit filename="rad\about.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/bitmaps.h">
+		<Unit filename="rad\about.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/cmdproc.cpp">
+		<Unit filename="rad\appdata.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/cmdproc.h">
+		<Unit filename="rad\appdata.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\appobserver.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\appobserver.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\bitmaps.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\bitmaps.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\cmdproc.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\cmdproc.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/cpppanel/cpppanel.cpp">
+		<Unit filename="rad\cpppanel\cpppanel.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/cpppanel/cpppanel.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/customkeys.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/customkeys.h">
+		<Unit filename="rad\cpppanel\cpppanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/designer/menubar.cpp">
+		<Unit filename="rad\customkeys.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/designer/menubar.h">
+		<Unit filename="rad\customkeys.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/designer/resizablepanel.cpp">
+		<Unit filename="rad\designer\menubar.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/designer/resizablepanel.h">
+		<Unit filename="rad\designer\menubar.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\designer\resizablepanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\designer\resizablepanel.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/designer/visualeditor.cpp">
+		<Unit filename="rad\designer\visualeditor.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/designer/visualeditor.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/designer/visualobj.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/designer/visualobj.h">
+		<Unit filename="rad\designer\visualeditor.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/genericpanel.cpp">
+		<Unit filename="rad\designer\visualobj.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/genericpanel.h">
+		<Unit filename="rad\designer\visualobj.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/global.cpp">
+		<Unit filename="rad\genericpanel.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/global.h">
+		<Unit filename="rad\genericpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\global.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad\global.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/inspector/objinspect2.cpp">
+		<Unit filename="rad\inspector\objinspect2.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/inspector/objinspect2.h">
+		<Unit filename="rad\inspector\objinspect2.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/mainframe.cpp">
+		<Unit filename="rad\mainframe.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/mainframe.h">
+		<Unit filename="rad\mainframe.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/menueditor.cpp">
+		<Unit filename="rad\menueditor.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/menueditor.h">
+		<Unit filename="rad\menueditor.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/objecttree/objecttree.cpp">
+		<Unit filename="rad\objecttree\objecttree.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/objecttree/objecttree.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/palette.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/palette.h">
+		<Unit filename="rad\objecttree\objecttree.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/title.cpp">
+		<Unit filename="rad\palette.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="rad/title.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/xrcpanel/xrcpanel.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="rad/xrcpanel/xrcpanel.h">
+		<Unit filename="rad\palette.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="utils/debug.cpp">
+		<Unit filename="rad\title.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="utils/debug.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="utils/notebookchooser.h">
+		<Unit filename="rad\title.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="utils/stringutils.cpp">
+		<Unit filename="rad\xrcpanel\xrcpanel.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="utils/stringutils.h">
+		<Unit filename="rad\xrcpanel\xrcpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="utils/typeconv.cpp">
+		<Unit filename="utils\debug.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="utils/typeconv.h">
+		<Unit filename="utils\debug.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="utils\notebookchooser.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="utils\stringutils.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="utils\stringutils.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="utils\typeconv.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="utils\typeconv.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

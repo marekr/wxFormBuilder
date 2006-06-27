@@ -6,56 +6,147 @@
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="default">
-				<Option output="../../../bin/xml/libadditional.so" />
+			<Target title="Debug">
+				<Option output="..\..\..\bin\xml\libadditional.dll" />
+				<Option object_output=".objsd" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="/usr/src/wxfb2/bin/wxformbuilder" />
-				<Option includeInTargetAll="1" />
+				<Option host_application="\usr\src\wxfb2\bin\wxformbuilder" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add library="tinyxmld" />
+				</Linker>
+				<Environment>
+					<Variable name="WX_SUFFIX" value="d" />
+				</Environment>
 			</Target>
+			<Target title="Debug (Unicode)">
+				<Option output="..\..\..\bin\xml\libadditional.dll" />
+				<Option object_output=".objsud" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="\usr\src\wxfb2\bin\wxformbuilder" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXDEBUG" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DUNICODE" />
+				</Compiler>
+				<Linker>
+					<Add library="tinyxmld" />
+				</Linker>
+				<Environment>
+					<Variable name="WX_SUFFIX" value="ud" />
+				</Environment>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\..\bin\xml\libadditional.dll" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="\usr\src\wxfb2\bin\wxformbuilder" />
+				<Compiler>
+					<Add option="-Os" />
+					<Add option="-O3" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="tinyxml" />
+				</Linker>
+			</Target>
+			<Target title="Release (Unicode)">
+				<Option output="..\..\..\bin\xml\libadditional.dll" />
+				<Option object_output=".objsu" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="\usr\src\wxfb2\bin\wxformbuilder" />
+				<Compiler>
+					<Add option="-Os" />
+					<Add option="-O3" />
+					<Add option="-DNDEBUG" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DUNICODE" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="tinyxml" />
+				</Linker>
+				<Environment>
+					<Variable name="WX_SUFFIX" value="u" />
+				</Environment>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="" />
+				<Variable name="WX_VER" value="26" />
+				<Variable name="tinyxml" value="..\..\..\libs\tinyxml" />
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="-DWIN32" />
+			<Add option="-D_WINDOWS" />
+			<Add option="-DHAVE_W32API_H" />
 			<Add option="-DBUILD_DLL" />
+			<Add option="-D__WX__" />
+			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DNOPCH" />
-			<Add option="-DNO_GCC_PRAGMA" />
 			<Add option="-DTIXML_USE_STL" />
-			<Add directory="../../../libs/tinyxml" />
-			<Add directory="../.." />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(tinyxml)" />
+			<Add directory="..\.." />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
-			<Add library="tinyxml" />
-			<Add directory="../../../libs/tinyxml/Release" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)\gcc_dll" />
+			<Add directory="$(tinyxml)\lib" />
 		</Linker>
-		<Unit filename="../component.h">
+		<Unit filename="..\component.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release (Unicode)" />
+			<Option target="Release" />
 		</Unit>
-		<Unit filename="../plugin.h">
+		<Unit filename="..\plugin.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release (Unicode)" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="additional.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release (Unicode)" />
+			<Option target="Release" />
 		</Unit>
-		<Unit filename="../../utils/xrcconv.cpp">
+		<Unit filename="..\..\utils\xrcconv.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release (Unicode)" />
+			<Option target="Release" />
 		</Unit>
-		<Unit filename="../../utils/xrcconv.h">
+		<Unit filename="..\..\utils\xrcconv.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release (Unicode)" />
+			<Option target="Release" />
 		</Unit>
 		<Extensions />
 	</Project>
