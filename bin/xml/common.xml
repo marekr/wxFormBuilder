@@ -66,7 +66,7 @@
   <objectinfo class="wxPanel" icon="panel.xpm" type="container">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_panel</property>
-    <property name="window_style" type="bitlist">wxTAB_TRAVERSAL</property>
+    <!--<property name="window_style" type="bitlist">wxTAB_TRAVERSAL</property>-->
   </objectinfo>
 
   <objectinfo class="wxTextCtrl" icon="text_ctrl.xpm" type="widget">
