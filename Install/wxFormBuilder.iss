@@ -37,14 +37,13 @@ UninstallDisplayIcon={app}\wxFormBuilder.exe
 ChangesAssociations=true
 VersionInfoVersion={#MyAppVer}
 VersionInfoDescription={#MyAppName}
-InfoAfterFile=changelog.txt
+InfoAfterFile=files\Changelog.txt
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
 Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: Changelog.txt; DestDir: {app}; Flags: ignoreversion
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
