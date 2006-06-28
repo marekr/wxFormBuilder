@@ -647,6 +647,34 @@ void ObjectInfo::AddPropertyInfo(shared_ptr<PropertyInfo> prop)
 	m_properties.insert( map< string, shared_ptr< PropertyInfo > >::value_type(prop->GetName(), prop) );
 }
 
+void ObjectInfo::AddBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName, const string& defaultValue )
+{
+	map< size_t, map< string, string > >::iterator baseClassMap = m_baseClassDefaultPropertyValues.find( baseIndex );
+	if ( baseClassMap != m_baseClassDefaultPropertyValues.end() )
+	{
+		baseClassMap->second.insert( map< string, string >::value_type( propertyName, defaultValue ) );
+	}
+	else
+	{
+		map< string, string > propertyDefaultValues;
+		propertyDefaultValues[ propertyName ] = defaultValue;
+		m_baseClassDefaultPropertyValues[ baseIndex ] = propertyDefaultValues;
+	}
+}
+
+string ObjectInfo::GetBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName )
+{
+	map< size_t, map< string, string > >::iterator baseClassMap = m_baseClassDefaultPropertyValues.find( baseIndex );
+	if ( baseClassMap != m_baseClassDefaultPropertyValues.end() )
+	{
+		map< string, string >::iterator defaultValue = baseClassMap->second.find( propertyName );
+		if ( defaultValue != baseClassMap->second.end() )
+		{
+			return defaultValue->second;
+		}
+	}
+	return string();
+}
 
 shared_ptr<ObjectInfo> ObjectInfo::GetBaseClass(unsigned int idx)
 {
@@ -695,13 +723,13 @@ bool ObjectInfo::IsSubclassOf(string classname)
 
 void ObjectInfo::AddCodeInfo(string lang, shared_ptr<CodeInfo> codeinfo)
 {
-	m_codeTemp.insert(CodeInfoMap::value_type(lang, codeinfo));
+	m_codeTemp.insert(map< string, shared_ptr< CodeInfo > >::value_type(lang, codeinfo));
 }
 
 shared_ptr<CodeInfo> ObjectInfo::GetCodeInfo(string lang)
 {
 	shared_ptr<CodeInfo> result;
-	CodeInfoMap::iterator it = m_codeTemp.find(lang);
+	map< string, shared_ptr< CodeInfo > >::iterator it = m_codeTemp.find(lang);
 	if (it != m_codeTemp.end())
 		result = it->second;
 

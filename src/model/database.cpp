@@ -124,7 +124,18 @@ shared_ptr<ObjectBase> ObjectDatabase::NewObject(shared_ptr<ObjectInfo> obj_info
 			prop_info = class_info->GetPropertyInfo(i);
 
 			shared_ptr<Property> property(new Property(prop_info, object));
-			property->SetValue(prop_info->GetDefaultValue());
+
+			// Set the default value, either from the property info, or an override from this class
+			string defaultValue = prop_info->GetDefaultValue();
+			if ( base > 0 )
+			{
+				string defaultValueTemp = obj_info->GetBaseClassDefaultPropertyValue( base - 1, prop_info->GetName() );
+				if ( !defaultValueTemp.empty() )
+				{
+					defaultValue = defaultValueTemp;
+				}
+			}
+			property->SetValue( defaultValue );
 
 			// Las propiedades están implementadas con una estructura "map",
 			// ello implica que no habrá propiedades duplicadas.
@@ -523,8 +534,16 @@ void ObjectDatabase::SetupPackage(string file)
 					shared_ptr<ObjectInfo> base_info  = GetObjectInfo(base_name);
 					if (class_info && base_info)
 					{
-						class_info->AddBaseClass(base_info);
-						//            DEBUG_PRINT("  " + class_name + " inherits from " + base_name + "\n");
+						size_t baseIndex = class_info->AddBaseClass(base_info);
+						TiXmlElement* inheritedProperty = elem_base->FirstChildElement("property");
+						string prop_name, value;
+						while( inheritedProperty )
+						{	
+							prop_name = inheritedProperty->Attribute(NAME_TAG);
+							value = inheritedProperty->GetText();
+							class_info->AddBaseClassDefaultPropertyValue( baseIndex, prop_name, value );
+							inheritedProperty = inheritedProperty->NextSiblingElement("property");
+						}
 					}
 					elem_base = elem_base->NextSiblingElement("inherits");
 				}

@@ -1,7 +1,6 @@
 <package name="common" lib="libcommon" icon="button16x16.xpm" desc="wxWidgets common controls">
 
   <objectinfo class="wxWindow" smallIcon="frame16x16.xpm" type="interface">
-    <!--<property name="name" type="text">window</property>-->
     <property name="id" type="macro">ID_DEFAULT</property>
     <property name="pos" type="wxPoint"         help="Window position. The default is (-1, -1) which indicates that wxWidgets should generate a default position for the window."/>
     <property name="size" type="wxSize"         help="Window size. The default is (-1, -1) which indicates that wxWidgets should generate a default size for the window."/>
@@ -38,7 +37,7 @@
   </objectinfo>
 
   <objectinfo class="wxButton" icon="button.xpm" type="widget">
-    <inherits class="wxWindow" />
+    <inherits class="wxWindow"/>
     <property name="name" type="text">m_button</property>
     <property name="style" type="bitlist">
       <option name="wxBU_LEFT"      help="Left-justifies the label. Windows and GTK+ only."/>
@@ -64,9 +63,10 @@
   </objectinfo>
 
   <objectinfo class="wxPanel" icon="panel.xpm" type="container">
-    <inherits class="wxWindow" />
+    <inherits class="wxWindow">
+        <property name="window_style">wxTAB_TRAVERSAL</property>
+	</inherits>
     <property name="name" type="text">m_panel</property>
-    <!--<property name="window_style" type="bitlist">wxTAB_TRAVERSAL</property>-->
   </objectinfo>
 
   <objectinfo class="wxTextCtrl" icon="text_ctrl.xpm" type="widget">
@@ -202,7 +202,9 @@
     <property name="kind" type="option">
       <option name="wxITEM_NORMAL"            help="Creates a normal menu item." />
       <option name="wxITEM_CHECK"             help="Creates a checkable menu item." />
-      <option name="wxITEM_RADIO"             help="radio item to the end of the menu. All consequent radio items form a group and when an item in the group is checked, all the others are automatically unchecked. (Only on Windows and GTK)" />wxITEM_NORMAL</property>
+      <option name="wxITEM_RADIO"             help="radio item to the end of the menu. All consequent radio items form a group and when an item in the group is checked, all the others are automatically unchecked. (Only on Windows and GTK)" />
+	  wxITEM_NORMAL
+	</property>
   </objectinfo>
 
   <objectinfo class="separator" icon="menuitem.xpm" type="menuitem">

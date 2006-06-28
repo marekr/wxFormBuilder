@@ -478,6 +478,22 @@ public:
 	void AddPropertyInfo(shared_ptr<PropertyInfo> pinfo);
 
 	/**
+	* Add a default value for an inherited property.
+	* @param baseIndex Index of base class returned from AddBaseClass.
+	* @param propertyName Property of base class to assign a default value to.
+	* @param defaultValue Default value of the inherited property.
+	*/
+	void AddBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName, const string& defaultValue );
+
+	/**
+	* Get a default value for an inherited property.
+	* @param baseIndex Index of base class in the base class vector
+	* @param propertName Name of the property to get the default value for
+	* @return The default value for the property
+	*/
+	string GetBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName );
+
+	/**
 	* Devuelve el tipo de objeto, será util para que el constructor de objetos
 	* sepa la clase derivada de ObjectBase que ha de crear a partir del
 	* descriptor.
@@ -507,7 +523,11 @@ public:
 	/**
 	* Añade la información de un objeto al conjunto de clases base.
 	*/
-	void AddBaseClass(shared_ptr<ObjectInfo> base) {  m_base.push_back(base); }
+	size_t AddBaseClass(shared_ptr<ObjectInfo> base) 
+	{  
+		m_base.push_back(base); 
+		return m_base.size() - 1;
+	}
 
 	/**
 	* Comprueba si el tipo es derivado del que se pasa como parámetro.
@@ -535,7 +555,6 @@ public:
 	IComponent* GetComponent() { return m_component; };
 
 private:
-	typedef map< string, shared_ptr<CodeInfo> > CodeInfoMap;
 	string m_class;         // nombre de la clase (tipo de objeto)
 
 	PObjectType m_type;     // tipo del objeto
@@ -543,12 +562,13 @@ private:
 	wxBitmap m_icon;
 	wxBitmap m_smallIcon; // The icon for the property grid toolbar
 
-	CodeInfoMap m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
+	map< string, shared_ptr< CodeInfo > > m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
 
 	unsigned int m_numIns;  // número de instancias del objeto
 
 	map< string, shared_ptr< PropertyInfo > > m_properties;
-	vector< shared_ptr< ObjectInfo > > m_base; // clases base
+	vector< shared_ptr< ObjectInfo > > m_base; // base classes
+	map< size_t, map< string, string > > m_baseClassDefaultPropertyValues;
 	IComponent* m_component;  // componente asociado a la clase los objetos del
 	// designer
 };

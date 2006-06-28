@@ -192,11 +192,10 @@
   </objectinfo>
   
   <objectinfo class="wxScrolledWindow" icon="scrollwin.xpm" type="container">
-    <inherits class="wxWindow" />
+    <inherits class="wxWindow">
+		<property name="window_style">wxHSCROLL|wxVSCROLL</property>
+	</inherits>
     <property name="name" type="text">m_scrolledWindow</property>
-    <property name="style" type="bitlist">
-      <option name="wxHSCROLL" help="Use this style to enable a horizontal scrollbar."/>
-      <option name="wxVSCROLL" help="Use this style to enable a vertical scrollbar."/>wxHSCROLL|wxVSCROLL</property>
     <property name="scroll_rate_x" type="text" help="Set the horizontal scrolling increment.">5</property>
     <property name="scroll_rate_y" type="text" help="Set the vertical scrolling increment.">5</property>
   </objectinfo>

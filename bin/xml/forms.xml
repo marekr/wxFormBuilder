@@ -1,8 +1,10 @@
 <package name="forms" icon="frame16x16.xpm" desc="wxWidgets windows">
   <objectinfo class="Frame" icon="frame.xpm" type="form">
-    <inherits class="wxWindow" />
-    <property name="name" type="text" hidden="1">MyFrame</property>
-    <property name="size" type="wxSize">500,300</property>
+    <inherits class="wxWindow">
+		<property name="window_style">wxTAB_TRAVERSAL</property>
+		<property name="size" type="wxSize">500,300</property>
+	</inherits>    
+	<property name="name" type="text" hidden="1">MyFrame</property>
     <property name="title" type="wxString" />
     <property name="style" type="bitlist">
       <option name="wxDEFAULT_FRAME_STYLE" help="Defined as wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN" />
@@ -29,15 +31,16 @@
   </objectinfo>
   
   <objectinfo class="Panel" icon="panel.xpm" type="form">
-    <inherits class="wxWindow" />
+    <inherits class="wxWindow">
+		<property name="window_style">wxTAB_TRAVERSAL</property>
+		<property name="size" type="wxSize">500,300</property>
+	</inherits>
     <property name="name" type="text" hidden="1">MyPanel</property>
-    <property name="size" type="wxSize">500,300</property>
   </objectinfo>
   
   <objectinfo class="Dialog" icon="dialog.xpm" type="form" base="wxDialog">
     <inherits class="wxWindow" />
     <property name="name" type="text" hidden="1">MyDialog</property>
-    <property name="size" type="wxSize" />
     <property name="title" type="wxString" />
     <property name="style" type="bitlist">
       <option name="wxCAPTION" 					help="Puts a caption on the dialog box." />
