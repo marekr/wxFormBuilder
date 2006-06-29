@@ -344,7 +344,7 @@ void ObjectInspector::Create(bool force)
 		if (obj_desc)
 		{
 
-			map<string,shared_ptr< Property > > map, dummy;
+			map<unistring,shared_ptr< Property > > map, dummy;
 
 			// We create the categories with the properties of the object organized by "classes"
 			CreateCategory( _WXSTR(obj_desc->GetClassName()), sel_obj,obj_desc,map);
@@ -431,8 +431,8 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 		assert(opt_list && opt_list->GetOptionCount() > 0);
 
 		wxPGChoices constants;
-		const map< string, string > options = opt_list->GetOptions();
-		map< string, string >::const_iterator it;
+		const map< unistring, unistring > options = opt_list->GetOptions();
+		map< unistring, unistring >::const_iterator it;
 		unsigned int i = 0;
 		for( it = options.begin(); it != options.end(); ++it )
 		{
@@ -449,7 +449,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 			for ( size_t i = 0; i < flagsProp->GetCount(); i++ )
 			{
 				wxPGProperty* prop = flagsProp->Item( i );
-				map< string, string >::const_iterator option = options.find( _STDSTR( prop->GetLabel() ) );
+				map< unistring, unistring >::const_iterator option = options.find( prop->GetLabel().c_str() );
 				if ( option != options.end() )
 				{
 					m_pg->SetPropertyHelpString( prop, _WXSTR( option->second )  );
@@ -459,7 +459,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 	}
 	else if (type == PT_INTLIST)
 	{
-		result = wxStringProperty(name, wxPG_LABEL, _WXSTR(IntList(_STDSTR(prop->GetValueAsString())).ToString()));
+		result = wxStringProperty(name, wxPG_LABEL, _WXSTR( IntList( prop->GetValueAsString().c_str() ).ToString()));
 	}
 	else if (type == PT_OPTION)
 	{
@@ -469,8 +469,8 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 		assert(opt_list && opt_list->GetOptionCount() > 0);
 
 		wxPGChoices constants;
-		const map< string, string > options = opt_list->GetOptions();
-		map< string, string >::const_iterator it;
+		const map< unistring, unistring > options = opt_list->GetOptions();
+		map< unistring, unistring >::const_iterator it;
 		unsigned int i = 0;
 		for( it = options.begin(); it != options.end(); ++it )
 		{
@@ -542,7 +542,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 	return result;
 }
 
-void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase> obj, shared_ptr<ObjectInfo> obj_info, map< string, shared_ptr< Property > >& properties )
+void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase> obj, shared_ptr<ObjectInfo> obj_info, map< unistring, shared_ptr< Property > >& properties )
 {
 	int pageIndex = m_pg->GetPageByName( name.c_str() );
 	if ( wxNOT_FOUND == pageIndex )
@@ -566,7 +566,7 @@ void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase
 			assert(prop_desc && prop);
 
 			wxString prop_name( _WXSTR(prop_desc->GetName()) );
-			Debug::Print("[ObjectInspector::CreatePropertyPanel] Creating Property Editor");
+			Debug::Print( _T("[ObjectInspector::CreatePropertyPanel] Creating Property Editor") );
 
 			// we do not want to duplicate inherited properties
 			if (properties.find(prop_desc->GetName()) == properties.end())
@@ -574,7 +574,7 @@ void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase
 				wxPGId id = m_pg->Append(GetProperty(prop));
 				m_pg->SetPropertyHelpString( id, _WXSTR( prop_desc->GetDescription() ) );
 
-				properties.insert( map< string, shared_ptr< Property > >::value_type( prop_desc->GetName(), prop ) );
+				properties.insert( map< unistring, shared_ptr< Property > >::value_type( prop_desc->GetName(), prop ) );
 				m_propmap.insert(ObjInspectorMap::value_type(id.GetPropertyPtr(), prop));
 			}
 		}
@@ -603,14 +603,14 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 			case PT_WXSTRING:
 			{
 				// las cadenas de texto del inspector son formateadas
-				wxString value = _WXSTR(TypeConv::TextToString( _STDSTR(event.GetPropertyValueAsString()) ));
+				wxString value = _WXSTR(TypeConv::TextToString( event.GetPropertyValueAsString().c_str() ));
 				GetData()->ModifyProperty( prop, value );
 				break;
 			}
 			case PT_WXSTRING_I18N:
 			{
 				// las cadenas de texto del inspector son formateadas
-				wxString value = _WXSTR(TypeConv::TextToString( _STDSTR(event.GetPropertyValueAsString()) ));
+				wxString value = _WXSTR(TypeConv::TextToString( event.GetPropertyValueAsString().c_str() ));
 				GetData()->ModifyProperty( prop, value );
 				break;
 			}
@@ -702,7 +702,7 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 void ObjectInspector::OnNewBitmapProperty( wxCommandEvent& event )
 {
 	// Update property grid - change bitmap property
-	std::auto_ptr< NewBitmapEventDataHolder > data ( (NewBitmapEventDataHolder*)event.GetClientData() );
+	auto_ptr< NewBitmapEventDataHolder > data ( (NewBitmapEventDataHolder*)event.GetClientData() );
 	data->m_grid->Freeze();
 	wxPGId newId = data->m_grid->ReplaceProperty( wxT("bitmap"), wxBitmapWithResourceProperty( wxT("bitmap"), wxPG_LABEL, data->m_string ) );
 	m_propmap[ newId.GetPropertyPtr() ] = data->m_prop;

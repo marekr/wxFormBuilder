@@ -28,7 +28,7 @@
 
 #include "wx/wx.h"
 
-void Debug::Print(char *format,...)
+void Debug::Print(unichar *format,...)
 {
 #ifdef DEBUG_WRAPPER
   va_list argptr;

@@ -38,7 +38,7 @@ class ObjectTree : public wxPanel, public DataObserver
 {
 private:
    typedef map<shared_ptr<ObjectBase>, wxTreeItemId> ObjectItemMap;
-   typedef map<string, int> IconIndexMap;
+   typedef map<unistring, int> IconIndexMap;
    typedef map<shared_ptr<ObjectBase>, bool> ItemExpandedMap;
    
    ObjectItemMap m_map;
@@ -55,7 +55,7 @@ private:
     */
    void RebuildTree();
    void AddChildren(shared_ptr<ObjectBase> child, wxTreeItemId &parent, bool is_root = false);
-   int GetImageIndex (string type);
+   int GetImageIndex (unistring type);
    void UpdateItem(wxTreeItemId id, shared_ptr<ObjectBase> obj);
    
    void SaveItemStatus(shared_ptr<ObjectBase> obj);

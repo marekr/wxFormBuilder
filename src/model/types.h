@@ -27,7 +27,7 @@
 #define __TYPES__
 
 #include <vector>
-#include <string>
+#include "utils/unistring.h"
 #include <map>
 #include <boost/smart_ptr.hpp>
 
@@ -69,10 +69,10 @@ class ObjectType
 {
  public:
  
-  ObjectType(string name, int id, bool hidden = false, bool item = false);
+  ObjectType(unistring name, int id, bool hidden = false, bool item = false);
   
   int    GetId()     { return m_id;     }
-  string GetName()   { return m_name;   }
+  unistring GetName()   { return m_name;   }
   //bool   IsHidden()  { return m_hidden; }
   bool   IsItem()    { return m_item;   }
 
@@ -105,7 +105,7 @@ class ObjectType
   typedef map<WPObjectType, int> ChildTypeMap;
   
   int m_id;        /**< identificador numérico del tipo de objeto */
-  string m_name;   /**< cadena de texto asociado al tipo */
+  unistring m_name;   /**< cadena de texto asociado al tipo */
   bool m_hidden;   /**< indica si está oculto en el ObjectTree */
   bool m_item;     /**< indica si es un "item". Los objetos contenidos en
                      *  en un item, muestran las propiedades de éste junto
@@ -171,14 +171,14 @@ class IntList
     
   public:
    IntList() {};
-   IntList(string value);
+   IntList(unistring value);
    
    unsigned int GetSize() { return (unsigned int)m_ints.size(); };
    int GetValue(unsigned int idx) { return m_ints[idx]; };
    void Add(int value) { m_ints.push_back(value); };
    void DeleteList();
-   void SetList(string str);
-   string ToString();
+   void SetList(unistring str);
+   unistring ToString();
 };
 
 

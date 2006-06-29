@@ -35,7 +35,7 @@ class ApplicationData : public DataObservable
 {
  private:
 
-  string m_rootDir;       // directorio raíz (mismo que el ejecutable)
+  unistring m_rootDir;       // directorio raíz (mismo que el ejecutable)
   bool m_modFlag;           // flag de proyecto modificado
   PObjectDatabase m_objDb;  // Base de datos de objetos
   shared_ptr<ObjectBase> m_project;    // Proyecto
@@ -46,7 +46,7 @@ class ApplicationData : public DataObservable
 
   // Procesador de comandos Undo/Redo
   CommandProcessor m_cmdProc;
-  string m_projectFile;
+  unistring m_projectFile;
 
 
   /**
@@ -69,7 +69,7 @@ class ApplicationData : public DataObservable
   /**
    * Rutina auxiliar de ResolveNameConflict
    */
-  void BuildNameSet(shared_ptr<ObjectBase> obj, shared_ptr<ObjectBase> top, set<string> &name_set);
+  void BuildNameSet(shared_ptr<ObjectBase> obj, shared_ptr<ObjectBase> top, set<unistring> &name_set);
 
   /**
    * Calcula la posición donde deberá ser insertado el objeto.
@@ -110,7 +110,7 @@ class ApplicationData : public DataObservable
    shared_ptr<ObjectBase> SearchSizerInto(shared_ptr<ObjectBase> obj);
 
  public:
-  ApplicationData(const string &rootdir = ".");
+  ApplicationData(const unistring &rootdir = _T(".") );
 
   // Operaciones sobre los datos
   bool LoadProject(const wxString &filename);
@@ -162,7 +162,7 @@ class ApplicationData : public DataObservable
   void        SetClipboardObject(shared_ptr<ObjectBase> obj) { m_clipboard = obj; }
   shared_ptr<ObjectBase> GetClipboardObject()                { return m_clipboard; }
 
-  string GetProjectFileName() { return m_projectFile; }
+  unistring GetProjectFileName() { return m_projectFile; }
 };
 
 

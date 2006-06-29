@@ -110,7 +110,7 @@ void VisualEditor::OnResizeBackPanel (wxCommandEvent &event) //(wxSashEvent &eve
 
 	if (form)
 	{
-		shared_ptr<Property> prop(form->GetProperty("size"));
+		shared_ptr<Property> prop(form->GetProperty( _T("size") ));
 		if (prop)
 		{
 			wxString value(TypeConv::PointToString(wxPoint(m_back->GetSize().x, m_back->GetSize().y)));
@@ -149,13 +149,13 @@ void VisualEditor::Create()
 	{
 
 		// --- [1] Configuramos el tamaño del form ---------------------------
-		shared_ptr<Property> pminsize(m_form->GetProperty("minimum_size"));
+		shared_ptr<Property> pminsize(m_form->GetProperty( _T("minimum_size") ) );
 		if(pminsize)
 		{
 			wxSize minsize(TypeConv::StringToSize(_WXSTR(pminsize->GetValue())));
 			m_back->SetMinSize( minsize );
 		}
-		shared_ptr<Property> psize(m_form->GetProperty("size"));
+		shared_ptr<Property> psize(m_form->GetProperty( _T("size")));
 		if (psize)
 		{
 			wxSize wsize(TypeConv::StringToSize(_WXSTR(psize->GetValue())));
@@ -182,14 +182,14 @@ void VisualEditor::Create()
 		}
 
 		// --- [2] Emulamos el color del form -------------------------------
-		shared_ptr<Property> background( m_form->GetProperty("bg") );
-		if ( background && background->GetValue() != "" )
+		shared_ptr<Property> background( m_form->GetProperty( _T("bg") ) );
+		if ( background && !background->GetValue().empty() )
 		{
 			m_back->SetBackgroundColour( TypeConv::StringToColour( _WXSTR(background->GetValue()) ) );
 		}
 		else
 		{
-			if (m_form->GetClassName() == "Frame")
+			if (m_form->GetClassName() == _T("Frame") )
 			{
 				m_back->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
 			}
@@ -204,7 +204,7 @@ void VisualEditor::Create()
 		{
 			shared_ptr<ObjectBase> child = m_form->GetChild(i);
 
-			if (child->GetObjectTypeName() == "menubar")
+			if (child->GetObjectTypeName() == _T("menubar") )
 				menubar = child; // guardamos el objeto del menú para crearlo después
 			else
 				// generamos recursivamente todo el arbol de objetos
@@ -213,7 +213,7 @@ void VisualEditor::Create()
 
 			// si se creó una barra de estado, guardamos el widget para configurar
 			// el "frame"
-			if (child->GetClassName() == "wxStatusBar")
+			if (child->GetClassName() == _T("wxStatusBar") )
 			{
 				VisualObjectMap::iterator it = m_map.find(child);
 				statusbar = shared_dynamic_cast<VisualWindow>(it->second)->GetWindow();
@@ -221,7 +221,7 @@ void VisualEditor::Create()
 
 			// si se creó una barra de herramientas, guardamos el widget para configurar
 			// el "frame"
-			if (child->GetClassName() == "wxToolBar")
+			if (child->GetClassName() == _T("wxToolBar") )
 			{
 				VisualObjectMap::iterator it = m_map.find(child);
 				toolbar = shared_dynamic_cast<VisualWindow>(it->second)->GetWindow();
@@ -236,13 +236,13 @@ void VisualEditor::Create()
 		if (menubar || statusbar || toolbar)
 			m_back->SetFrameWidgets(menubar, toolbar, statusbar);
 
-		shared_ptr<Property> enabled( m_form->GetProperty("enabled") );
+		shared_ptr<Property> enabled( m_form->GetProperty( _T("enabled") ) );
 		if ( enabled )
 		{
 			m_back->Enable( TypeConv::StringToInt( _WXSTR( enabled->GetValue() ) ) != 0 );
 		}
 
-		shared_ptr<Property> hidden( m_form->GetProperty("hidden") );
+		shared_ptr<Property> hidden( m_form->GetProperty( _T("hidden") ) );
 		if ( hidden )
 		{
 			m_back->Show( TypeConv::StringToInt( _WXSTR( hidden->GetValue() ) ) == 0 );
@@ -402,7 +402,7 @@ void GridPanel::HighlightSelection(wxDC& dc)
 		wxPen bluePen(*wxBLUE, 1, wxSOLID);
 		dc.SetPen(bluePen);
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
-		shared_ptr<ObjectBase> sizerParent = object->FindNearAncestor("sizer");
+		shared_ptr<ObjectBase> sizerParent = object->FindNearAncestor( _T("sizer") );
 		if (sizerParent && sizerParent->GetParent())
 			DrawRectangle(dc, point, size, sizerParent);
 	}
@@ -432,7 +432,7 @@ void GridPanel::HighlightSelection(wxDC& dc)
 		}
 		else
 		{
-			Debug::Print("Unknown class: %s", m_selItem->GetClassInfo()->GetClassName());
+			Debug::Print( _T("Unknown class: %s"), m_selItem->GetClassInfo()->GetClassName());
 			return;
 		}
 
@@ -453,9 +453,9 @@ wxMenu* GridPanel::GetMenuFromObject(shared_ptr<ObjectBase> menu)
 	for (unsigned int j = 0; j < menu->GetChildCount(); j++)
 	{
 		shared_ptr<ObjectBase> menuItem = menu->GetChild(j);
-		if (menuItem->GetObjectTypeName() == "submenu")
+		if (menuItem->GetObjectTypeName() == _T("submenu") )
 			menuWidget->Append(lastMenuId++, menuItem->GetPropertyAsString(_T("label")), GetMenuFromObject(menuItem));
-		else if (menuItem->GetClassName() == "separator")
+		else if (menuItem->GetClassName() == _T("separator") )
 			menuWidget->AppendSeparator();
 		else
 		{
@@ -468,7 +468,7 @@ wxMenu* GridPanel::GetMenuFromObject(shared_ptr<ObjectBase> menu)
 				label, menuItem->GetPropertyAsString(_T("help")),
 				(menuItem->GetPropertyAsInteger(_T("kind")) != 0));
 
-			if (!menuItem->GetProperty("bitmap")->IsDefaultValue())
+			if (!menuItem->GetProperty(_T("bitmap"))->IsDefaultValue())
 				item->SetBitmap(menuItem->GetPropertyAsBitmap(_T("bitmap")));
 
 			menuWidget->Append(item);
@@ -618,7 +618,7 @@ void VisualEditor::ObjectSelected(shared_ptr<ObjectBase> obj)
 		// 2. Buscar el item
 		wxObject *item = NULL;
 		wxSizer *sizer = NULL;
-		string typeName = obj->GetObjectTypeName();
+		unistring typeName = obj->GetObjectTypeName();
 
 		int componentType = COMPONENT_TYPE_ABSTRACT;
 		IComponent *comp = obj->GetObjectInfo()->GetComponent();

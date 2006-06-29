@@ -30,7 +30,6 @@
 #include "rad/bitmaps.h"
 #include <wx/filename.h>
 #include "rad/global.h"
-#include <sstream>
 
 ////////////////////////////////////
 
@@ -40,6 +39,11 @@ wxString TypeConv::_StringToWxString(const string &str)
 {	
 	wxString newstr( str.c_str(), *wxConvCurrent );
 	return newstr;
+}
+
+wxString TypeConv::_StringToWxString( const unistring& str )
+{	
+	return str.c_str();
 }
 
 string TypeConv::_WxStringToString(const wxString &str)
@@ -57,7 +61,7 @@ bool TypeConv::StringToPoint(const wxString &val, wxPoint *point)
 	long val_x = -1, val_y = -1;
 
 
-	Debug::Print("[wxPointEditor::ParseValue] Parsing value %s",val.c_str());
+	Debug::Print(_T("[wxPointEditor::ParseValue] Parsing value %s"),val.c_str());
 
 	if (val != wxT(""))
 	{
@@ -67,13 +71,13 @@ bool TypeConv::StringToPoint(const wxString &val, wxPoint *point)
 			str_x = tkz.GetNextToken();
 			str_x.Trim(true);
 			str_x.Trim(false);
-			Debug::Print("[wxPointEditor::ParseValue] Parse %s", str_x.c_str());
+			Debug::Print(_T("[wxPointEditor::ParseValue] Parse %s"), str_x.c_str());
 			if (tkz.HasMoreTokens())
 			{
 				str_y = tkz.GetNextToken();
 				str_y.Trim(true);
 				str_y.Trim(false);
-				Debug::Print("[wxPointEditor::ParseValue] Parse %s", str_y.c_str());
+				Debug::Print(_T("[wxPointEditor::ParseValue] Parse %s"), str_y.c_str());
 			}
 			else
 				error = true;
@@ -149,7 +153,7 @@ int TypeConv::GetMacroValue(const wxString &str)
 	int value = 0;
 
 	PMacroDictionary dic = MacroDictionary::GetInstance();
-	dic->SearchMacro(_STDSTR(str),&value);
+	dic->SearchMacro( str.c_str(), &value );
 
 	return value;
 }
@@ -360,7 +364,7 @@ wxColour TypeConv::StringToColour( const wxString& str )
 	else
 	{
 		wxStringTokenizer tkz(str,wxT(","));
-		unsigned char red,green,blue;
+		unsigned int red,green,blue;
 
 		red = green = blue = 0;
 
@@ -531,7 +535,7 @@ wxString TypeConv::SetFlag  (const wxString &flag, const wxString &currentValue)
 // la representación de un array de cadenas será:
 // 'string1' 'string2' 'string3'
 // el caracter (') se representa dentro de una cadena como ('')
-// 'string''1'''
+// 'unistring''1'''
 wxArrayString TypeConv::StringToArrayString(const wxString &str)
 {
 	int i=0, size = (int)str.Length(), state = 0;
@@ -591,7 +595,7 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
 {
 	wxMessageBox(wxT("Antes: ")+bitlist);
 	wxString result;
-	string translation;
+	unistring translation;
 	wxStringTokenizer tkz(bitlist, wxT("|"));
 	while (tkz.HasMoreTokens())
 	{
@@ -603,8 +607,8 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
 		if (result != wxT(""))
 			result = result + wxChar('|');
 
-		if (MacroDictionary::GetInstance()->SearchSynonymous(_STDSTR(token), translation))
-			result += _WXSTR(translation);
+		if (MacroDictionary::GetInstance()->SearchSynonymous( token.c_str(), translation))
+			result += translation.c_str();
 		else
 			result += token;
 
@@ -614,82 +618,82 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
 }
 
 
-string TypeConv::TextToString(const string &str)
+unistring TypeConv::TextToString(const unistring &str)
 {
-	string result;
+	unistring result;
 
 	for (unsigned int i=0 ; i < str.length() ; i++)
 	{
-		char c = str[i];
-		if (c == '\\')
+		unichar c = str[i];
+		if ( c == _T('\\') )
 		{
 			if (i < str.length() - 1)
 			{
-				char next = str[i+1];
+				unichar next = str[i+1];
 
 				switch (next)
 				{
-				case 'n': result = result + '\n'; i++;
+				case _T('n'): result += _T('\n'); i++;
 					break;
 
-				case 't': result = result + '\t'; i++;
+				case _T('t'): result += _T('\t'); i++;
 					break;
 
-				case 'r': result = result + '\r'; i++;
+				case _T('r'): result += _T('\r'); i++;
 					break;
 
-				case '\\': result = result + '\\'; i++;
+				case _T('\\'): result += _T('\\'); i++;
 					break;
 				}
 			}
 		}
 		else
-			result = result + c;
+			result += c;
 	}
 
 	return result;
 }
 
-string TypeConv::StringToText(const string &str)
+unistring TypeConv::StringToText(const unistring &str)
 {
-	string result;
+	unistring result;
 
 	for (unsigned int i=0 ; i < str.length() ; i++)
 	{
-		char c = str[i];
+		unichar c = str[i];
 
 		switch (c)
 		{
-		case '\n': result = result + "\\n";
+		case _T('\n'): result += _T("\\n");
 			break;
 
-		case '\t': result = result + "\\t";
+		case _T('\t'): result += _T("\\t");
 			break;
 
-		case '\r': result = result + "\\r";
+		case _T('\r'): result += _T("\\r");
 			break;
 
-		case '\\': result = result + "\\\\";
+		case _T('\\'): result += _T("\\\\");
 			break;
 
-		default:   result = result + c;
+		default:   result += c;
 			break;
 		}
 	}
 	return result;
 }
 
-double TypeConv::StringToFloat( const string& str )
+double TypeConv::StringToFloat( const unistring& str )
 {
-	std::stringstream convert( str );
+	unistringstream convert( str );
 	double out;
 	convert >> out;
 	return out;
 }
 
-string TypeConv::FloatToString( const double& val )
+unistring TypeConv::FloatToString( const double& val )
 {
-	std::stringstream convert;
+	unistringstream convert;
 	convert << val;
 	return convert.str();
 }
@@ -708,7 +712,7 @@ PMacroDictionary MacroDictionary::GetInstance()
 	return s_instance;
 }
 
-bool MacroDictionary::SearchMacro(string name, int *result)
+bool MacroDictionary::SearchMacro(unistring name, int *result)
 {
 	bool found = false;
 	MacroMap::iterator it = m_map.find(name);
@@ -721,7 +725,7 @@ bool MacroDictionary::SearchMacro(string name, int *result)
 	return found;
 }
 
-bool MacroDictionary::SearchSynonymous(string synName, string& result)
+bool MacroDictionary::SearchSynonymous(unistring synName, unistring& result)
 {
 	bool found = false;
 	SynMap::iterator it = m_synMap.find(synName);
@@ -737,12 +741,12 @@ bool MacroDictionary::SearchSynonymous(string synName, string& result)
 #define MACRO(x) m_map.insert(MacroMap::value_type(#x,x))
 #define MACRO2(x,y) m_map.insert(MacroMap::value_type(#x,y))
 
-void MacroDictionary::AddMacro(string name, int value)
+void MacroDictionary::AddMacro(unistring name, int value)
 {
 	m_map.insert(MacroMap::value_type(name,value));
 }
 
-void MacroDictionary::AddSynonymous(string synName, string name)
+void MacroDictionary::AddSynonymous(unistring synName, unistring name)
 {
 	m_synMap.insert(SynMap::value_type(synName, name));
 }

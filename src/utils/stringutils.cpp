@@ -26,10 +26,10 @@
 #include "stringutils.h"
 #include <sstream>
 
-string StringUtils::IntToStr(int num)
+unistring StringUtils::IntToStr(int num)
 {
-  ostringstream stream;
+  uniostringstream stream;
   stream<< num << flush;
-  string str(stream.str());
+  unistring str(stream.str());
   return str; 
 } 

@@ -79,7 +79,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
 {
   shared_ptr<ObjectBase> project = GetData()->GetProjectData();
   
-  shared_ptr<Property> pCodeGen = project->GetProperty("code_generation");
+  shared_ptr<Property> pCodeGen = project->GetProperty( _T("code_generation") );
   if (pCodeGen)
   {
     if (!TypeConv::FlagSet (wxT("XRC"),_WXSTR(pCodeGen->GetValue())))
@@ -108,11 +108,11 @@ void XrcPanel::CodeGeneration( bool panelOnly )
     XrcCodeGenerator codegen;
     
     wxString path, file;
-    shared_ptr<Property> ppath = project->GetProperty("path");
+    shared_ptr<Property> ppath = project->GetProperty( _T("path") );
     if (ppath)
       path = _WXSTR(ppath->GetValue());
       
-    shared_ptr<Property> pfile = project->GetProperty("file");
+    shared_ptr<Property> pfile = project->GetProperty( _T("file") );
     if (pfile)
       file = _WXSTR(pfile->GetValue());
       

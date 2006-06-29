@@ -50,7 +50,7 @@ class XrcFilter
    * Dado el nombre de una clase obtiene la información XRC para dicha clase,
    * o NULL si no está definida en el formato XRC.
    */
-  TiXmlElement* GetXrcClassInfo(const string &classname);
+  TiXmlElement* GetXrcClassInfo(const std::string &classname);
   
   /**
    * Enlaza todas las propiedades de un objeto en un nodo XML.
@@ -73,7 +73,7 @@ class XrcFilter
    * salvo para Dialog, Frame y Panel, que devolverá wxDialog, wxFrame y
    * wxPanel respectivamente.
    */
-  string GetXrcClassName(const shared_ptr<ObjectBase> obj);
+  std::string GetXrcClassName(const shared_ptr<ObjectBase> obj);
 
   /**
    * Dado un objeto, crea un árbol XML en formato XRC

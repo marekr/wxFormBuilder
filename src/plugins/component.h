@@ -30,7 +30,7 @@
 #include "wx/wx.h"
 #include <wx/dynarray.h>
 #include "tinyxml.h"
-#include <string>
+#include "utils/unistring.h"
 
 
 #define COMPONENT_TYPE_ABSTRACT 0

@@ -34,7 +34,7 @@ END_EVENT_TABLE()
 
 void CustomKeysEvtHandler::OnKeyPress(wxKeyEvent &event)
 {
-  Debug::Print("%d",event.GetKeyCode());
+  Debug::Print( _T("%d"),event.GetKeyCode());
   
   if (event.GetKeyCode() == WXK_DELETE)
     m_data->RemoveObject(m_data->GetSelectedObject());
@@ -44,23 +44,23 @@ void CustomKeysEvtHandler::OnKeyPress(wxKeyEvent &event)
     // prueba del parser
     /////
     
-    Debug::Print("#### Prueba del parser ####");
+    Debug::Print( _T("#### Prueba del parser ####") );
     
     shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-    shared_ptr<CodeInfo> code_info = obj->GetObjectInfo()->GetCodeInfo("C++");
+    shared_ptr<CodeInfo> code_info = obj->GetObjectInfo()->GetCodeInfo( _T("C++") );
   
-    Debug::Print("#### Plantillas ####");
-    Debug::Print((char *)(code_info->GetTemplate("construction").c_str()));
-    Debug::Print((char *)(code_info->GetTemplate("declaration").c_str()));  
+    Debug::Print( _T("#### Plantillas ####") );
+    Debug::Print((unichar *)(code_info->GetTemplate( _T("construction") ).c_str()));
+    Debug::Print((unichar *)(code_info->GetTemplate( _T("declaration") ).c_str()));  
   
-    Debug::Print("#### Código ####");
+    Debug::Print( _T("#### Código ####") );
     {
-      CppTemplateParser parser(obj,code_info->GetTemplate("construction"));
-      Debug::Print((char *)parser.ParseTemplate().c_str());
+      CppTemplateParser parser(obj,code_info->GetTemplate( _T("construction") ) );
+      Debug::Print((unichar *)parser.ParseTemplate().c_str());
     }
     {
-      CppTemplateParser parser(obj,code_info->GetTemplate("declaration"));
-      Debug::Print((char *)parser.ParseTemplate().c_str());
+      CppTemplateParser parser(obj,code_info->GetTemplate( _T("declaration") ) );
+      Debug::Print((unichar *)parser.ParseTemplate().c_str());
     }    
   }
   else if (event.GetKeyCode() == 'C')
