@@ -157,7 +157,7 @@ shared_ptr<ObjectBase> ObjectDatabase::NewObject(shared_ptr<ObjectInfo> obj_info
 	obj_info->IncrementInstanceCount();
 
 	unsigned int ins = obj_info->GetInstanceCount();
-	shared_ptr<Property> pname = object->GetProperty( _T(NAME_TAG) );
+	shared_ptr<Property> pname = object->GetProperty( _T("name") );
 	if (pname)
 		pname->SetValue(pname->GetValue() + StringUtils::IntToStr(ins));
 
@@ -538,7 +538,7 @@ void ObjectDatabase::SetupPackage( std::string file)
 						TiXmlElement* inheritedProperty = elem_base->FirstChildElement("property");
 						std::string prop_name, value;
 						while( inheritedProperty )
-						{	
+						{
 							prop_name = inheritedProperty->Attribute(NAME_TAG);
 							value = inheritedProperty->GetText();
 							class_info->AddBaseClassDefaultPropertyValue( baseIndex, _WXSTR(prop_name).c_str(), _WXSTR(value).c_str() );

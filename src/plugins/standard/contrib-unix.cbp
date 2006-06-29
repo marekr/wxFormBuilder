@@ -23,6 +23,7 @@
 			<Add option="-DNO_GCC_PRAGMA" />
 			<Add option="-DTIXML_USE_STL" />
 			<Add option="-D__WXGTK__" />
+			<Add option="-D_UNICODE" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="../../../libs/tinyxml" />
 			<Add directory="../.." />

@@ -261,7 +261,7 @@ unistring CppCodeGenerator::ConvertCppString( unistring text )
 	for ( size_t i = 0; i < text.length(); i++ )
 	{
 		unichar c = text[i];
-		
+
 		switch ( c )
 		{
 		case _T('"'):
@@ -330,11 +330,11 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 
 	m_header->Clear();
 	m_source->Clear();
-	unistring date( _T(__DATE__) );
-	unistring time( _T(__TIME__) );
+	unistring date( _T( " " __DATE__ " " ) );
+	unistring time( _T( " " __TIME__ " " ) );
 	unistring code_header (
 		_T("///////////////////////////////////////////////////////////////////////////\n")
-		_T("// C++ code generated with wxFormBuilder (version ") _T(__DATE__) _T(")\n")
+		_T("// C++ code generated with wxFormBuilder (version " __DATE__ ")\n")
 		_T("// http://wxformbuilder.sourceforge.net/\n")
 		_T("//\n")
 		_T("// PLEASE DO \"NOT\" EDIT THIS FILE!\n")
@@ -803,7 +803,7 @@ void CppCodeGenerator::GenConstruction(shared_ptr<ObjectBase> obj, bool is_widge
 
 			unistring _template =	_T("#wxparent $name->SetSizer( $name );\n")
 									_T("#wxparent $name->Layout();");
-			
+
 
 			CppTemplateParser parser(obj,_template);
 			parser.UseRelativePath(m_useRelativePath, m_basePath);
@@ -1071,7 +1071,7 @@ void CppCodeGenerator::FindXpmProperties( shared_ptr<ObjectBase> obj, set<unistr
 
 				// Se supone el path contiene la ruta completa del archivo y no
 				// una relativa.
-				unistring relPath = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, GlobalData()->GetProjectPath() ).c_str() : absPath );
+				unistring relPath = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, GlobalData()->GetProjectPath() ).c_str() : absPath.c_str() );
 
 				unistring inc = _T("#include \"") + ConvertCppString( relPath ) + _T("\"");
 				set.insert(inc);

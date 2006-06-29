@@ -567,19 +567,22 @@ public:
 		int selection = nb->GetSelection();
 		nb->AddPage( page, obj->GetPropertyAsString( _("label") ) );
 
-		// Apply image to page		
+		// Apply image to page
 		IObject* parentObj = parent->Object();
 		if ( !parentObj->GetPropertyAsString( _("bitmapsize") ).empty() )
-		{			
+		{
 			if ( !obj->GetPropertyAsString( _("bitmap") ).empty() )
 			{
 				int width;
 				int height;
 				wxImageList* imageList = nb->GetImageList();
 				imageList->GetSize( 0, width, height );
-				wxImage image = obj->GetPropertyAsBitmap( _("bitmap") ).ConvertToImage();
-				imageList->Add( image.Scale( width, height ) );
-				nb->SetPageImage( nb->GetPageCount() - 1, imageList->GetImageCount() - 1 );
+				if ( width > 0 && height > 0 )
+				{
+					wxImage image = obj->GetPropertyAsBitmap( _("bitmap") ).ConvertToImage();
+					imageList->Add( image.Scale( width, height ) );
+					nb->SetPageImage( nb->GetPageCount() - 1, imageList->GetImageCount() - 1 );
+				}
 			}
 		}
 
@@ -631,7 +634,7 @@ public:
 	{
 		wxListbook *lb = (wxListbook*) objview->Window();
 		wxASSERT(lb->IsKindOf(CLASSINFO(wxListbook)));
-	
+
 		// Small icon style if bitmapsize is not set
 		IObject* obj = objview->Object();
 		if ( obj->GetPropertyAsString( _("bitmapsize") ).empty() )
@@ -677,7 +680,7 @@ public:
 		int selection = lb->GetSelection();
 		lb->AddPage( page, obj->GetPropertyAsString( _("label") ) );
 
-		// Apply image to page		
+		// Apply image to page
 		IObject* parentObj = parent->Object();
 		if ( !parentObj->GetPropertyAsString( _("bitmapsize") ).empty() )
 		{
@@ -687,9 +690,12 @@ public:
 				int height;
 				wxImageList* imageList = lb->GetImageList();
 				imageList->GetSize( 0, width, height );
-				wxImage image = obj->GetPropertyAsBitmap( _("bitmap") ).ConvertToImage();
-				imageList->Add( image.Scale( width, height ) );
-				lb->SetPageImage( lb->GetPageCount() - 1, imageList->GetImageCount() - 1 );
+				if ( width > 0 && height > 0 )
+				{
+					wxImage image = obj->GetPropertyAsBitmap( _("bitmap") ).ConvertToImage();
+					imageList->Add( image.Scale( width, height ) );
+					lb->SetPageImage( lb->GetPageCount() - 1, imageList->GetImageCount() - 1 );
+				}
 			}
 		}
 

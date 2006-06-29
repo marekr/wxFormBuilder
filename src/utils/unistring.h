@@ -16,7 +16,7 @@ typedef	wchar_t				unichar;
 
 typedef std::string			unistring;
 typedef std::ostringstream	uniostringstream;
-typedef std::istringstream	uniistringsteam; 
+typedef std::istringstream	uniistringstream;
 typedef std::stringstream	unistringstream;
 typedef char				unichar;
 
