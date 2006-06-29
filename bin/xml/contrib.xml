@@ -89,12 +89,13 @@
 		<property name="extra_style" type="bitlist">
 		    <option name="wxPG_EX_NO_FLAT_TOOLBAR"	help="Extended window style that sets wxPropertyGridManager toolbar to not use flat style."/>
 			<option name="wxPG_EX_MODE_BUTTONS"		help="Shows alphabetic/categoric mode buttons from toolbar."/>
-			<option name="wxPG_EX_INIT_NOCAT"			help="Speeds up switching to wxPG_HIDE_CATEGORIES mode. Initially, if wxPG_HIDE_CATEGORIES
-															    is not defined, the non-categorized data storage is not activated, and switching
-															    the mode first time becomes somewhat slower. wxPG_EX_INIT_NOCAT activates the
-															    non-categorized data storage right away. IMPORTANT NOTE: If you do plan not
-															    switching to non-categoric mode, or if you don't plan to use categories at
-															    all, then using this style will result in waste of resources."/>
+			<option name="wxPG_EX_INIT_NOCAT"		help="Speeds up switching to wxPG_HIDE_CATEGORIES mode. Initially, if wxPG_HIDE_CATEGORIES
+															is not defined, the non-categorized data storage is not activated, and switching
+															the mode first time becomes somewhat slower. wxPG_EX_INIT_NOCAT activates the
+															non-categorized data storage right away. IMPORTANT NOTE: If you do plan not
+															switching to non-categoric mode, or if you don't plan to use categories at
+															all, then using this style will result in waste of resources."/>
+			wxPG_EX_MODE_BUTTONS
 		</property>
 		<property name="name" type="text">m_propertyGridManager</property>
 		<property name="include_advanced" type="bool" help="Include Advanced Properties">1</property>
