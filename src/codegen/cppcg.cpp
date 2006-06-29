@@ -330,18 +330,18 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 
 	m_header->Clear();
 	m_source->Clear();
-	unistring date( _T( " " __DATE__ " " ) );
-	unistring time( _T( " " __TIME__ " " ) );
-	unistring code_header (
+	uniostringstream code_header;
+	std::string date( __DATE__ );
+	code_header <<
 		_T("///////////////////////////////////////////////////////////////////////////\n")
-		_T("// C++ code generated with wxFormBuilder (version " __DATE__ ")\n")
+		_T("// C++ code generated with wxFormBuilder (version ") << _WXSTR( date ).c_str() << _T(")\n")
 		_T("// http://wxformbuilder.sourceforge.net/\n")
 		_T("//\n")
 		_T("// PLEASE DO \"NOT\" EDIT THIS FILE!\n")
-		_T("///////////////////////////////////////////////////////////////////////////\n") );
+		_T("///////////////////////////////////////////////////////////////////////////\n");
 
-	m_header->WriteLn( code_header );
-	m_source->WriteLn( code_header );
+	m_header->WriteLn( code_header.str() );
+	m_source->WriteLn( code_header.str() );
 
 	shared_ptr<Property> propFile = project->GetProperty( _T("file") );
 	if (!propFile)
@@ -360,8 +360,9 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 	m_header->WriteLn( _T("#define __") + file + _T("__") );
 	m_header->WriteLn( _T("") );
 
-	code_header = GetCode( project, _T("header_preamble") );
-	m_header->WriteLn(code_header);
+	unistring code;
+	code = GetCode( project, _T("header_preamble") );
+	m_header->WriteLn( code );
 
 	// Generate the libraries
 	set< unistring > libraries;
@@ -385,21 +386,21 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 		m_header->WriteLn( _T("") );
 	}
 
-	code_header = GetCode( project, _T("header_epilogue") );
-	m_header->WriteLn( code_header );
+	code = GetCode( project, _T("header_epilogue") );
+	m_header->WriteLn( code );
 	m_header->WriteLn( _T("") );
 
 	// en el cpp generamos el include del .h generado y los xpm
-	code_header = GetCode( project, _T("cpp_preamble") );
-	m_source->WriteLn( code_header );
+	code = GetCode( project, _T("cpp_preamble") );
+	m_source->WriteLn( code );
 	m_source->WriteLn( _T("") );
 
 	m_source->WriteLn( _T("#include \"") + file + _T(".h\""));
 	m_source->WriteLn( _T("") );
 	GenXpmIncludes( project );
 
-	code_header = GetCode( project, _T("cpp_epilogue") );
-	m_source->WriteLn( code_header );
+	code = GetCode( project, _T("cpp_epilogue") );
+	m_source->WriteLn( code );
 
 	// generamos los defines de las macros
 	if ( !useEnum )
