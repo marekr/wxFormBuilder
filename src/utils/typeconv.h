@@ -27,7 +27,7 @@
 #define __TYPE_UTILS__
 
 #include "wx/wx.h"
-#include "utils/unistring.h"
+#include <string>
 #include <vector>
 #include <map>
 #include "model/types.h"
@@ -35,14 +35,13 @@
 
 using namespace std;
 
-// macros para la conversión entre wxString <-> unistring
+// macros para la conversión entre wxString <-> std::string
 #define _WXSTR(x)  TypeConv::_StringToWxString(x) 
 #define _STDSTR(x) TypeConv::_WxStringToString(x)
 
 namespace TypeConv
 {
   wxString _StringToWxString(const string &str);
-  wxString _StringToWxString( const unistring& str );
   string _WxStringToString(const wxString &str);
   
   wxPoint StringToPoint (const wxString &str);
@@ -86,11 +85,11 @@ namespace TypeConv
   
   // dada una cadena de caracteres obtiene otra transformando los caracteres
   // especiales denotados al estilo C ('\n' '\\' '\t')
-  unistring StringToText(const unistring &str);
-  unistring TextToString(const unistring &str);
+  string StringToText(const string &str);
+  string TextToString(const string &str);
 
-  double StringToFloat( const unistring& str );
-  unistring FloatToString( const double& val );
+  double StringToFloat( const string& str );
+  string FloatToString( const double& val );
 };
 
 
@@ -103,10 +102,10 @@ typedef MacroDictionary* PMacroDictionary;
 class MacroDictionary
 {
  private:
-  typedef map<unistring,int> MacroMap;
+  typedef map<string,int> MacroMap;
   static PMacroDictionary s_instance;
   
-  typedef map<unistring,unistring> SynMap;
+  typedef map<string,string> SynMap;
 
   MacroMap m_map;
   SynMap m_synMap;
@@ -115,10 +114,10 @@ class MacroDictionary
   
  public:
   static PMacroDictionary GetInstance();
-  bool SearchMacro(unistring name, int *result);
-  void AddMacro(unistring name, int value);
-  void AddSynonymous(unistring synName, unistring name);
-  bool SearchSynonymous(unistring synName, unistring& result);
+  bool SearchMacro(string name, int *result);
+  void AddMacro(string name, int value);
+  void AddSynonymous(string synName, string name);
+  bool SearchSynonymous(string synName, string& result);
 };
 
 #endif //__TYPE_UTILS__

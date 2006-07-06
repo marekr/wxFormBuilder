@@ -109,7 +109,7 @@ class DataObservable
 
   virtual bool IsModified() = 0;
 
-  virtual unistring GetProjectFileName() = 0;
+  virtual string GetProjectFileName() = 0;
 };
 
 /**

@@ -400,10 +400,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\utils\unistring.h"
-					>
-				</File>
-				<File
 					RelativePath=".\utils\xrcconv.h"
 					>
 				</File>

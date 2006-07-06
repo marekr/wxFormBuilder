@@ -534,7 +534,7 @@ void MainFrame::ProjectSaved()
 void MainFrame::ObjectSelected(shared_ptr<ObjectBase> obj)
 {
 	wxString name;
-	shared_ptr<Property> prop(obj->GetProperty(_T("name")));
+	shared_ptr<Property> prop(obj->GetProperty("name"));
 
 	if (prop)
 		name = prop->GetValueAsString();

@@ -34,7 +34,7 @@
 #define __OBJ__
 
 #include <iostream>
-#include "utils/unistring.h"
+#include <string>
 #include <map>
 #include <vector>
 #include <set>
@@ -57,11 +57,11 @@ class OptionList
 {
 private:
 
-	map< unistring, unistring > m_options;
+	map< string, string > m_options;
 
 public:
 
-	void AddOption( unistring option, unistring description = unistring() )
+	void AddOption( string option, string description = "" )
 	{
 		m_options[option] = description;
 	}
@@ -69,7 +69,7 @@ public:
 	{
 		return (unsigned int)m_options.size();
 	}
-	const map< unistring, unistring >& GetOptions()
+	const map< string, string >& GetOptions()
 	{
 		return m_options;
 	}
@@ -80,25 +80,25 @@ public:
 class PropertyInfo
 {
 private:
-	unistring       m_name;
+	string       m_name;
 	PropertyType m_type;
-	unistring       m_def_value;
+	string       m_def_value;
 	shared_ptr<OptionList>  m_opt_list;
 	bool m_hidden; // Juan. Determina si la propiedad aparece o no en XRC
-	unistring		m_description;
+	string		m_description;
 
 public:
 
-	PropertyInfo(unistring name, PropertyType type, unistring def_value, unistring description = unistring(),
+	PropertyInfo(string name, PropertyType type, string def_value, string description = "",
 		bool hidden = false, shared_ptr<OptionList> opt_list = shared_ptr<OptionList>()); //Juan
 
 	~PropertyInfo();
 
-	unistring       GetDefaultValue()        { return m_def_value;  }
+	string       GetDefaultValue()        { return m_def_value;  }
 	PropertyType GetType()                { return m_type;       }
-	unistring       GetName()                { return m_name;       }
+	string       GetName()                { return m_name;       }
 	shared_ptr<OptionList>  GetOptionList ()         { return m_opt_list;   }
-	unistring		 GetDescription	()		  { return m_description;}
+	string		 GetDescription	()		  { return m_description;}
 	bool         IsHidden()               { return m_hidden; } // Juan
 	void         SetHidden(bool hidden)   { m_hidden = hidden; } // Juan
 };
@@ -111,8 +111,8 @@ private:
 	shared_ptr<PropertyInfo> m_info; // puntero a su descriptor
 	weak_ptr<ObjectBase> m_object; // una propiedad siempre pertenece a un objeto
 
-	unistring m_name;
-	unistring m_value;
+	string m_name;
+	string m_value;
 
 public:
 	Property(shared_ptr<PropertyInfo> info, shared_ptr<ObjectBase> obj = shared_ptr<ObjectBase>())
@@ -123,9 +123,9 @@ public:
 	};
 
 	shared_ptr<ObjectBase> GetObject() { return m_object.lock(); }
-	unistring GetName() { return m_name; };
-	unistring GetValue() { return m_value; };
-	void SetValue(unistring val)
+	string GetName() { return m_name; };
+	string GetValue() { return m_value; };
+	void SetValue(string val)
 	{
 		m_value = val;
 	};
@@ -168,22 +168,22 @@ private:
 	// efectivamente no se están produciendo leaks de memoria
 	static int s_instances;
 
-	unistring m_class;            // clase que repesenta el objeto
-	unistring m_type; //ObjectType m_type;         // RTTI
+	string m_class;            // clase que repesenta el objeto
+	string m_type; //ObjectType m_type;         // RTTI
 	weak_ptr<ObjectBase> m_parent;     // no parent
 
 	vector< shared_ptr<ObjectBase> > m_children;   // children
-	map< unistring,shared_ptr<Property> >  m_properties; // Properties of the object
+	map< string,shared_ptr<Property> >  m_properties; // Properties of the object
 	shared_ptr<ObjectInfo> m_info;
 
 
 protected:
 	// utilites for implementing the tree
 	static const int INDENT;  // size of indent
-	unistring GetIndentString(int indent); // obtiene la cadena con el indentado
+	string GetIndentString(int indent); // obtiene la cadena con el indentado
 
 	vector< shared_ptr<ObjectBase> >& GetChildren()   { return m_children; };
-	map< unistring,shared_ptr<Property> >&  GetProperties() { return m_properties; };
+	map< string,shared_ptr<Property> >&  GetProperties() { return m_properties; };
 
 	// Crea un elemento del objeto
 	virtual TiXmlElement* SerializeObject();
@@ -195,7 +195,7 @@ protected:
 	}
 
 
-	//bool DoChildTypeOk (unistring type_child ,unistring type_parent);
+	//bool DoChildTypeOk (string type_child ,string type_parent);
 	/*
 	* Configura la instancia en su creación.
 	*
@@ -212,7 +212,7 @@ public:
 	/**
 	* Constructor. (debe ser "protegido" -> NewInstance)
 	*/
-	ObjectBase (unistring class_name);
+	ObjectBase (string class_name);
 
 	// Mejor es que sea el propio objeto quien construya todas sus propiedades...
 	//ObjectBase(shared_ptr<ObjectInfo> obj_info);
@@ -225,7 +225,7 @@ public:
 	* de un puntero normal.
 	*/
 	/*  static shared_ptr<ObjectBase> NewInstance
-	(unistring class_name, shared_ptr<ObjectBase> parent = shared_ptr<ObjectBase>());*/
+	(string class_name, shared_ptr<ObjectBase> parent = shared_ptr<ObjectBase>());*/
 
 
 	/**
@@ -240,7 +240,7 @@ public:
 	*       Cada objeto tiene un nombre, el cual será el mismo que el usado
 	*       como clave en el registro de descriptores.
 	*/
-	unistring     GetClassName ()            { return m_class;  }
+	string     GetClassName ()            { return m_class;  }
 
 	/**
 	* Obtiene el nodo padre.
@@ -258,7 +258,7 @@ public:
 	* @note Notar que no existe el método SetProperty, ya que la modificación
 	*       se hace a través de la referencia.
 	*/
-	shared_ptr<Property> GetProperty (unistring name);
+	shared_ptr<Property> GetProperty (string name);
 
 	/**
 	* Añade una propiedad al objeto.
@@ -267,7 +267,7 @@ public:
 	* instancia del objeto.
 	* Los objetos siempre se crearán a través del registro de descriptores.
 	*/
-	void AddProperty (unistring propname, shared_ptr<Property> value);
+	void AddProperty (string propname, shared_ptr<Property> value);
 
 	/**
 	* Obtiene el número de propiedades del objeto.
@@ -331,7 +331,7 @@ public:
 	*
 	* Será útil para encontrar el widget padre.
 	*/
-	shared_ptr<ObjectBase> FindNearAncestor(unistring type);
+	shared_ptr<ObjectBase> FindNearAncestor(string type);
 
 	/**
 	* Obtiene el documento xml del arbol tomando como raíz el nodo actual.
@@ -381,10 +381,10 @@ public:
 	* Comprueba si el tipo de objeto pasado es válido como hijo del objeto.
 	* Esta rutina es importante, ya que define las restricciónes de ubicación.
 	*/
-	//bool ChildTypeOk (unistring type);
+	//bool ChildTypeOk (string type);
 	bool ChildTypeOk (PObjectType type);
 
-	bool IsContainer() { return (GetObjectTypeName() == _T("container") ); }
+	bool IsContainer() { return (GetObjectTypeName() == "container"); }
 
 	shared_ptr<ObjectBase> GetLayout();
 
@@ -393,8 +393,8 @@ public:
 	*
 	* Deberá ser redefinida en cada clase derivada.
 	*/
-	unistring GetObjectTypeName() { return m_type; }
-	void SetObjectTypeName(unistring type) { m_type = type; }
+	string GetObjectTypeName() { return m_type; }
+	void SetObjectTypeName(string type) { m_type = type; }
 
 	/**
 	* Devuelve el descriptor del objeto.
@@ -442,11 +442,11 @@ public:
 class CodeInfo
 {
 private:
-	typedef map<unistring,unistring> TemplateMap;
+	typedef map<string,string> TemplateMap;
 	TemplateMap m_templates;
 public:
-	unistring GetTemplate(unistring name);
-	void AddTemplate(unistring name, unistring _template);
+	string GetTemplate(string name);
+	void AddTemplate(string name, string _template);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -460,7 +460,7 @@ public:
 	/**
 	* Constructor.
 	*/
-	ObjectInfo(unistring class_name, PObjectType type);
+	ObjectInfo(string class_name, PObjectType type);
 
 	virtual ~ObjectInfo() {};
 
@@ -469,7 +469,7 @@ public:
 	/**
 	* Obtiene el descriptor de la propiedad.
 	*/
-	shared_ptr<PropertyInfo> GetPropertyInfo(unistring name);
+	shared_ptr<PropertyInfo> GetPropertyInfo(string name);
 	shared_ptr<PropertyInfo> GetPropertyInfo(unsigned int idx);
 
 	/**
@@ -483,7 +483,7 @@ public:
 	* @param propertyName Property of base class to assign a default value to.
 	* @param defaultValue Default value of the inherited property.
 	*/
-	void AddBaseClassDefaultPropertyValue( size_t baseIndex, const unistring& propertyName, const unistring& defaultValue );
+	void AddBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName, const string& defaultValue );
 
 	/**
 	* Get a default value for an inherited property.
@@ -491,18 +491,18 @@ public:
 	* @param propertName Name of the property to get the default value for
 	* @return The default value for the property
 	*/
-	unistring GetBaseClassDefaultPropertyValue( size_t baseIndex, const unistring& propertyName );
+	string GetBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName );
 
 	/**
 	* Devuelve el tipo de objeto, será util para que el constructor de objetos
 	* sepa la clase derivada de ObjectBase que ha de crear a partir del
 	* descriptor.
 	*/
-	unistring GetObjectTypeName() { return m_type->GetName();   }
+	string GetObjectTypeName() { return m_type->GetName();   }
 
 	PObjectType GetObjectType() { return m_type; }
 
-	unistring GetClassName () { return m_class;  }
+	string GetClassName () { return m_class;  }
 
 	/**
 	* Imprime el descriptor en un stream.
@@ -532,7 +532,7 @@ public:
 	/**
 	* Comprueba si el tipo es derivado del que se pasa como parámetro.
 	*/
-	bool IsSubclassOf(unistring classname);
+	bool IsSubclassOf(string classname);
 
 	shared_ptr<ObjectInfo> GetBaseClass(unsigned int idx);
 	unsigned int GetBaseClassCount();
@@ -545,8 +545,8 @@ public:
 	void SetSmallIconFile(wxBitmap icon) { m_smallIcon = icon; };
 	wxBitmap GetSmallIconFile() { return m_smallIcon; }
 
-	void AddCodeInfo(unistring lang, shared_ptr<CodeInfo> codeinfo);
-	shared_ptr<CodeInfo> GetCodeInfo(unistring lang);
+	void AddCodeInfo(string lang, shared_ptr<CodeInfo> codeinfo);
+	shared_ptr<CodeInfo> GetCodeInfo(string lang);
 
 	/**
 	* Le asigna un componente a la clase.
@@ -555,20 +555,20 @@ public:
 	IComponent* GetComponent() { return m_component; };
 
 private:
-	unistring m_class;         // nombre de la clase (tipo de objeto)
+	string m_class;         // nombre de la clase (tipo de objeto)
 
 	PObjectType m_type;     // tipo del objeto
 
 	wxBitmap m_icon;
 	wxBitmap m_smallIcon; // The icon for the property grid toolbar
 
-	map< unistring, shared_ptr< CodeInfo > > m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
+	map< string, shared_ptr< CodeInfo > > m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
 
 	unsigned int m_numIns;  // número de instancias del objeto
 
-	map< unistring, shared_ptr< PropertyInfo > > m_properties;
+	map< string, shared_ptr< PropertyInfo > > m_properties;
 	vector< shared_ptr< ObjectInfo > > m_base; // base classes
-	map< size_t, map< unistring, unistring > > m_baseClassDefaultPropertyValues;
+	map< size_t, map< string, string > > m_baseClassDefaultPropertyValues;
 	IComponent* m_component;  // componente asociado a la clase los objetos del
 	// designer
 };

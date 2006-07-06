@@ -32,7 +32,7 @@
 #ifndef __CODEGEN__
 #define __CODEGEN__
 
-#include "utils/unistring.h"
+#include <string>
 #include <sstream>
 #include <map>
 #include "model/objectbase.h"
@@ -95,9 +95,9 @@ class TemplateParser
 {
 private:
 	shared_ptr<ObjectBase> m_obj;   
-	uniistringstream m_in;
-	uniostringstream m_out;
-	unistring m_pred;
+	istringstream m_in;
+	ostringstream m_out;
+	string m_pred;
 	void ignore_whitespaces();
 
 protected:
@@ -124,21 +124,21 @@ protected:
 	} Ident;
 
 
-	Ident SearchIdent(unistring ident);
+	Ident SearchIdent(string ident);
 	Ident ParseIdent();
 
-	unistring ParsePropertyName();
+	string ParsePropertyName();
 	/**
 	* Esta rutina extrae el codigo de una plantilla encerrada entre
 	* las macros #begin y #end, teniendo en cuenta que puede estar anidados
 	*/
-	unistring ExtractInnerTemplate();
+	string ExtractInnerTemplate();
 
 	/**
 	* Un valor literal es una cadena encerrada entre '"' (ej. "xxx"),
 	* el caracter " se representa con "".
 	*/
-	unistring ExtractLiteral();
+	string ExtractLiteral();
 
 	/**
 	* Consulta el siguiente símbolo de la entrada y devuelve el token.
@@ -184,19 +184,19 @@ protected:
 	bool ParsePred();
 
 public:
-	TemplateParser(shared_ptr<ObjectBase> obj, unistring _template); 
+	TemplateParser(shared_ptr<ObjectBase> obj, string _template); 
 
 	/**
 	* Devuelve el código del valor de una propiedad en el formato del lenguaje.
 	* @note use ValueToCode
 	*/
-	unistring PropertyToCode( shared_ptr<Property> property );
+	string PropertyToCode( shared_ptr<Property> property );
 
 	/**
 	* Este método crea un nuevo parser del mismo tipo que el objeto que llama
 	* a dicho método.
 	*/
-	virtual shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, unistring _template ) = 0; 
+	virtual shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, string _template ) = 0; 
 
 	virtual ~TemplateParser() {};
 
@@ -204,24 +204,24 @@ public:
 	* En C++ será el puntero "this" pero en otros lenguajes no tiene porqué
 	* llamarse así.
 	*/
-	virtual unistring RootWxParentToCode() = 0;
+	virtual string RootWxParentToCode() = 0;
 
 	/**
 	* A partir del valor de una propiedad genera el código.
 	*/
-	virtual unistring ValueToCode(PropertyType type, unistring value) = 0;
+	virtual string ValueToCode(PropertyType type, string value) = 0;
 
 	/**
 	* La función "estrella" de la clase. Analiza una plantilla devolviendo el
 	* código.
 	*/
-	unistring ParseTemplate();
+	string ParseTemplate();
 
 	/**
 	* establece el texto predefinido, el cual será devuelto con la directiva
 	* #pred.
 	*/
-	void SetPredefined(unistring pred) { m_pred = pred; };
+	void SetPredefined(string pred) { m_pred = pred; };
 };
 
 /**
@@ -238,9 +238,9 @@ private:
 
 protected:
 	/**
-	* Write a unistring
+	* Write a string
 	*/
-	virtual void DoWrite( unistring code ) {};
+	virtual void DoWrite( string code ) {};
 
 	/**
 	* Returns the size of the indentation - was useful when using spaces, now it is 1 because using tabs
@@ -254,15 +254,15 @@ protected:
 	virtual int GetColumns() { return 80; }
 
 	/**
-	* Verifies that the unistring does not contain carraige return characters
+	* Verifies that the string does not contain carraige return characters
 	*/
-	bool StringOk( unistring s );  
+	bool StringOk( string s );  
 
 	/**
 	* Divide una cadena de texto mal formada (con retornos de carro), en
 	* columnas simples insertándolas una a una respetando el indentado.
 	*/
-	void FixWrite( unistring s );
+	void FixWrite( string s );
 
 public:
 	/**
@@ -298,12 +298,12 @@ public:
 	/**
 	* Write a line of code
 	*/   
-	void WriteLn(unistring code);
+	void WriteLn(string code);
 
 	/**
 	* Escribe una cadena de texto en el código.
 	*/
-	void Write( unistring code );
+	void Write( string code );
 
 	/** 
 	* borra todo el código previamente escrito.

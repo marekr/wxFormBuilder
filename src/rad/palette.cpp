@@ -70,7 +70,7 @@ void wxFbPalette::Create()
 
   unsigned int pkg_count = GetData()->GetPackageCount();
 
-  Debug::Print( _T("[Palette] Pages %d"),pkg_count);
+  Debug::Print("[Palette] Pages %d",pkg_count);
 
   // Populate icon vector
   for (unsigned int j = 0; j < pkg_count;j++)
@@ -85,7 +85,7 @@ void wxFbPalette::Create()
   for (unsigned int i = 0; i < pkg_count;i++)
   {
     PObjectPackage pkg = GetData()->GetPackage(i);
-    unistring pkg_name = pkg->GetPackageName();
+    string pkg_name = pkg->GetPackageName();
 
     wxPanel *panel = new wxPanel(m_notebook,-1);
 	panel->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );

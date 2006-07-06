@@ -63,7 +63,7 @@ bool XrcCodeGenerator::GenerateCode(shared_ptr<ObjectBase> project)
   XrcFilter xrc;
   TiXmlDocument *doc = xrc.GetXrcDocument(project);
 
-  std::string tmpFileName = _STDSTR(wxFileName::CreateTempFileName(_T("wxfb")));    
+  string tmpFileName = _STDSTR(wxFileName::CreateTempFileName(_T("wxfb")));    
   doc->SaveFile(tmpFileName);
   delete doc;
 
@@ -87,8 +87,8 @@ bool XrcCodeGenerator::GenerateCode(shared_ptr<ObjectBase> project)
 
   TiXmlDocument *doc = new TiXmlDocument();
   
-  std::string encoding;
-  shared_ptr< Property > encprop = project->GetProperty( _T("xrc_encoding") );
+  string encoding;
+  shared_ptr< Property > encprop = project->GetProperty("xrc_encoding");
   if (encprop)
     encoding = _STDSTR( encprop->GetValueAsString() );
 
@@ -112,7 +112,7 @@ bool XrcCodeGenerator::GenerateCode(shared_ptr<ObjectBase> project)
   
   doc->LinkEndChild(element);
 
-  std::string tmpFileName = _STDSTR(wxFileName::CreateTempFileName(_T("wxfb")));    
+  string tmpFileName = _STDSTR(wxFileName::CreateTempFileName(_T("wxfb")));    
   doc->SaveFile(tmpFileName);
   delete doc;
 
@@ -122,7 +122,7 @@ bool XrcCodeGenerator::GenerateCode(shared_ptr<ObjectBase> project)
       wxTextInputStream text(input);
   
       while (!input.Eof())
-          m_cw->WriteLn( text.ReadLine().c_str() );
+          m_cw->WriteLn(_STDSTR(text.ReadLine()));
   }
   ::wxRemoveFile(_WXSTR(tmpFileName));
   
@@ -142,7 +142,7 @@ TiXmlElement* XrcCodeGenerator::GetElement(shared_ptr<ObjectBase> obj)
     
   if (element)
   {
-  	if (element->Attribute("class") == std::string("__dummyitem__"))
+  	if (element->Attribute("class") == string("__dummyitem__"))
     {
     	delete element;
     	element = NULL;

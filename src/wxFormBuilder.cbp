@@ -21,8 +21,8 @@
 				</Compiler>
 				<Linker>
 					<Add library="tinyxmld" />
-					<Add library="wxmsw$(WX_VER)md_flatnotebook" />
-					<Add library="wxmsw$(WX_VER)md_propgrid" />
+					<Add library="wxmsw$(WX_VER)md_flatnotebook_gcc" />
+					<Add library="wxmsw$(WX_VER)md_propgrid_gcc" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="d" />
@@ -112,6 +112,7 @@
 			<Add option="-D__WX__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
+			<Add option="-DLIB_USINGDLL" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
@@ -123,7 +124,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
-			<Add library="$(#wxadditions)\lib\gcc_libdll\wxmsw$(WX_VER)$(WX_SUFFIX)_scintilla" />
+			<Add library="$(#wxadditions.lib)\gcc_libdll\libwxmsw$(WX_VER)$(WX_SUFFIX)_scintilla.a" />
 			<Add library="advapi32" />
 			<Add library="comctl32" />
 			<Add library="comdlg32" />

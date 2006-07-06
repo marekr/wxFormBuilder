@@ -29,7 +29,7 @@
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 
-ObjectType::ObjectType(unistring name, int id, bool hidden, bool item)
+ObjectType::ObjectType(string name, int id, bool hidden, bool item)
 {
   m_id = id;
   m_name = name;
@@ -91,7 +91,7 @@ PObjectType ObjectType::GetChildType(unsigned int idx)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-IntList::IntList(unistring value)
+IntList::IntList(string value)
 {
   SetList(value);
 }
@@ -101,7 +101,7 @@ void IntList::DeleteList()
   m_ints.erase(m_ints.begin(), m_ints.end());
 }
 
-void IntList::SetList(unistring str)
+void IntList::SetList(string str)
 {
   wxString wxstr( _WXSTR(str) );
   DeleteList();
@@ -119,9 +119,9 @@ void IntList::SetList(unistring str)
   }
 }
 
-unistring IntList::ToString()
+string IntList::ToString()
 {
-  unistring result;
+  string result;
   
   for (unsigned int i=0; i< m_ints.size() ; i++)
   {

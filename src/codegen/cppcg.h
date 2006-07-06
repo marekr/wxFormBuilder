@@ -37,7 +37,6 @@ The value of all properties that are file or a directory paths must be absolute,
 
 #include <set>
 #include "codegen.h"
-#include "utils/unistring.h"
 
 using namespace std;
 
@@ -49,19 +48,19 @@ class CppTemplateParser : public TemplateParser
 private:
 	bool m_useRelativePath;
 	bool m_i18n;
-	unistring m_basePath;
+	string m_basePath;
 
 public:
-	CppTemplateParser( shared_ptr<ObjectBase> obj, unistring _template);
+	CppTemplateParser( shared_ptr<ObjectBase> obj, string _template);
 
 	// redefinidas para C++
-	shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, unistring _template);
-	unistring RootWxParentToCode();
-	//unistring PropertyToCode( shared_ptr<Property> property);
-	unistring ValueToCode( PropertyType type, unistring value);
+	shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, string _template);
+	string RootWxParentToCode();
+	//string PropertyToCode( shared_ptr<Property> property);
+	string ValueToCode( PropertyType type, string value);
 
 	// genera rutas relativas en los nombres de archivo
-	void UseRelativePath( bool relative = false, unistring basePath = unistring());
+	void UseRelativePath( bool relative = false, string basePath = "");
 	void UseI18n( bool i18n);
 };
 
@@ -83,20 +82,20 @@ private:
 
 	bool m_useRelativePath;
 	bool m_i18n;
-	unistring m_basePath;
+	string m_basePath;
 	unsigned int m_firstID;
 
 	/**
 	* Las macros predefinidas no generarán defines.
 	*/
-	set<unistring> m_predMacros;
+	set<string> m_predMacros;
 
 	void SetupPredefinedMacros();
 
 	/**
 	* Dado un objeto y el nombre de una plantilla, obtiene el código.
 	*/
-	unistring GetCode( shared_ptr<ObjectBase> obj, unistring name);
+	string GetCode( shared_ptr<ObjectBase> obj, string name);
 
 	/**
 	* Guarda el conjunto de clases de objetos del proyecto para generar
@@ -108,13 +107,13 @@ private:
 	* Guarda el conjunto de "includes" que hay que generar para las propiedades
 	* PT_XPM_BITMAP.
 	*/
-	void FindXpmProperties( shared_ptr<ObjectBase> obj, set<unistring> &set);
+	void FindXpmProperties( shared_ptr<ObjectBase> obj, set<string> &set);
 
 	/**
 	* Guarda todos las propiedades de objetos de tipo "macro" para generar
 	* su posterior '#define'.
 	*/
-	void FindMacros( shared_ptr<ObjectBase> obj, set<unistring> &macro_set);
+	void FindMacros( shared_ptr<ObjectBase> obj, set<string> &macro_set);
 
 	/**
 	* Genera la declaración de clases en el fichero de cabecera.
@@ -130,22 +129,22 @@ private:
 	/**
 	* Genera la sección de '#include' fichero.
 	*/
-	void GenIncludes( shared_ptr<ObjectBase> project, set<unistring>* includes);
+	void GenIncludes( shared_ptr<ObjectBase> project, set<string>* includes);
 
 	/**
 	* Generate compiler directives for linking libraries ( mostly for widgets that aren't in the standard distribution )
 	*/
-	void GenLibraries( shared_ptr< ObjectBase > project, set< unistring >* libraries );
+	void GenLibraries( shared_ptr< ObjectBase > project, set< string >* libraries );
 
 	/**
 	* Using the Generated Library names, create #ifdef block to link correct library for the application settings
 	*/
-	void WriteLibrariesBlock( const set< unistring >& libraries );
+	void WriteLibrariesBlock( const set< string >& libraries );
 
 	/**
 	* Write a set of libraries with the given prefix and suffic
 	*/
-	void WriteLibraries( const set< unistring >& libraries, const unistring& prefix, const unistring& suffix );
+	void WriteLibraries( const set< string >& libraries, const string& prefix, const string& suffix );
 
 	/**
 	* Genera la sección de '#include' para las propiedades XPM.
@@ -189,19 +188,19 @@ private:
 
 public:
 	/**
-	* Convert a unistring to the "C/C++" format.
+	* Convert a string to the "C/C++" format.
 	*/
-	static unistring ConvertCppString( unistring text);
+	static string ConvertCppString( string text);
 
 	/**
 	* Convert a path to a relative path.
 	*/
-	//static unistring ConvertToRelativePath( unistring path, unistring basePath);
+	//static string ConvertToRelativePath( string path, string basePath);
 
 	/**
 	* Convert an XPM filename to the name of the XPM's internal character array.
 	*/
-	static unistring ConvertXpmName( const unistring& text );
+	static std::string ConvertXpmName( const std::string& text );
 
 	CppCodeGenerator();
 
@@ -229,7 +228,7 @@ public:
 	* @note path is generated with the separators, '/', since on Windows
 	*		the compilers interpret path correctly.
 	*/
-	void UseRelativePath( bool relative = false, unistring basePath = unistring() );
+	void UseRelativePath( bool relative = false, string basePath = "" );
 
 	/**
 	* Set the First ID used during Code Generation.

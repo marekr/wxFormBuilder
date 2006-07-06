@@ -23,11 +23,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "utils/unistring.h"
+#include <string>
 
 using namespace std;
 
 namespace StringUtils
 {
-  unistring IntToStr(int num);
+  string IntToStr(int num);
 };  

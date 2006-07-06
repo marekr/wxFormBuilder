@@ -72,7 +72,7 @@ CppPanel::CppPanel(wxWindow *parent, int id)
 void CppPanel::InitStyledTextCtrl(wxScintilla *stc)
 {
 	stc->SetLexer(wxSCI_LEX_CPP);
-	stc->SetKeyWords(0, _T("asm auto bool break case catch unichar class const const_cast \
+	stc->SetKeyWords(0, _T("asm auto bool break case catch char class const const_cast \
 						   continue default delete do double dynamic_cast else enum explicit \
 						   export extern false float for friend goto if inline int long \
 						   mutable namespace new operator private protected public register \
@@ -120,7 +120,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	bool useRelativePath = false;
 	unsigned int firstID;
 
-	shared_ptr<Property> pCodeGen = project->GetProperty(_T("code_generation"));
+	shared_ptr<Property> pCodeGen = project->GetProperty("code_generation");
 	if (pCodeGen)
 	{
 		if (!TypeConv::FlagSet  (wxT("C++"),_WXSTR(pCodeGen->GetValue())))
@@ -128,12 +128,12 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	}
 
 	// Get First ID from Project File
-	shared_ptr<Property> pFirstID = project->GetProperty(_T("first_id"));
+	shared_ptr<Property> pFirstID = project->GetProperty("first_id");
 	if (pFirstID)
 		firstID = pFirstID->GetValueAsInteger();
 
 	// Get the file name
-	shared_ptr<Property> pfile = project->GetProperty(_T("file"));
+	shared_ptr<Property> pfile = project->GetProperty("file");
 	if (pfile)
 		file = _WXSTR(pfile->GetValue());
 
@@ -141,13 +141,13 @@ void CppPanel::CodeGeneration( bool panelOnly )
 		file = wxT("noname");
 
 	// Determine if the path is absolute or relative
-	shared_ptr<Property> pRelPath = project->GetProperty(_T("relative_path"));
+	shared_ptr<Property> pRelPath = project->GetProperty("relative_path");
 	if (pRelPath)
 		useRelativePath = (pRelPath->GetValueAsInteger() ? true : false);
 
 
 	// Get the output path
-	shared_ptr<Property> ppath = project->GetProperty(_T("path"));
+	shared_ptr<Property> ppath = project->GetProperty("path");
 	if (ppath)
 	{
 		pathEntry = _WXSTR(ppath->GetValue());
@@ -179,7 +179,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 		CppCodeGenerator codegen;
 		//codegen.SetBasePath(ppath->GetValue());
 		//codegen.SetRelativePath(useRelativePath);
-		codegen.UseRelativePath(useRelativePath, path.GetPath().c_str());
+		codegen.UseRelativePath(useRelativePath,_STDSTR(path.GetPath()));
 
 		if (pFirstID)
 			codegen.SetFirstID( firstID );
@@ -204,7 +204,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	// Generate code in the file
 	{
 		CppCodeGenerator codegen;
-		codegen.UseRelativePath(useRelativePath, path.GetPath().c_str());
+		codegen.UseRelativePath(useRelativePath,_STDSTR(path.GetPath()));
 
 		if (pFirstID)
 			codegen.SetFirstID( firstID );
@@ -312,7 +312,7 @@ TCCodeWriter::TCCodeWriter(wxScintilla *tc )
 	SetTextCtrl(tc);
 }
 
-void TCCodeWriter::DoWrite(unistring code)
+void TCCodeWriter::DoWrite(string code)
 {
 	if (m_tc)
 		m_tc->AddText( _WXSTR(code) );
@@ -331,7 +331,7 @@ FileCodeWriter::FileCodeWriter(const wxString &file)
 	m_file.Create(file,true);
 }
 
-void FileCodeWriter::DoWrite(unistring code)
+void FileCodeWriter::DoWrite(string code)
 {
 	m_file.Write( _WXSTR(code) );
 }

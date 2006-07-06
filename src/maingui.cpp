@@ -98,7 +98,7 @@ bool MyApp::OnInit()
 
 
 
-  DataObservable *data = new ApplicationData(unistring(path.c_str()));
+  DataObservable *data = new ApplicationData(string(path.mb_str()));
 
   MainFrame *frame = new MainFrame(data, NULL);
   frame->Show(TRUE);

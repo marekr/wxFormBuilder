@@ -45,8 +45,8 @@ typedef shared_ptr<ObjectDatabase> PObjectDatabase;
 class ObjectPackage
 {
  private:
-  unistring m_name;    // nombre del paquete
-  unistring m_desc;  // breve descripción del paquete
+  string m_name;    // nombre del paquete
+  string m_desc;  // breve descripción del paquete
   wxBitmap m_icon;	// The icon for the notebook page
 
   // Vector con los objetos que están contenidos en el paquete
@@ -56,7 +56,7 @@ class ObjectPackage
   /**
    * Constructor.
    */
-  ObjectPackage(unistring name, unistring desc, wxBitmap icon);
+  ObjectPackage(string name, string desc, wxBitmap icon);
 
   /**
    * Incluye en el paquete la información de un objeto.
@@ -66,12 +66,12 @@ class ObjectPackage
   /**
    * Obtiene el nombre del paquete.
    */
-  unistring GetPackageName() { return m_name; }
+  string GetPackageName() { return m_name; }
 
   /**
    * Obtiene el texto que describe el paquete.
    */
-  unistring GetPackageDescription() { return m_desc; }
+  string GetPackageDescription() { return m_desc; }
 
   /**
    * Get Package Icon
@@ -103,14 +103,14 @@ class ObjectDatabase
 
   // diccionario para obtener el valor numérico a partir de la cadena
   // de texto del archivo XML.
-  typedef map<unistring,PropertyType> PTMap;
-  typedef map<unistring,PObjectType> ObjectTypeMap;
+  typedef map<string,PropertyType> PTMap;
+  typedef map<string,PObjectType> ObjectTypeMap;
   typedef vector<wxDynamicLibrary *> CLibraryVector;
-  typedef set<unistring> MacroSet;
+  typedef set<string> MacroSet;
 
-  std::string m_xmlPath; // directorio donde se encuentran los archivos xml
-  std::string m_iconPath;
-  map< unistring, shared_ptr< ObjectInfo > > m_objs;
+  string m_xmlPath; // directorio donde se encuentran los archivos xml
+  string m_iconPath;
+  map< string, shared_ptr< ObjectInfo > > m_objs;
   PackageVector m_pkgs;
   PTMap m_propTypes;
   CLibraryVector m_libs;
@@ -132,38 +132,38 @@ class ObjectDatabase
    * Carga las plantillas de generación de código de un fichero
    * xml de código dado
    */
-  void LoadCodeGen( std::string file);
+  void LoadCodeGen(string file);
 
   /**
    * Carga los objetos de un paquete con todas sus propiedades salvo
    * los objetos heredados
    */
-  PObjectPackage LoadPackage( std::string file);
+  PObjectPackage LoadPackage(string file);
 
   /**
    * Importa una librería de componentes y lo asocia a cada clase.
    */
-  void ImportComponentLibrary(unistring libfile);
+  void ImportComponentLibrary(string libfile);
 
   /**
    * Incluye la información heredada de los objetos de un paquete.
    * En la segunda pasada configura cada paquete con sus objetos base.
    */
-  void SetupPackage( std::string file);
+  void SetupPackage(string file);
 
   /**
    * Determina si el tipo de objeto hay que incluirlo en la paleta de
    * componentes.
    */
-  bool ShowInPalette(unistring type);
-  bool HasCppProperties(unistring type);
+  bool ShowInPalette(string type);
+  bool HasCppProperties(string type);
 
   // rutinas de conversión
-  PropertyType ParsePropertyType (unistring str);
-  unistring       ParseObjectType   (unistring str);
+  PropertyType ParsePropertyType (string str);
+  string       ParseObjectType   (string str);
 
 
-  PObjectType GetObjectType(unistring name);
+  PObjectType GetObjectType(string name);
 
   int CountChildrenWithSameType(shared_ptr<ObjectBase> parent,PObjectType type);
 
@@ -178,29 +178,29 @@ class ObjectDatabase
   /**
    * Obtiene la información de un objeto a partir del nombre de la clase.
    */
-  shared_ptr<ObjectInfo> GetObjectInfo(unistring class_name);
+  shared_ptr<ObjectInfo> GetObjectInfo(string class_name);
 
   /**
    * Configura la ruta donde se encuentran los ficheros con la descripción.
    */
-  void SetXmlPath( std::string path) { m_xmlPath = path; }
+  void SetXmlPath(string path) { m_xmlPath = path; }
 
   /**
    * Configura la ruta donde se encuentran los iconos asociados a los objetos.
    */
-  void SetIconPath( std::string path) { m_iconPath = path; }
+  void SetIconPath(string path) { m_iconPath = path; }
 
   /**
    * Obtiene la ruta donde se encuentran los ficheros con la descripción de
    * objetos.
    */
-  std::string GetXmlPath()          { return m_xmlPath; }
+  string GetXmlPath()          { return m_xmlPath; }
 
   /**
    * Carga las descripciones de objetos a partir del fichero donde se incluyen
    * todos los paquetes.
    */
-  bool LoadFile( std::string file = "packages.xml" );
+  bool LoadFile(string file="packages.xml");
 
   /**
    * Carga las definiciones de tipos de objetos.
@@ -211,7 +211,7 @@ class ObjectDatabase
    * Fabrica de objetos.
    * A partir del nombre de la clase se crea una nueva instancia de un objeto.
    */
-  shared_ptr<ObjectBase> CreateObject( std::string class_name, shared_ptr<ObjectBase> parent = shared_ptr<ObjectBase>());
+  shared_ptr<ObjectBase> CreateObject(string class_name, shared_ptr<ObjectBase> parent = shared_ptr<ObjectBase>());
 
   /**
    * Fábrica de objetos a partir de un objeto XML.

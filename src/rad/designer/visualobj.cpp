@@ -38,7 +38,7 @@ PVisualObject VisualObject::CreateVisualObject
 	PVisualObject vobj;
 
 	shared_ptr<ObjectInfo> obj_info = obj->GetObjectInfo();
-	unistring type = obj->GetObjectTypeName();
+	string type = obj->GetObjectTypeName();
 
 	// TO-DO: arreglar esto!
 	//
@@ -111,7 +111,7 @@ VisualSizer::VisualSizer(shared_ptr<ObjectBase> obj,wxWindow *parent)
 		SetSizer(new wxBoxSizer(wxVERTICAL));
 	}
 
-	shared_ptr<Property> pminsize  = obj->GetProperty( _T("minimum_size") );
+	shared_ptr<Property> pminsize  = obj->GetProperty("minimum_size");
 	if (pminsize)
 	{
 		wxSize minsize = StringToSize(_WXSTR(pminsize->GetValue()));
@@ -155,16 +155,16 @@ void VisualWindow::SetupWindow()
 	shared_ptr<ObjectBase> obj = GetObject();
 
 	// All of the properties of the wxWindow object are applied in this function
-	shared_ptr<Property> ppos   = obj->GetProperty( _T("pos") );
-	shared_ptr<Property> psize  = obj->GetProperty( _T("size") );
-	shared_ptr<Property> pminsize  = obj->GetProperty( _T("minimum_size") );
-	shared_ptr<Property> pfont  = obj->GetProperty( _T("font") );
-	shared_ptr<Property> pfg_colour  = obj->GetProperty( _T("fg") );
-	shared_ptr<Property> pbg_colour  = obj->GetProperty( _T("bg") );
-	shared_ptr<Property> penabled = obj->GetProperty( _T("enabled") );
-	shared_ptr<Property> phidden  = obj->GetProperty( _T("hidden") );
-	shared_ptr<Property> ptooltip = obj->GetProperty( _T("tooltip") );
-	shared_ptr<Property> pextra_style = obj->GetProperty( _T("window_extra_style") );
+	shared_ptr<Property> ppos   = obj->GetProperty("pos");
+	shared_ptr<Property> psize  = obj->GetProperty("size");
+	shared_ptr<Property> pminsize  = obj->GetProperty("minimum_size");
+	shared_ptr<Property> pfont  = obj->GetProperty("font");
+	shared_ptr<Property> pfg_colour  = obj->GetProperty("fg");
+	shared_ptr<Property> pbg_colour  = obj->GetProperty("bg");
+	shared_ptr<Property> penabled = obj->GetProperty("enabled");
+	shared_ptr<Property> phidden  = obj->GetProperty("hidden");
+	shared_ptr<Property> ptooltip = obj->GetProperty("tooltip");
+	shared_ptr<Property> pextra_style = obj->GetProperty("window_extra_style");
 
 	wxPoint pos;
 	wxSize size;
@@ -199,16 +199,16 @@ void VisualWindow::SetupWindow()
 	{
 		GetWindow()->SetSize(pos.x,pos.y,size.GetWidth(), size.GetHeight());
 
-		if (pminsize && !pminsize->GetValue().empty() )
+		if (pminsize && pminsize->GetValue() != "")
 			GetWindow()->SetMinSize(minsize);
 
-		if (pfont && !pfont->GetValue().empty() )
+		if (pfont && pfont->GetValue() != "")
 			GetWindow()->SetFont(font);
 
-		if (pfg_colour && !pfg_colour->GetValue().empty() )
+		if (pfg_colour && pfg_colour->GetValue() != "")
 			GetWindow()->SetForegroundColour(fg_colour);
 
-		if (pbg_colour && !pbg_colour->GetValue().empty() )
+		if (pbg_colour && pbg_colour->GetValue() != "")
 			GetWindow()->SetBackgroundColour(bg_colour);
 
 		if (penabled)
@@ -303,7 +303,7 @@ void VObjEvtHandler::OnSetCursor(wxSetCursorEvent &event)
 void VObjEvtHandler::OnNotebookPageChanged(wxNotebookEvent &event)
 {
 	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == _T("notebook") )
+	if (obj->GetObjectTypeName() == "notebook")
 	{
 		OnBookPageChanged( obj, event.GetSelection() );
 	}
@@ -312,7 +312,7 @@ void VObjEvtHandler::OnNotebookPageChanged(wxNotebookEvent &event)
 void VObjEvtHandler::OnFlatNotebookPageChanged(wxFlatNotebookEvent &event)
 {
 	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == _T("flatnotebook") )
+	if (obj->GetObjectTypeName() == "flatnotebook")
 	{
 		OnBookPageChanged( obj, event.GetSelection() );
 	}
@@ -321,7 +321,7 @@ void VObjEvtHandler::OnFlatNotebookPageChanged(wxFlatNotebookEvent &event)
 void VObjEvtHandler::OnListbookPageChanged(wxListbookEvent &event)
 {
 	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == _T("listbook") )
+	if (obj->GetObjectTypeName() == "listbook")
 	{
 		OnBookPageChanged( obj, event.GetSelection() );
 	}
@@ -331,7 +331,7 @@ void VObjEvtHandler::OnListbookPageChanged(wxListbookEvent &event)
 void VObjEvtHandler::OnChoicebookPageChanged( wxChoicebookEvent& event )
 {
 	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == _T("chiocebook") )
+	if (obj->GetObjectTypeName() == "chiocebook")
 	{
 		OnBookPageChanged( obj, event.GetSelection() );
 	}
@@ -345,16 +345,16 @@ void VObjEvtHandler::OnBookPageChanged( shared_ptr<ObjectBase> obj, int selPage 
 		for (unsigned int i=0; i<obj->GetChildCount(); i++)
 		{
 			shared_ptr<ObjectBase> child = obj->GetChild(i);
-			shared_ptr<Property> propSelect = child->GetProperty(_T("select"));
+			shared_ptr<Property> propSelect = child->GetProperty("select");
 			if (propSelect)
 			{
 				// we can't use DataObservable::ModifyProperty because
 				// it will regenerate de gui, so these modifications won't be
 				// undoable
 				if ((int)i == selPage && !propSelect->GetValueAsInteger())
-					propSelect->SetValue(unistring(_T("1")));
+					propSelect->SetValue(string("1"));
 				else if ((int)i != selPage && propSelect->GetValueAsInteger())
-					propSelect->SetValue(unistring(_T("0")));
+					propSelect->SetValue(string("0"));
 			}
 		}
 	}
