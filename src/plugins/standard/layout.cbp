@@ -55,7 +55,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="tinyxmld" />
+					<Add library="tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="Release (Unicode)">
@@ -72,7 +72,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="tinyxmld" />
+					<Add library="tinyxml" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="u" />

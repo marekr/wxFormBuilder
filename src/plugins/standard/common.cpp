@@ -613,6 +613,13 @@ class MenuBarComponent : public ComponentBase
 {
 public:
 
+	wxObject* Create(IObject *obj, wxObject *parent)
+	{
+		wxMenuBar *mb = new wxMenuBar(obj->GetPropertyAsInteger(_("style")) |
+			obj->GetPropertyAsInteger(_("window_style")));
+		return mb;
+	}
+
 	TiXmlElement* ExportToXrc(IObject *obj)
 	{
 		ObjectToXrcFilter xrc(obj, _("wxMenuBar"), obj->GetPropertyAsString(_("name")));
@@ -1122,6 +1129,9 @@ MACRO(wxRA_USE_CHECKBOX)
 
 // wxStatusBar
 MACRO(wxST_SIZEGRIP)
+
+//wxMenuBar
+MACRO(wxMB_DOCKABLE)
 
 // wxMenuItem
 MACRO(wxITEM_NORMAL)

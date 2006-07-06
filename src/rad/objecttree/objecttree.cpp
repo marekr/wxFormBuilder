@@ -33,7 +33,7 @@
 
 BEGIN_EVENT_TABLE( ObjectTree, wxPanel )
 	EVT_TREE_SEL_CHANGED( -1, ObjectTree::OnSelChanged )
-	EVT_TREE_ITEM_RIGHT_CLICK( -1, ObjectTree::OnRightClick )	
+	EVT_TREE_ITEM_RIGHT_CLICK( -1, ObjectTree::OnRightClick )
 END_EVENT_TABLE()
 
 ObjectTree::ObjectTree( wxWindow *parent, int id )
@@ -69,18 +69,18 @@ void ObjectTree::RebuildTree()
 	m_map.clear();
 
 	if (project)
-	{  
+	{
 		wxTreeItemId dummy;
 		AddChildren(project, dummy, true );
 
 		// restauramos el valor del atributo "IsExpanded"
 		RestoreItemStatus(project);
-	}  
+	}
 
 	m_expandedMap.clear();
 
 	m_tcObjects->Thaw();
-}  
+}
 
 void ObjectTree::OnSelChanged(wxTreeEvent &event)
 {
@@ -101,7 +101,7 @@ void ObjectTree::OnRightClick(wxTreeEvent &event)
 	wxTreeItemId id = event.GetItem();
 	wxTreeItemData *item_data = m_tcObjects->GetItemData(id);
 	if (item_data)
-	{  
+	{
 		shared_ptr<ObjectBase> obj(((ObjectTreeItemData *)item_data)->GetObject());
 		assert(obj);
 		wxMenu * menu = new ItemPopupMenu(GetData(),obj);
@@ -221,7 +221,7 @@ void ObjectTree::AddChildren(shared_ptr<ObjectBase> obj, wxTreeItemId &parent, b
 		UpdateItem(new_parent,obj);
 
 
-		// y de forma recursiva generamos el resto de hijos    
+		// y de forma recursiva generamos el resto de hijos
 		unsigned int count = obj->GetChildCount();
 		unsigned int i;
 		for (i = 0; i < count ; i++)
@@ -229,7 +229,7 @@ void ObjectTree::AddChildren(shared_ptr<ObjectBase> obj, wxTreeItemId &parent, b
 			shared_ptr<ObjectBase> child = obj->GetChild(i);
 			AddChildren(child, new_parent);
 		}
-	}  
+	}
 }
 
 
@@ -246,7 +246,7 @@ int ObjectTree::GetImageIndex (string name)
 
 void ObjectTree::UpdateItem(wxTreeItemId id, shared_ptr<ObjectBase> obj)
 {
-	// mostramos el nombre 
+	// mostramos el nombre
 	wxString class_name( _WXSTR(obj->GetClassName()) );
 	shared_ptr<Property> prop = obj->GetProperty("name");
 	wxString obj_name;
@@ -293,7 +293,7 @@ void ObjectTree::Create()
 void ObjectTree::SaveItemStatus(shared_ptr<ObjectBase> obj)
 {
 	ObjectItemMap::iterator it = m_map.find(obj);
-	if (it != m_map.end()) 
+	if (it != m_map.end())
 	{
 		wxTreeItemId id = it->second; // obtenemos el item
 		m_expandedMap.insert(ItemExpandedMap::value_type(obj,m_tcObjects->IsExpanded(id)));
@@ -317,12 +317,12 @@ void ObjectTree::RestoreItemStatus(shared_ptr<ObjectBase> obj)
 		isExpanded = (expand_it != m_expandedMap.end()? expand_it->second : true );
 
 		if (isExpanded)
-			m_tcObjects->Expand(id);      
+			m_tcObjects->Expand(id);
 		else
-			m_tcObjects->Collapse(id); 
+			m_tcObjects->Collapse(id);
 	}
 
-	unsigned int i,count = obj->GetChildCount();  
+	unsigned int i,count = obj->GetChildCount();
 	for (i = 0; i<count ; i++)
 		RestoreItemStatus(obj->GetChild(i));
 }
@@ -336,12 +336,15 @@ ObjectTreeItemData::ObjectTreeItemData(shared_ptr<ObjectBase> obj) : m_object(ob
 
 #define MENU_MOVE_UP    100
 #define MENU_MOVE_DOWN  101
-#define MENU_CUT        102
-#define MENU_PASTE      103
-#define MENU_EDIT_MENUS 104
-#define MENU_COPY       105
-#define MENU_MOVE_NEW_BOXSIZER   106
-#define MENU_DELETE 107
+#define MENU_MOVE_RIGHT 102
+#define MENU_MOVE_LEFT  103
+#define MENU_CUT        104
+#define MENU_PASTE      105
+#define MENU_EDIT_MENUS 106
+#define MENU_COPY       107
+#define MENU_MOVE_NEW_BOXSIZER   108
+#define MENU_DELETE 109
+
 
 BEGIN_EVENT_TABLE(ItemPopupMenu,wxMenu)
 EVT_MENU(-1, ItemPopupMenu::OnMenuEvent)
@@ -351,14 +354,17 @@ END_EVENT_TABLE()
 ItemPopupMenu::ItemPopupMenu(DataObservable *data, shared_ptr<ObjectBase> obj)
 : wxMenu(), m_data(data), m_object(obj)
 {
-	Append(MENU_CUT,       wxT("Cut\tCtrl+X"));
-	Append(MENU_COPY,      wxT("Copy\tCtrl+C"));
-	Append(MENU_PASTE,     wxT("Paste\tCtrl+V"));
+	Append(MENU_CUT,        wxT("Cut\tCtrl+X"));
+	Append(MENU_COPY,       wxT("Copy\tCtrl+C"));
+	Append(MENU_PASTE,      wxT("Paste\tCtrl+V"));
 	AppendSeparator();
-	Append(MENU_DELETE,    wxT("Delete\tCtrl+D"));
+	Append(MENU_DELETE,     wxT("Delete\tCtrl+D"));
 	AppendSeparator();
-	Append(MENU_MOVE_UP,   wxT("Move Up\tAlt+Up"));
-	Append(MENU_MOVE_DOWN, wxT("Move Down\tAlt+Down"));
+	Append(MENU_MOVE_UP,    wxT("Move Up\tAlt+Up"));
+	Append(MENU_MOVE_DOWN,  wxT("Move Down\tAlt+Down"));
+	Append(MENU_MOVE_LEFT,  wxT("Move Left\tAlt+Left"));
+	Append(MENU_MOVE_RIGHT, wxT("Move Right\tAlt+Right"));
+	AppendSeparator();
 	Append(MENU_MOVE_NEW_BOXSIZER, wxT("Move into a new wxBoxSizer"));
 	AppendSeparator();
 	Append(MENU_EDIT_MENUS, wxT("Menu Editor..."));
@@ -385,6 +391,12 @@ void ItemPopupMenu::OnMenuEvent (wxCommandEvent & event)
 	case MENU_MOVE_DOWN:
 		m_data->MovePosition(m_object,true);
 		break;
+	case MENU_MOVE_RIGHT:
+		m_data->MoveHierarchy(m_object,false);
+		break;
+	case MENU_MOVE_LEFT:
+		m_data->MoveHierarchy(m_object,true);
+		break;
 	case MENU_MOVE_NEW_BOXSIZER:
 		m_data->CreateBoxSizerWithObject(m_object);
 		break;
@@ -400,15 +412,15 @@ void ItemPopupMenu::OnMenuEvent (wxCommandEvent & event)
 					shared_ptr<ObjectBase> menubar;
 					for (unsigned int i = 0; i < obj->GetChildCount() && !found; i++)
 					{
-						menubar = obj->GetChild(i);  
-						found = menubar->GetClassName() == "wxMenuBar"; 
+						menubar = obj->GetChild(i);
+						found = menubar->GetClassName() == "wxMenuBar";
 					}
 					if (found) obj = menubar;
 				}
 
 				if (obj->GetClassName() == "wxMenuBar") me.Populate(obj);
 				if (me.ShowModal() == wxID_OK)
-				{ 
+				{
 					if (obj->GetClassName() == "wxMenuBar")
 					{
 						shared_ptr<ObjectBase> menubar = me.GetMenubar(m_data->GetObjectDatabase());
@@ -440,7 +452,7 @@ void ItemPopupMenu::OnUpdateEvent(wxUpdateUIEvent& e)
 	switch (e.GetId())
 	{
 	case MENU_EDIT_MENUS:
-		e.Enable(m_object && (m_object->GetClassName() == "wxMenuBar" 
+		e.Enable(m_object && (m_object->GetClassName() == "wxMenuBar"
 			|| m_object->GetClassName() == "Frame"));
 		break;
 	case MENU_CUT:
@@ -451,7 +463,8 @@ void ItemPopupMenu::OnUpdateEvent(wxUpdateUIEvent& e)
 		e.Enable(m_data->CanPasteObject());
 		break;
 
-	case MENU_MOVE_UP: case MENU_MOVE_DOWN:
+	case MENU_MOVE_UP:
+	case MENU_MOVE_DOWN:
 		e.Enable(m_object && m_object->GetObjectTypeName() != "project");
 		break;
 	}

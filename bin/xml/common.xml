@@ -178,6 +178,9 @@
     <inherits class="wxWindow" />
     <property name="name" type="text">m_menubar</property>
     <property name="label" type="wxString_i18n">MyMenuBar</property>
+	<property name="style" type="bitlist">
+      <option name="wxMB_DOCKABLE" help="Allows the menu bar to be detached (wxGTK only)."/>
+	</property>
   </objectinfo>
 
   <objectinfo class="wxMenu" icon="menu.xpm" type="menu">

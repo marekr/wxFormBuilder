@@ -112,7 +112,7 @@
 
   <templates class="wxMenuBar">
     <template name="declaration">wxMenuBar* $name;</template>
-    <template name="construction">$name = new wxMenuBar( $style );</template>
+    <template name="construction">$name = new wxMenuBar( $style #ifnotnull $window_style @{ |$window_style @} );</template>
     <template name="include">@#include &lt;wx/menu.h&gt;</template>
     <template name="after_addchild">#wxparent $name->SetMenuBar( $name );</template>
   </templates>

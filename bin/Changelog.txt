@@ -1,8 +1,12 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
 
+07-06-2006  Version 2.00.57
+* Fixed wxMenuBar 'style' property.
++ Added the move right/left to the right-click menu.
+
 06-28-2006  Version 2.00.56
-* Fixed handling of default values for inherited properties
+* Fixed handling of default values for inherited properties.
 
 06-27-2006  Version 2.00.55
 + Added refresh call to object inspector panel.
