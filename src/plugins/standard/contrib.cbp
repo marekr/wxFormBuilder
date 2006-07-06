@@ -22,6 +22,7 @@
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="d" />
+					<Variable name="WXADD_SUFFIX" value="md" />
 				</Environment>
 			</Target>
 			<Target title="Debug (Unicode)">
@@ -42,6 +43,7 @@
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="ud" />
+					<Variable name="WXADD_SUFFIX" value="umd" />
 				</Environment>
 			</Target>
 			<Target title="Release">
@@ -76,6 +78,7 @@
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="u" />
+					<Variable name="WXADD_SUFFIX" value="um" />
 				</Environment>
 			</Target>
 			<Environment>
@@ -94,17 +97,18 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DLIB_USINGDLL" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
 			<Add directory="..\.." />
 		</Compiler>
 		<Linker>
+			<Add library="$(#wxadditions.lib)\gcc_libdll\libwxmsw$(WX_VER)$(WX_SUFFIX)_plot.a" />
+			<Add library="$(#wxadditions.lib)\gcc_libdll\libwxmsw$(WX_VER)$(WX_SUFFIX)_awx.a" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_awx" />
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_plot" />
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_propgrid" />
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_flatnotebook" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_propgrid_gcc" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_flatnotebook_gcc" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#wxadditions.lib)\gcc_dll" />
 			<Add directory="$(tinyxml)\lib" />
