@@ -26,7 +26,7 @@
 #ifndef __ICONS__
 #define __ICONS__
 
-#define ICON_SIZE 21
+#define ICON_SIZE 22
 #define TOOL_SIZE 22
 #define SMALL_ICON_SIZE 14
 

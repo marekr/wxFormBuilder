@@ -188,7 +188,7 @@
     <property name="label" type="wxString_i18n">MyMenu</property>
   </objectinfo>
 
-  <objectinfo class="submenu" icon="menu.xpm" type="submenu">
+  <objectinfo class="submenu" icon="submenu.xpm" type="submenu">
     <property name="name" type="text">m_menu</property>
     <property name="label" type="wxString_i18n">MyMenu</property>
   </objectinfo>
@@ -210,7 +210,7 @@
 	</property>
   </objectinfo>
 
-  <objectinfo class="separator" icon="menuitem.xpm" type="menuitem">
+  <objectinfo class="separator" icon="separator.xpm" type="menuitem">
   </objectinfo>
 
   <objectinfo class="wxListCtrl" icon="list_ctrl.xpm" type="widget">
@@ -262,7 +262,7 @@
       <option name="wxTB_HORZ_TEXT"           help="Combination of wxTB_HORZ_LAYOUT and wxTB_TEXT." />wxTB_HORIZONTAL</property>
   </objectinfo>
 
-  <objectinfo class="tool" icon="toolbar.xpm" type="tool">
+  <objectinfo class="tool" icon="tool.xpm" type="tool">
     <property name="name" type="text">m_tool</property>
     <property name="label" type="wxString_i18n">tool</property>
     <property name="bitmap" type="bitmap"      		help="The primary tool bitmap." />

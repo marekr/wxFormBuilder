@@ -39,6 +39,7 @@
 #include "rad/appdata.h"
 #include <wx/filename.h>
 #include <wx/image.h>
+#include <wx/sysopt.h>
 
 #include "rad/global.h"
 
@@ -70,6 +71,9 @@ bool MyApp::OnInit()
 
   // Guardamos la ruta del ejecutable
   GlobalData()->SetApplicationPath(path);
+
+  wxSystemOptions::SetOption(_T("msw.remap"), 0);
+  wxSystemOptions::SetOption(_T("msw.staticbox.optimized-paint"), 0);
 
 #ifndef _DEBUG
   wxBitmap bitmap;

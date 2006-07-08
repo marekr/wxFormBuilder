@@ -122,7 +122,7 @@ MainFrame::MainFrame(DataObservable *data,wxWindow *parent, int id)
 	wxString time(wxT(__TIME__));
 	SetTitle(wxT("wxFormBuilder (Build on ") + date +wxT(" - ")+ time + wxT(")"));
 
-	//SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_NEW_PRJ, _T("&New"), _T("create an empty project"));
