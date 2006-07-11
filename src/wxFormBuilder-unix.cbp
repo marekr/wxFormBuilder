@@ -45,7 +45,7 @@
 			<Add library="wx_gtk2u_scintilla-2.6" />
 			<Add library="tinyxml" />
 			<Add directory="$(tinyxml)/lib" />
-			<Add directory="$(#wxadditions.lib)/gcc_dll" />
+			<Add directory="$(#wxadditions.lib)" />
 		</Linker>
 		<Unit filename="codegen/codegen.cpp">
 			<Option compilerVar="CPP" />
