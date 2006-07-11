@@ -21,7 +21,7 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DNOPCH" />
 			<Add option="-DNO_GCC_PRAGMA" />
-			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DTIXML_USE_TICPP" />
 			<Add option="-D_UNICODE" />
 			<Add directory="../../../libs/tinyxml" />
 			<Add directory="../.." />
@@ -29,7 +29,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="tinyxml" />
-			<Add directory="../../../libs/tinyxml/Release" />
+			<Add directory="../../../libs/tinyxml/lib" />
 		</Linker>
 		<Unit filename="../component.h">
 			<Option compilerVar="" />

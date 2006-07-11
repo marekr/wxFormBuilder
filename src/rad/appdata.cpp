@@ -26,7 +26,6 @@
 #include "appdata.h"
 #include "utils/typeconv.h"
 #include "utils/debug.h"
-#include "utils/wxfbexception.h"
 #include "codegen/codegen.h"
 #include "rad/global.h"
 #include "bitmaps.h"
