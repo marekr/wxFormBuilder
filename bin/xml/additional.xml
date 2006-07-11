@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="additional" lib="libadditional" icon="calendar16x16.xpm" desc="wxWidgets additional controls">
   <objectinfo class="wxCalendarCtrl" icon="calendar.xpm" type="widget">
     <inherits class="wxWindow" />
@@ -11,7 +12,7 @@
       <option name="wxCAL_SHOW_SURROUNDING_WEEKS"     help="Show the neighbouring weeks in the previous and next months." />
       <option name="wxCAL_SEQUENTIAL_MONTH_SELECTION" help="Use alternative, more compact, style for the month and year selection controls." />wxCAL_SHOW_HOLIDAYS</property>
   </objectinfo>
-	
+
   <objectinfo class="wxDatePickerCtrl" icon="datepicker.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_datePicker</property>
@@ -22,7 +23,7 @@
       <option name="wxDP_ALLOWNONE"   help="With this style, the control allows the user to not enter any valid date at all. Without it - the default - the control always has some valid date." />
       <option name="wxDP_DEFAULT"     help="Creates a control with the style that is best supported for the current platform (currently wxDP_SPIN under Windows and wxDP_DROPDOWN elsewhere)." />wxDP_DEFAULT</property>
   </objectinfo>
-	
+
   <objectinfo class="wxHtmlWindow" icon="htmlwin.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_htmlWin</property>
@@ -31,7 +32,7 @@
       <option name="wxHW_SCROLLBAR_AUTO"  help="Display scrollbars only if page's size exceeds window's size." />
       <option name="wxHW_NO_SELECTION"    help="Don't allow the user to select text." />wxHW_SCROLLBAR_AUTO</property>
   </objectinfo>
-  
+
   <objectinfo class="wxTreeCtrl" icon="tree_ctrl.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_treeCtrl</property>
@@ -51,7 +52,7 @@
       <option name="wxTR_EXTENDED"                help="Use this style to allow disjoint items to be selected. (Only partially implemented; may not work in all cases.)" />
       <option name="wxTR_DEFAULT_STYLE"           help="The set of flags that are closest to the defaults for the native control for a particular toolkit." />wxTR_DEFAULT_STYLE</property>
   </objectinfo>
-  
+
   <objectinfo class="wxRadioButton" icon="radio_button.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_radioBtn</property>
@@ -69,7 +70,7 @@
     <property name="label" type="wxString_i18n">Toggle me!</property>
     <property name="value" type="bool">0</property>
   </objectinfo>
-  
+
   <objectinfo class="wxScrollBar" icon="scrollbar.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_scrollBar</property>
@@ -77,7 +78,7 @@
       <option name="wxSB_HORIZONTAL" help="Specifies a horizontal scrollbar." />
       <option name="wxSB_VERTICAL"   help="Specifies a vertical scrollbar." />wxSB_HORIZONTAL</property>
   </objectinfo>
-  
+
   <objectinfo class="wxSpinCtrl" icon="spin_ctrl.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_spinCtrl</property>
@@ -118,7 +119,7 @@
     <property name="sashpos" type="text"      help="The initial sash position.">0</property>
 	<property name="sashgravity" type="float" help= "Sets the sash gravity. Remarks: Gravity is real factor which controls position of sash while resizing wxSplitterWindow. Gravity tells wxSplitterWindow how much will left/top window grow while resizing.">0.0</property>
   </objectinfo>
-  
+
   <objectinfo class="splitteritem" type="splitteritem" />
 
   <objectinfo class="wxCheckList" icon="checkbox.xpm" type="widget">
@@ -156,7 +157,7 @@
     <property name="bitmap" type="bitmap" help="Page Image"/>
     <property name="select" type="bool" help="Select Page when Adding">0</property>
   </objectinfo>
-  
+
   <objectinfo class="wxListbook" icon="listbook.xpm" type="listbook">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_listbook</property>
@@ -190,7 +191,7 @@
     <property name="label" type="wxString_i18n">a page</property>
     <property name="select" type="bool" help="Select Page when Adding">0</property>
   </objectinfo>
-  
+
   <objectinfo class="wxScrolledWindow" icon="scrollwin.xpm" type="container">
     <inherits class="wxWindow">
 		<property name="window_style">wxHSCROLL|wxVSCROLL</property>
@@ -199,5 +200,5 @@
     <property name="scroll_rate_x" type="text" help="Set the horizontal scrolling increment.">5</property>
     <property name="scroll_rate_y" type="text" help="Set the vertical scrolling increment.">5</property>
   </objectinfo>
-  
+
 </package>

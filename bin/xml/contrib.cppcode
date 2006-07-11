@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="C++">
-	 
+
 	<templates class="wxPlotWindow">
 		<template name="declaration">wxPlotWindow* $name;</template>
 		<template name="construction">
@@ -10,7 +11,7 @@
 		<template name="include">@#include &lt;wx/plot/plot.h&gt;</template>
 		<template name="library">plot</template>
 	</templates>
-  
+
 	<templates class="wxPropertyGrid">
 		<template name="declaration">wxPropertyGrid* $name;</template>
 		<template name="construction">$name = new wxPropertyGrid(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
@@ -25,7 +26,7 @@
 		    @{ $name->SetExtraStyle( $extra_style ) @}
 		</template>
 	</templates>
-	
+
 	<templates class="wxPropertyGridManager">
 		<template name="declaration">wxPropertyGridManager* $name;</template>
 		<template name="construction">$name = new wxPropertyGridManager(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
@@ -41,8 +42,8 @@
 		</template>
 		<template name="library">propgrid</template>
 	</templates>
-	
-	
+
+
 	<templates class="wxFlatNotebook">
 		<template name="declaration">
 			wxFlatNotebook* $name;
@@ -107,7 +108,7 @@
    			@}
 		</template>
 	</templates>
-	
+
 	<templates class="awxLed">
 		<template name="declaration">awxLed* $name;</template>
 		<template name="construction">
@@ -119,6 +120,6 @@
 		<template name="library">awx</template>
 	</templates>
 
-	
+
 
 </codegen>

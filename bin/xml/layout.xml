@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="layout" lib="liblayout" icon="sizer16x16.xpm" desc="wxWidgets sizer layouts">
 
   <objectinfo class="sizer" icon="sizer.xpm" type="interface">
 	<property name="minimum_size" type="wxSize" help="Give the sizer a minimal size. Normally, the sizer will calculate its minimal size based purely on how much space its children need. After setting the minimal size, 'GetMinSize' will return either the minimal size as requested by its children or the minimal size set here, depending on which is bigger." />
   </objectinfo>
-  
+
   <objectinfo class="sizeritem" smallIcon="sizer.xpm" type="sizeritem">
     <property name="border" type="text" 		help="Determines the border width, if the flag parameter is set to include any border flag." >5</property>
     <property name="flag" type="bitlist">
@@ -24,12 +25,12 @@
       <option name="wxFIXED_MINSIZE" 			help="Normally wxSizers will use GetAdjustedBestSize to determine what the minimal size of window items should be, and will use that size to calculate the layout. This allows layouts to adjust when an item changes and its best size becomes different. If you would rather have a window item stay the size it started with then use wxFIXED_MINSIZE. "/>
 	  wxALL | wxEXPAND
 	</property>
-    <property name="proportion" type="text" 
+    <property name="proportion" type="text"
 			  help="How much this control will stretch in proportion to the other controls in the same sizer. Set to 0 to prevent stretching.">
 			  0
 	</property>
   </objectinfo>
-  
+
   <objectinfo class="wxBoxSizer" icon="sizer.xpm" type="sizer">
 	<inherits class="sizer" />
     <property name="name" type="text" hidden="1">bSizer</property>
@@ -37,7 +38,7 @@
       <option name="wxVERTICAL" 	help="Align items vertically"/>
       <option name="wxHORIZONTAL" 	help="Align items horizontally"/>wxVERTICAL</property>
   </objectinfo>
-  
+
   <objectinfo class="wxStaticBoxSizer" icon="staticbox_sizer.xpm" type="sizer">
  	<inherits class="sizer" />
     <property name="name" type="text" hidden="1">sbSizer</property>
@@ -46,7 +47,7 @@
       <option name="wxHORIZONTAL" 			help="Align items vertically"/>wxVERTICAL</property>
     <property name="label" type="wxString_i18n">label</property>
   </objectinfo>
-  
+
   <objectinfo class="wxGridSizer" icon="grid_sizer.xpm" type="sizer">
  	<inherits class="sizer" />
     <property name="name" type="text" hidden="1">gSizer</property>
@@ -55,7 +56,7 @@
     <property name="vgap" type="text" help="The vertical gap (in pixels) between the cells in the sizer.">0</property>
     <property name="hgap" type="text" help="The horizontal gap (in pixels) between cells in the sizer.">0</property>
   </objectinfo>
-  
+
   <objectinfo class="wxFlexGridSizer" icon="flex_grid_sizer.xpm" type="sizer">
  	<inherits class="sizer" />
     <property name="name" type="text" hidden="1">fgSizer</property>
@@ -76,7 +77,7 @@
 	  <option name="wxFLEX_GROWMODE_ALL"  		help="Sizer equally stretches all columns or rows in the non flexible direction, whether they are growable or not in the flexible direction." />
 	</property>
   </objectinfo>
-  
+
   <objectinfo class="wxStdDialogButtonSizer" icon="stddialogbuttonsizer.xpm" type="widget">
  	<inherits class="sizer" />
 	<property name="name" 	type="text">m_sdbSizer</property>
@@ -89,8 +90,8 @@
     <property name="Help" 	type="bool" help="Include the 'Help' button">0</property>
     <property name="ContextHelp" type="bool" help="Include the 'ContextHelp' button">0</property>
   </objectinfo>
-  
-  
+
+
   <objectinfo class="spacer" icon="spacer.xpm" type="spacer">
     <property name="border" type="text">5</property>
     <property name="flag" type="bitlist">
@@ -118,5 +119,5 @@
     <property name="width" type="text"	help="The width of the spacer">0</property>
     <property name="height" type="text" help="The height of the spacer">0</property>
   </objectinfo>
-  
+
 </package>

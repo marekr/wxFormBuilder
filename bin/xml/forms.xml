@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="forms" icon="frame16x16.xpm" desc="wxWidgets windows">
   <objectinfo class="Frame" icon="frame.xpm" type="form">
     <inherits class="wxWindow">
 		<property name="window_style">wxTAB_TRAVERSAL</property>
 		<property name="size" type="wxSize">500,300</property>
-	</inherits>    
+	</inherits>
 	<property name="name" type="text" hidden="1">MyFrame</property>
     <property name="title" type="wxString" />
     <property name="style" type="bitlist">
@@ -29,7 +30,7 @@
       <option name="wxFRAME_EX_METAL" help="On Mac OS X, frames with this style will be shown with a metallic look. This is an extra style."/>
 	</property>
   </objectinfo>
-  
+
   <objectinfo class="Panel" icon="panel.xpm" type="form">
     <inherits class="wxWindow">
 		<property name="window_style">wxTAB_TRAVERSAL</property>
@@ -37,7 +38,7 @@
 	</inherits>
     <property name="name" type="text" hidden="1">MyPanel</property>
   </objectinfo>
-  
+
   <objectinfo class="Dialog" icon="dialog.xpm" type="form" base="wxDialog">
     <inherits class="wxWindow" />
     <property name="name" type="text" hidden="1">MyDialog</property>
@@ -55,11 +56,11 @@
       <option name="wxNO_3D"					help="Under Windows, specifies that the child controls should not have 3D borders unless specified in the control."/>
       <option name="wxDIALOG_NO_PARENT"			help="By default, a dialog created with a NULL parent window will be given the application's top level window as parent. Use this style to prevent this from happening and create an orphan dialog. This is not recommended for modal dialogs."/>
 	  wxDEFAULT_DIALOG_STYLE
-	</property>    
+	</property>
 	<property name="extra_style" type="bitlist">
 	  <option name="wxDIALOG_EX_CONTEXTHELP"	help="Under Windows, puts a query button on the caption. When pressed, Windows will go into a context-sensitive help mode and wxWidgets will send a wxEVT_HELP event if the user clicked on an application window. Note that this is an extended style and must be set by calling SetExtraStyle before Create is called (two-step construction)."/>
       <option name="wxDIALOG_EX_METAL" 			help="On Mac OS X, frames with this style will be shown with a metallic look. This is an extra style."/>
 	</property>
   </objectinfo>
-  
+
 </package>

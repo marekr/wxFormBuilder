@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="C++">
   <templates class="Project">
     <template name="header_preamble">

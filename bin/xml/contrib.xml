@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="contrib" lib="libcontrib" icon="plot16x16.xpm" desc="wxWidgets contributed controls">
-	
+
 	<objectinfo class="wxPlotWindow" icon="plot.xpm" type="widget">
 		<inherits class="wxWindow" />
 		<property name="name" type="text">m_plotWindow</property>
@@ -17,7 +18,7 @@
 		<property name="titleFont" type="wxFont" />
 		<property name="titleColour" type="wxColour" />
 	</objectinfo>
-	
+
 	<objectinfo class="wxPropertyGrid" icon="propgrid.xpm" type="expanded_widget">
 		<inherits class="wxWindow" />
 		<property name="style" type="bitlist">
@@ -42,7 +43,7 @@
 			<option name="wxTAB_TRAVERSAL"				help="wxTAB_TRAVERSAL allows using Tab/Shift-Tab to travel between properties
 															    in grid. Travelling forwards from last property will navigate to the
 															    next control, and backwards from first will navigate to the previous one."/>
-			
+
 			wxPG_DEFAULT_STYLE
 		</property>
 		<property name="extra_style" type="bitlist">
@@ -56,7 +57,7 @@
 		<property name="name" type="text">m_propertyGrid</property>
 		<property name="include_advanced" type="bool" help="Include Advanced Properties">1</property>
 	</objectinfo>
-	
+
 	<objectinfo class="wxPropertyGridManager" icon="propgridman.xpm" type="expanded_widget">
 		<inherits class="wxWindow" />
 		<property name="style" type="bitlist">
@@ -100,8 +101,8 @@
 		<property name="name" type="text">m_propertyGridManager</property>
 		<property name="include_advanced" type="bool" help="Include Advanced Properties">1</property>
 	</objectinfo>
-	
-	
+
+
   <objectinfo class="wxFlatNotebook" icon="flatnotebook.xpm" type="flatnotebook">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_flatNotebook</property>
@@ -129,7 +130,7 @@
     <property name="bitmap" type="bitmap" help="Page Image"/>
     <property name="select" type="bool" help="Select Page when Adding">0</property>
   </objectinfo>
-  
+
   <objectinfo class="awxLed" icon="awxled.xpm" type="widget">
 	<inherits class="wxWindow" />
 	<property name="name" type="text" >m_awxLed</property>
@@ -146,4 +147,4 @@
 		awxLED_RED
 	</property>
   </objectinfo>
- </package>                  
+ </package>

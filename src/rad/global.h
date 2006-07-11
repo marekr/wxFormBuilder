@@ -42,7 +42,11 @@
 class GlobalApplicationData
 {
  private:
-	GlobalApplicationData():m_fbpVersion( wxT("2") ) {};
+	GlobalApplicationData()
+	:
+	m_fbpVerMajor( 1 ),
+	m_fbpVerMinor( 3 )
+	{}
 
   static GlobalApplicationData* s_instance;
 
@@ -50,7 +54,8 @@ class GlobalApplicationData
   wxString m_exePath;
 
  public:
-	const wxString m_fbpVersion;
+	const int m_fbpVerMajor;
+	const int m_fbpVerMinor;
 
    static GlobalApplicationData* Get();
    static void Destroy();

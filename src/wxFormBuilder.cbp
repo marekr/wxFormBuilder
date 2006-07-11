@@ -113,6 +113,7 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DLIB_USINGDLL" />
+			<Add option="-DTIXML_USE_TICPP" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
@@ -661,6 +662,15 @@
 			<Option target="Release" />
 			<Option target="Release (Unicode)" />
 			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\wxfbException.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
 		</Unit>
 		<Unit filename="wxFormBuilder.rc">
 			<Option compilerVar="WINDRES" />

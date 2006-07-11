@@ -319,7 +319,7 @@ void ObjectToXrcFilter::LinkStringList(const wxArrayString &array, TiXmlElement 
 
 void ObjectToXrcFilter::AddWindowProperties()
 {
-  if (!m_obj->IsNull(_("style")))
+  if (!m_obj->IsNull(_("window_style")))
     AddProperty(_("style"), _("style"), XRC_TYPE_SIZE);
 
   if (!m_obj->IsNull(_("pos")))

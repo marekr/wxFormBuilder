@@ -26,10 +26,14 @@
 #include "appdata.h"
 #include "utils/typeconv.h"
 #include "utils/debug.h"
+#include "utils/wxfbexception.h"
 #include "codegen/codegen.h"
 #include "rad/global.h"
 #include "bitmaps.h"
-#include <wx/ffile.h>
+
+#include <ticpp.h>
+#include <set>
+#include <wx/tokenzr.h>
 
 using namespace TypeConv;
 
@@ -778,34 +782,67 @@ bool ApplicationData::LoadProject(const wxString &file)
 
 	bool result = false;
 
-	TiXmlDocument *doc = new TiXmlDocument();
-	if (doc->LoadFile(file.mb_str()))
+	TiXmlDocument doc = TiXmlDocument();
+	if ( doc.LoadFile( file.mb_str() ) )
 	{
-		m_objDb->ResetObjectCounters();
-
-		wxString fbpVersion;
-		TiXmlNode* firstChild = doc->FirstChild();
-		TiXmlComment* version = firstChild->ToComment();
-		if ( NULL != version )
+		TiXmlNode* root = doc.RootElement();
+		if ( NULL == root )
 		{
-			fbpVersion = _WXSTR( version->ValueStr() );
+			return false;
 		}
 
-		if ( fbpVersion != GlobalData()->m_fbpVersion )
+		m_objDb->ResetObjectCounters();
+
+		int fbpVerMajor = 0;
+		int fbpVerMinor = 0;
+
+		if ( root->Value() != "object" )
 		{
-			if ( wxYES == wxMessageBox( _("This project file is not of the current version.\nWould you to attempt automatic conversion?"), _("Wrong Version"), wxYES_NO ) )
+			TiXmlElement* fileVersion = root->FirstChildElement("FileVersion");
+			if ( NULL != fileVersion )
 			{
-				ConvertProject( file );
-				if ( !doc->LoadFile( file.mb_str() ) )
+				int rc = fileVersion->QueryIntAttribute( "major", &fbpVerMajor );
+				if ( rc != TIXML_SUCCESS )
 				{
-					delete doc;
-					return false;
+					fbpVerMajor = 0;
+				}
+
+				rc = fileVersion->QueryIntAttribute( "minor", &fbpVerMinor );
+				if ( rc != TIXML_SUCCESS )
+				{
+					fbpVerMinor = 0;
 				}
 			}
 		}
 
-		TiXmlElement *root = doc->RootElement();
-		shared_ptr<ObjectBase> proj = m_objDb->CreateObject(root);
+		if ( ( fbpVerMajor != GlobalData()->m_fbpVerMajor ) || ( fbpVerMinor != GlobalData()->m_fbpVerMinor ) )
+		{
+			if ( wxYES == wxMessageBox( _("This project file is not of the current version.\n"
+											"Would you to attempt automatic conversion?\n\n"
+											"NOTE: This will modify your project file on disk!"), _("Wrong Version"), wxYES_NO ) )
+			{
+				ConvertProject( file, fbpVerMajor, fbpVerMinor );
+				if ( doc.LoadFile( file.mb_str() ) )
+				{
+					root = doc.RootElement();
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				root = &doc;
+			}
+		}
+
+		TiXmlElement* object = root->FirstChildElement("object");
+		if ( NULL == object )
+		{
+			return false;
+		}
+		shared_ptr<ObjectBase> proj = m_objDb->CreateObject(object);
 		if (proj && proj->GetObjectTypeName()== "project")
 		{
 			shared_ptr<ObjectBase> old_proj = m_project;
@@ -821,35 +858,238 @@ bool ApplicationData::LoadProject(const wxString &file)
 			DataObservable::NotifyProjectRefresh();
 		}
 	}
-	delete doc;
 
 	return result;
 }
 
-void ApplicationData::ConvertProject( const wxString& path )
+void ApplicationData::ConvertProject( const wxString& path, int fileMajor, int fileMinor )
 {
-	wxFFile proj( path );
-	if ( !proj.IsOpened() )
+
+	try
 	{
-		wxLogError( wxT("Could not open project file for conversion\n%s"), path.c_str() );
+		ticpp::Document doc( _STDSTR( path ) );
+		doc.LoadFile();
+		ticpp::Element* root = doc.FirstChildElement();
+		if ( root->Value() == "object" )
+		{
+			ConvertObject( root );
+
+			// Create a clone of now-converted object tree, so it can be linked
+			// underneath the root element
+			std::auto_ptr< ticpp::Node > objectTree = root->Clone();
+
+			// Clear the document to add the declatation and the root element
+			doc.Clear();
+
+			// Add the declaration
+			doc.LinkEndChild( new ticpp::Declaration( "1.0", "UTF-8", "yes" ) );
+
+			// Add the root element, with file version
+			ticpp::Element* newRoot = new ticpp::Element( "wxFormBuilder_Project" );
+
+			ticpp::Element* fileVersion = new ticpp::Element( "FileVersion" );
+			fileVersion->SetAttribute( "major", GlobalData()->m_fbpVerMajor );
+			fileVersion->SetAttribute( "minor", GlobalData()->m_fbpVerMinor );
+
+			newRoot->LinkEndChild( fileVersion );
+
+			// Add the object tree
+			newRoot->LinkEndChild( objectTree.release() );
+
+			doc.LinkEndChild( newRoot );
+		}
+		else
+		{
+			ConvertObject( root->FirstChildElement( "object" ) );
+		}
+		doc.SaveFile();
+	}
+	catch( ticpp::Exception& ex )
+	{
+		wxLogError( _WXSTR( ex.m_details ) );
+	}
+}
+
+void ApplicationData::ConvertObject( ticpp::Element* parent )
+{
+	ticpp::Iterator< ticpp::Element > object( "object" );
+	for ( object = parent->FirstChildElement( "object", false ); object != object.end(); ++object )
+	{
+		ConvertObject( object.Get() );
 	}
 
-	wxString contents;
-	proj.ReadAll( &contents );
+	// Reusable sets to find properties with
+	std::set< std::string > oldProps;
+	std::set< ticpp::Element* > newProps;
+	std::set< ticpp::Element* >::iterator newProp;
 
-	contents.Replace( wxT("<property name=\"option\">"), wxT("<property name=\"proportion\">") );
+	// Get the class of the object
+	std::string objClass;
+	parent->GetAttribute( "class", &objClass );
 
-	proj.Close();
-
-	wxFFile projw( path, wxT("w") );
-	if ( !projw.IsOpened() )
+	// The property 'option' became 'proportion'
+	if ( objClass == "sizeritem" || objClass == "spacer" )
 	{
-		wxLogError( wxT("Could not open project file for writing\n%s"), path.c_str() );
+		oldProps.clear();
+		oldProps.insert( "option" );
+		GetPropertiesToConvert( parent, oldProps, &newProps );
+		if ( !newProps.empty() )
+		{
+			// One in, one out
+			(*newProps.begin())->SetAttribute( "name", "proportion" );
+		}
 	}
 
-	projw.Write( contents );
-	projw.Close();
+	// The 'style' property used to have both wxWindow styles and the styles of the specific controls
+	// now it only has the styles of the specfic controls, and wxWindow styles are saved in window_style
+	// This also applies to 'extra_style', which was once combined with 'style'.
+	// And they were named 'WindowStyle' and one point, too...
 
+	std::set< wxString > windowStyles;
+	windowStyles.insert( wxT("wxSIMPLE_BORDER") );
+	windowStyles.insert( wxT("wxDOUBLE_BORDER") );
+	windowStyles.insert( wxT("wxSUNKEN_BORDER") );
+	windowStyles.insert( wxT("wxRAISED_BORDER") );
+	windowStyles.insert( wxT("wxSTATIC_BORDER") );
+	windowStyles.insert( wxT("wxNO_BORDER") );
+	windowStyles.insert( wxT("wxTRANSPARENT_WINDOW") );
+	windowStyles.insert( wxT("wxTAB_TRAVERSAL") );
+	windowStyles.insert( wxT("wxWANTS_CHARS") );
+	windowStyles.insert( wxT("wxVSCROLL") );
+	windowStyles.insert( wxT("wxHSCROLL") );
+	windowStyles.insert( wxT("wxALWAYS_SHOW_SB") );
+	windowStyles.insert( wxT("wxCLIP_CHILDREN") );
+	windowStyles.insert( wxT("wxFULL_REPAINT_ON_RESIZE") );
+
+	// Transfer the window styles
+	oldProps.clear();
+	oldProps.insert( "style" );
+	oldProps.insert( "WindowStyle" );
+	GetPropertiesToConvert( parent, oldProps, &newProps );
+	for ( newProp = newProps.begin(); newProp != newProps.end(); ++newProp )
+	{
+		TransferOptionList( *newProp, &windowStyles, "window_style" );
+	}
+
+
+	std::set< wxString > extraWindowStyles;
+	extraWindowStyles.insert( wxT("wxWS_EX_VALIDATE_RECURSIVELY") );
+	extraWindowStyles.insert( wxT("wxWS_EX_BLOCK_EVENTS") );
+	extraWindowStyles.insert( wxT("wxWS_EX_TRANSIENT") );
+	extraWindowStyles.insert( wxT("wxWS_EX_PROCESS_IDLE") );
+	extraWindowStyles.insert( wxT("wxWS_EX_PROCESS_UI_UPDATES") );
+
+	// Transfer the window extra styles
+	oldProps.clear();
+	oldProps.insert( "style" );
+	oldProps.insert( "extra_style" );
+	oldProps.insert( "WindowStyle" );
+	GetPropertiesToConvert( parent, oldProps, &newProps );
+	for ( newProp = newProps.begin(); newProp != newProps.end(); ++newProp )
+	{
+		TransferOptionList( *newProp, &extraWindowStyles, "window_extra_style" );
+	}
+}
+
+void ApplicationData::GetPropertiesToConvert( ticpp::Node* parent, const std::set< std::string >& names, std::set< ticpp::Element* >* properties )
+{
+	// Clear result set
+	properties->clear();
+
+	ticpp::Iterator< ticpp::Element > prop( "property" );
+	for ( prop = parent->FirstChildElement( "property", false ); prop != prop.end(); ++prop )
+	{
+		std::string name;
+		prop->GetAttribute( "name", &name );
+		if ( names.find( name ) != names.end() )
+		{
+			properties->insert( prop.Get() );
+		}
+	}
+}
+
+void ApplicationData::TransferOptionList( ticpp::Element* prop, std::set< wxString >* options, const std::string& newPropName )
+{
+	wxString value = _WXSTR( prop->GetText( false ) );
+	std::set< wxString > transfer;
+	std::set< wxString > keep;
+
+	// Sort options - if in the 'options' set, they should be transferred to a property named 'newPropName'
+	// otherwise, they should stay
+	wxStringTokenizer tkz( value, wxT("|"), wxTOKEN_RET_EMPTY_ALL );
+	while ( tkz.HasMoreTokens() )
+	{
+		wxString option = tkz.GetNextToken();
+		option.Trim( false );
+		option.Trim( true );
+
+		if ( options->find( option ) != options->end() )
+		{
+			// Needs to be transferred
+			transfer.insert( option );
+		}
+		else
+		{
+			// Should be kept
+			keep.insert( option );
+		}
+	}
+
+	// Reusable sets to find properties with
+	std::set< std::string > oldProps;
+	std::set< ticpp::Element* > newProps;
+
+	// If there are any to transfer, add to the target property, or make a new one
+	ticpp::Node* parent = prop->Parent();
+	if ( !transfer.empty() )
+	{
+		// Check for the target property
+		ticpp::Element* newProp;
+		wxString newOptionList;
+
+		oldProps.clear();
+		oldProps.insert( newPropName );
+		GetPropertiesToConvert( parent, oldProps, &newProps );
+		if ( !newProps.empty() )
+		{
+			newProp = *newProps.begin();
+			newOptionList << wxT("|") << _WXSTR( newProp->GetText( false ) );
+		}
+		else
+		{
+			newProp = new ticpp::Element( "property" );
+			newProp->SetAttribute( "name", newPropName );
+		}
+
+		std::set< wxString >::iterator option;
+		for ( option = transfer.begin(); option != transfer.end(); ++option )
+		{
+			newOptionList << wxT("|") << *option;
+		}
+
+		newProp->SetText( _STDSTR( newOptionList.substr(1) ) );
+		if ( newProps.empty() )
+		{
+			parent->InsertBeforeChild( prop, *newProp );
+			delete newProp;
+		}
+	}
+
+	// Set the value of the property to whatever is left
+	if ( keep.empty() )
+	{
+		parent->RemoveChild( prop );
+	}
+	else
+	{
+		std::set< wxString >::iterator option;
+		wxString newOptionList;
+		for ( option = keep.begin(); option != keep.end(); ++option )
+		{
+			newOptionList << wxT("|") << *option;
+		}
+		prop->SetText( _STDSTR( newOptionList.substr(1) ) );
+	}
 }
 
 void ApplicationData::NewProject()

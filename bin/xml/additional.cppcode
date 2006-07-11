@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="C++">
 
   <templates class="wxCalendarCtrl">
@@ -5,7 +6,7 @@
     <template name="construction">$name = new wxCalendarCtrl(#wxparent $name, $id, wxDefaultDateTime, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
     <template name="include">@#include &lt;wx/calctrl.h&gt;</template>
   </templates>
-	
+
 	<templates class="wxDatePickerCtrl">
     <template name="declaration">wxDatePickerCtrl *$name;</template>
     <template name="construction">$name = new wxDatePickerCtrl(#wxparent $name, $id, wxDefaultDateTime, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
@@ -36,7 +37,7 @@
     <template name="construction">$name = new wxTreeCtrl(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
     <template name="include">@#include &lt;wx/treectrl.h&gt;</template>
   </templates>
-  
+
   <templates class="wxScrollBar">
     <template name="declaration">wxScrollBar *$name;</template>
     <template name="construction">$name = new wxScrollBar(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
@@ -62,12 +63,12 @@
 	<template name="settings">
 	  #ifnotnull $sashpos"
 	  $name->SetSashPosition( $sashpos ); #nl
-	    
+
 	  #ifnotnull $sashgravity"
 	  $name->SetSashGravity( $sashgravity ); #nl
     </template>
   </templates>
-  
+
   <templates class="wxCheckList">
     <template name="declaration">wxCheckListBox *$name;</template>
     <template name="construction">
@@ -79,7 +80,7 @@
     </template>
     <template name="include">@#include &lt;wx/checklst.h&gt;</template>
   </templates>
-  
+
 
   <templates class="wxNotebook">
     <template name="declaration">wxNotebook* $name;</template>
@@ -123,7 +124,7 @@
         @}
     </template>
   </templates>
-  
+
   <templates class="wxListbook">
     <template name="declaration">wxListbook* $name;</template>
     <template name="construction">$name = new wxListbook( #wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>
@@ -178,7 +179,7 @@
         @}
     </template>
   </templates>
-  
+
   <templates class="wxChoicebook">
     <template name="declaration">wxChoicebook* $name;</template>
     <template name="construction">$name = new wxChoicebook( #wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>
@@ -187,8 +188,8 @@
 
   <templates class="choicebookpage">
     <template name="page_add">#parent $name->AddPage( #child $name, $label, $select );</template>
-  </templates> 
-  
+  </templates>
+
   <templates class="wxScrolledWindow">
     <template name="declaration">wxScrolledWindow* $name;</template>
     <template name="construction">
@@ -196,5 +197,5 @@
       $name->SetScrollRate( $scroll_rate_x, $scroll_rate_y );
     </template>
   </templates>
-  
+
 </codegen>

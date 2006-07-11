@@ -93,7 +93,7 @@
 			<Add option="-D__WX__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DTIXML_USE_TICPP" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(tinyxml)" />
 			<Add directory="..\.." />

@@ -462,12 +462,21 @@ TiXmlElement* ObjectBase::SerializeObject()
 TiXmlDocument* ObjectBase::Serialize()
 {
 	TiXmlDocument *document = new TiXmlDocument("document");
-	TiXmlComment* version = new TiXmlComment();
-	version->SetValue( _STDSTR( GlobalData()->m_fbpVersion ) );
-	TiXmlElement *element = SerializeObject();
 
-	document->LinkEndChild(version);
+	TiXmlDeclaration* dec = new TiXmlDeclaration("1.0", "UTF-8", "yes");
+	document->LinkEndChild( dec );
+
+	TiXmlElement* root = new TiXmlElement( "wxFormBuilder_Project" );
+
+	TiXmlElement* fileVersion = new TiXmlElement( "FileVersion" );
+	fileVersion->SetAttribute( "major", GlobalData()->m_fbpVerMajor );
+	fileVersion->SetAttribute( "minor", GlobalData()->m_fbpVerMinor );
+
+	root->LinkEndChild( fileVersion );
+
+	TiXmlElement *element = SerializeObject();
 	document->LinkEndChild(element);
+
 	return document;
 }
 

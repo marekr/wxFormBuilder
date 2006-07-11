@@ -31,6 +31,12 @@
 #include "rad/cmdproc.h"
 #include <set>
 
+namespace ticpp
+{
+	class Node;
+	class Element;
+}
+
 class ApplicationData : public DataObservable
 {
  private:
@@ -116,7 +122,10 @@ class ApplicationData : public DataObservable
   bool LoadProject(const wxString &filename);
   void SaveProject(const wxString &filename);
   void NewProject();
-  void ConvertProject( const wxString& path );
+  void ConvertProject( const wxString& path, int fileMajor, int fileMinor );
+  void ConvertObject( ticpp::Element* object );
+  void GetPropertiesToConvert( ticpp::Node* parent, const std::set< std::string >& names, std::set< ticpp::Element* >* properties );
+  void TransferOptionList( ticpp::Element* prop, std::set< wxString >* options, const std::string& newPropName );
   void SelectObject(shared_ptr<ObjectBase> obj);
   void CreateObject(wxString name);
   void RemoveObject(shared_ptr<ObjectBase> obj);

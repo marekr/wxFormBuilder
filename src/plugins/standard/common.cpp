@@ -54,7 +54,7 @@ public:
 	TiXmlElement* ExportToXrc(IObject *obj)
 	{
 		ObjectToXrcFilter xrc(obj, _("wxFrame"), obj->GetPropertyAsString(_("name")));
-		xrc.AddWindowProperties();
+//		xrc.AddWindowProperties();
 		xrc.AddProperty( _("title"), _("title"), XRC_TYPE_TEXT);
 		return xrc.GetXrcObject();
 	}

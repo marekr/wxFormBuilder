@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="mmwx" lib="libmmwx" desc="">
   <objectinfo class="mmMultiButton" icon="button.xpm" type="widget">
     <inherits class="wxWindow" />

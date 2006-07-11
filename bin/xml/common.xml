@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="common" lib="libcommon" icon="button16x16.xpm" desc="wxWidgets common controls">
 
   <objectinfo class="wxWindow" smallIcon="frame16x16.xpm" type="interface">
