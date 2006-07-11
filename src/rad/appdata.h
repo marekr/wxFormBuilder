@@ -115,6 +115,39 @@ class ApplicationData : public DataObservable
     */
    shared_ptr<ObjectBase> SearchSizerInto(shared_ptr<ObjectBase> obj);
 
+
+	/**
+	Convert a project from an older version.
+	@param path The path to the project file
+	@param fileMajor The major revision of the file
+	@param fileMinor The minor revision of the file
+	*/
+	void ConvertProject( const wxString& path, int fileMajor, int fileMinor );
+
+	/**
+	Recursive function used to convert the object tree in the project file to the latest version.
+	@param object A pointer to the object element
+	*/
+	void ConvertObject( ticpp::Element* object );
+
+	/**
+	Iterates through 'property' element children of @a parent.
+	Saves all properties with a 'name' attribute matching one of @a names into @a properties
+	@param parent Object element with child properties.
+	@param names Set of property names to search for.
+	@param properties Pointer to a set in which to store the result of the search.
+	*/
+	void GetPropertiesToConvert( ticpp::Node* parent, const std::set< std::string >& names, std::set< ticpp::Element* >* properties );
+
+	/**
+	Transfers @a options from the text of @a prop to the text of @a newPropName, which will be created if it doesn't exist.
+	@param prop Property containing the options to transfer.
+	@param options Set of options to search for and transfer.
+	@param newPropName Name of property to transfer to, will be created if non-existant.
+	*/
+	void TransferOptionList( ticpp::Element* prop, std::set< wxString >* options, const std::string& newPropName );
+
+
  public:
   ApplicationData(const string &rootdir = ".");
 
@@ -122,10 +155,6 @@ class ApplicationData : public DataObservable
   bool LoadProject(const wxString &filename);
   void SaveProject(const wxString &filename);
   void NewProject();
-  void ConvertProject( const wxString& path, int fileMajor, int fileMinor );
-  void ConvertObject( ticpp::Element* object );
-  void GetPropertiesToConvert( ticpp::Node* parent, const std::set< std::string >& names, std::set< ticpp::Element* >* properties );
-  void TransferOptionList( ticpp::Element* prop, std::set< wxString >* options, const std::string& newPropName );
   void SelectObject(shared_ptr<ObjectBase> obj);
   void CreateObject(wxString name);
   void RemoveObject(shared_ptr<ObjectBase> obj);

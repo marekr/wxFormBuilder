@@ -815,11 +815,42 @@ bool ApplicationData::LoadProject(const wxString &file)
 			}
 		}
 
-		if ( ( fbpVerMajor != GlobalData()->m_fbpVerMajor ) || ( fbpVerMinor != GlobalData()->m_fbpVerMinor ) )
+		bool older = false;
+		bool newer = false;
+
+		if ( fbpVerMajor < GlobalData()->m_fbpVerMajor )
 		{
-			if ( wxYES == wxMessageBox( _("This project file is not of the current version.\n"
+			older = true;
+		}
+		else if ( fbpVerMajor > GlobalData()->m_fbpVerMajor )
+		{
+			newer = true;
+		}
+		else
+		{
+			if ( fbpVerMinor < GlobalData()->m_fbpVerMinor )
+			{
+				older = true;
+			}
+			else if ( fbpVerMinor > GlobalData()->m_fbpVerMinor )
+			{
+				newer = true;
+			}
+		}
+
+		if ( newer )
+		{
+			wxMessageBox( _( "This project file is newer than this version of wxFormBuilder.\n"
+							"It cannot be opened.\n\n"
+							"Please download an updated version from http://www.wxFormBuilder.org" ), _("New Version"), wxICON_ERROR );
+			return false;
+		}
+
+		if ( older )
+		{
+			if ( wxYES == wxMessageBox( _( "This project file is not of the current version.\n"
 											"Would you to attempt automatic conversion?\n\n"
-											"NOTE: This will modify your project file on disk!"), _("Wrong Version"), wxYES_NO ) )
+											"NOTE: This will modify your project file on disk!"), _("Old Version"), wxYES_NO ) )
 			{
 				ConvertProject( file, fbpVerMajor, fbpVerMinor );
 				if ( doc.LoadFile( file.mb_str() ) )
@@ -833,7 +864,7 @@ bool ApplicationData::LoadProject(const wxString &file)
 			}
 			else
 			{
-				root = &doc;
+				return false;
 			}
 		}
 
