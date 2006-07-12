@@ -475,8 +475,8 @@ TiXmlDocument* ObjectBase::Serialize()
 	root->LinkEndChild( fileVersion );
 
 	TiXmlElement *element = SerializeObject();
-	document->LinkEndChild(element);
-
+	root->LinkEndChild(element);
+	document->LinkEndChild(root);
 	return document;
 }
 

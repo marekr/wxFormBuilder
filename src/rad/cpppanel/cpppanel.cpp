@@ -28,7 +28,6 @@
 #include "utils/typeconv.h"
 #include "rad/global.h"
 
-
 #include <wx/filename.h>
 
 #include "rad/bitmaps.h"
@@ -333,7 +332,13 @@ FileCodeWriter::FileCodeWriter(const wxString &file)
 
 void FileCodeWriter::DoWrite(string code)
 {
-	m_file.Write( _WXSTR(code) );
+	wxString fixEOL = _WXSTR(code);
+	#if defined( __WXMSW__ )
+		fixEOL.Replace( wxT("\n"), wxT("\r\n") );
+	#elif defined( __WXMAC__ )
+		fixEOL.Replace( wxT("\n"), wxT("\r") );
+	#endif
+	m_file.Write( fixEOL );
 }
 
 void FileCodeWriter::Clear()
