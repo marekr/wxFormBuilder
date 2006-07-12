@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(WXWIN)\include;..\..\..\src;..\..\..\libs\tinyxml"
-				PreprocessorDefinitions="WIN32;STRICT;WXUSINGDLL;BUILD_DLL;__WXMSW__;_DEBUG;__WXDEBUG;_WINDOWS;TIXML_USE_STL"
+				PreprocessorDefinitions="WIN32;STRICT;WXUSINGDLL;BUILD_DLL;__WXMSW__;_DEBUG;__WXDEBUG;_WINDOWS;TIXML_USE_TICPP"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -137,7 +137,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(WXWIN)\include;..\..\..\src;..\..\..\libs\tinyxml"
-				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;NDEBUG;_WINDOWS;TIXML_USE_STL"
+				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;NDEBUG;_WINDOWS;TIXML_USE_TICPP"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"

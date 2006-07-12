@@ -839,17 +839,17 @@ bool ApplicationData::LoadProject(const wxString &file)
 
 		if ( newer )
 		{
-			wxMessageBox( _( "This project file is newer than this version of wxFormBuilder.\n"
-							"It cannot be opened.\n\n"
-							"Please download an updated version from http://www.wxFormBuilder.org" ), _("New Version"), wxICON_ERROR );
+			wxMessageBox( wxT("This project file is newer than this version of wxFormBuilder.\n")
+						  wxT("It cannot be opened.\n\n")
+						  wxT("Please download an updated version from http://www.wxFormBuilder.org"), _("New Version"), wxICON_ERROR );
 			return false;
 		}
 
 		if ( older )
 		{
-			if ( wxYES == wxMessageBox( _( "This project file is not of the current version.\n"
-											"Would you to attempt automatic conversion?\n\n"
-											"NOTE: This will modify your project file on disk!"), _("Old Version"), wxYES_NO ) )
+			if ( wxYES == wxMessageBox( wxT("This project file is not of the current version.\n")
+										wxT("Would you to attempt automatic conversion?\n\n")
+										wxT("NOTE: This will modify your project file on disk!"), _("Old Version"), wxYES_NO ) )
 			{
 				ConvertProject( file, fbpVerMajor, fbpVerMinor );
 				if ( doc.LoadFile( file.mb_str() ) )

@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\additions\include&quot;;&quot;$(WXWIN)\include&quot;;..\..\..\src;..\..\..\libs\tinyxml;..\..\..\libs\plot"
-				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;_DEBUG;__WXDEBUG;_WINDOWS;DEVELOPMENT;TIXML_USE_STL;LIB_USINGDLL"
+				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;_DEBUG;__WXDEBUG;_WINDOWS;DEVELOPMENT;TIXML_USE_TICPP;LIB_USINGDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -136,7 +136,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\additions\include&quot;;&quot;$(WXWIN)\include&quot;;..\..\..\src;..\..\..\libs\plot;..\..\..\libs\tinyxml"
-				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;NDEBUG;_WINDOWS;TIXML_USE_STL;LIB_USINGDLL"
+				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;NDEBUG;_WINDOWS;TIXML_USE_TICPP;LIB_USINGDLL"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
