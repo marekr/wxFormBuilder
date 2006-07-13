@@ -26,6 +26,7 @@
 #include "plugins/component.h"
 #include "plugins/plugin.h"
 #include "utils/xrcconv.h"
+#include "icons/unknown.xpm"
 
 #include <wx/calctrl.h>
 #include <wx/html/htmlwin.h>
@@ -531,7 +532,7 @@ public:
 		{
 			wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
 			wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
-			wxImage image = wxNullBitmap.ConvertToImage();
+			wxImage image = wxBitmap( unknown_xpm ).ConvertToImage();
 			images->Add( image.Scale( imageSize.GetWidth(), imageSize.GetHeight() ) );
 			book->AssignImageList( images );
 		}
@@ -629,7 +630,7 @@ public:
 		{
 			wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
 			wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
-			wxImage image = wxNullBitmap.ConvertToImage();
+			wxImage image = wxBitmap( unknown_xpm ).ConvertToImage();
 			images->Add( image.Scale( imageSize.GetWidth(), imageSize.GetHeight() ) );
 			book->AssignImageList( images );
 		}
