@@ -161,7 +161,8 @@ void ObjectToXrcFilter::AddProperty(const wxString &objPropName,
                                     const wxString &xrcPropName,
                                     const int &propType)
 {
-  TiXmlElement *propElement = new TiXmlElement(xrcPropName.mb_str());
+	std::string name( xrcPropName.mb_str() );
+  TiXmlElement *propElement = new TiXmlElement(name);
 
   switch (propType)
   {
@@ -173,7 +174,10 @@ void ObjectToXrcFilter::AddProperty(const wxString &objPropName,
 
     case XRC_TYPE_TEXT:
       // El texto ha de ser convertido a formato XRC
-      LinkText(m_obj->GetPropertyAsString(objPropName), propElement, true);
+      {
+      wxString text = m_obj->GetPropertyAsString(objPropName);
+      LinkText(text, propElement, true);
+      }
       break;
 
     case XRC_TYPE_BOOL:
@@ -218,7 +222,8 @@ TiXmlElement* ObjectToXrcFilter::GetXrcObject()
 void ObjectToXrcFilter::LinkText(const wxString &text,TiXmlElement *propElement, bool xrcFormat)
 {
   wxString value = (xrcFormat ? StringToXrcText(text) : text);
-  propElement->LinkEndChild(new TiXmlText(value.mb_str()));
+  std::string val( value.mb_str() );
+  propElement->LinkEndChild(new TiXmlText(val));
 }
 
 void ObjectToXrcFilter::LinkInteger(const int &integer, TiXmlElement *propElement)

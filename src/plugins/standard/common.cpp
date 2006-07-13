@@ -235,10 +235,13 @@ public:
 
 	TiXmlElement* ExportToXrc(IObject *obj)
 	{
-		ObjectToXrcFilter xrc(obj, _("wxStaticText"), obj->GetPropertyAsString(_("name")));
+		wxString name = obj->GetPropertyAsString(_("name"));
+		ObjectToXrcFilter xrc(obj, _("wxStaticText"), name);
 		xrc.AddWindowProperties();
 		//xrc.AddProperty(_("style"),_("style"),XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("label"),_("label"),XRC_TYPE_TEXT);
+		TiXmlElement* el = xrc.GetXrcObject();
+		std::string val = el->FirstChildElement()->GetText();
 		return xrc.GetXrcObject();
 	}
 

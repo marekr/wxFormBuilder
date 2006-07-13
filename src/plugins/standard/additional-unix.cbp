@@ -10,7 +10,7 @@
 				<Option output="../../../bin/xml/libadditional.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="/usr/src/wxfb2/bin/wxformbuilder" />
+				<Option host_application="/usr/src/wxfb/bin/wxformbuilder" />
 				<Option includeInTargetAll="1" />
 			</Target>
 		</Build>

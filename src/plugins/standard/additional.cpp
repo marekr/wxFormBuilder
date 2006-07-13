@@ -527,9 +527,14 @@ public:
 			obj->GetPropertyAsSize(_("size")),
 			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
 
-		wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
-		wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
-		book->AssignImageList( images );
+		if ( !obj->GetPropertyAsString( _("bitmapsize") ).empty() )
+		{
+			wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
+			wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
+			wxImage image = wxNullBitmap.ConvertToImage();
+			images->Add( image.Scale( imageSize.GetWidth(), imageSize.GetHeight() ) );
+			book->AssignImageList( images );
+		}
 
 		return book;
 	}
@@ -573,12 +578,12 @@ public:
 		{
 			if ( !obj->GetPropertyAsString( _("bitmap") ).empty() )
 			{
-				int width;
-				int height;
-				wxImageList* imageList = nb->GetImageList();
-				imageList->GetSize( 0, width, height );
+				wxSize imageSize = parentObj->GetPropertyAsSize(_("bitmapsize"));
+				int width = imageSize.GetWidth();
+				int height = imageSize.GetHeight();
 				if ( width > 0 && height > 0 )
 				{
+					wxImageList* imageList = nb->GetImageList();
 					wxImage image = obj->GetPropertyAsBitmap( _("bitmap") ).ConvertToImage();
 					imageList->Add( image.Scale( width, height ) );
 					nb->SetPageImage( nb->GetPageCount() - 1, imageList->GetImageCount() - 1 );
@@ -620,9 +625,14 @@ public:
 			obj->GetPropertyAsSize(_("size")),
 			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
 
-		wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
-		wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
-		book->AssignImageList( images );
+		if ( !obj->GetPropertyAsString( _("bitmapsize") ).empty() )
+		{
+			wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
+			wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
+			wxImage image = wxNullBitmap.ConvertToImage();
+			images->Add( image.Scale( imageSize.GetWidth(), imageSize.GetHeight() ) );
+			book->AssignImageList( images );
+		}
 
 		return book;
 	}
@@ -686,19 +696,18 @@ public:
 		{
 			if ( !obj->GetPropertyAsString( _("bitmap") ).empty() )
 			{
-				int width;
-				int height;
-				wxImageList* imageList = lb->GetImageList();
-				imageList->GetSize( 0, width, height );
+				wxSize imageSize = parentObj->GetPropertyAsSize(_("bitmapsize"));
+				int width = imageSize.GetWidth();
+				int height = imageSize.GetHeight();
 				if ( width > 0 && height > 0 )
 				{
+					wxImageList* imageList = lb->GetImageList();
 					wxImage image = obj->GetPropertyAsBitmap( _("bitmap") ).ConvertToImage();
 					imageList->Add( image.Scale( width, height ) );
 					lb->SetPageImage( lb->GetPageCount() - 1, imageList->GetImageCount() - 1 );
 				}
 			}
 		}
-
 		if (obj->GetPropertyAsString(_("select"))==wxT("0") && selection >= 0)
 			lb->SetSelection(selection);
 		else
