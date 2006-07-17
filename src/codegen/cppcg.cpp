@@ -134,13 +134,14 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 			if ( !value.empty() )
 			{
 				wxFont font = TypeConv::StringToFont( value.c_str() );
-				result	<< wxT("wxFont( ")
-					<< font.GetPointSize()	<< wxT(", ")
-					<< font.GetFamily()		<< wxT(", ")
-					<< font.GetStyle()		<< wxT(", ")
-					<< font.GetWeight()		<< wxT(", ")
-					<< ( font.GetUnderlined() ? wxT("true, ") : wxT("false, ") )
-					<< wxT("wxT(\"") << font.GetFaceName().c_str() << wxT("\") )");
+				result	= wxString::Format( wxT("wxFont( %i, %i, %i, %i, %s, wxT(\"%s\") )" ),
+											font.GetPointSize(),
+											font.GetFamily(),
+											font.GetStyle(),
+											font.GetWeight(),
+											( font.GetUnderlined() ? wxT("true") : wxT("false") ),
+											font.GetFaceName().c_str()
+											);
 			}
 			else
 			{
@@ -504,10 +505,6 @@ void CppCodeGenerator::GenClassDeclaration(shared_ptr<ObjectBase> class_obj, boo
 	// private
 	m_header->WriteLn( wxT("private:") );
 	m_header->Indent();
-
-	if (use_enum)
-		GenEnumIds(class_obj);
-
 	GenAttributeDeclaration(class_obj,P_PRIVATE);
 	m_header->Unindent();
 	m_header->WriteLn( wxT("") );
@@ -515,6 +512,10 @@ void CppCodeGenerator::GenClassDeclaration(shared_ptr<ObjectBase> class_obj, boo
 	// protected
 	m_header->WriteLn( wxT("protected:") );
 	m_header->Indent();
+
+	if (use_enum)
+		GenEnumIds(class_obj);
+
 	GenAttributeDeclaration(class_obj,P_PROTECTED);
 	m_header->Unindent();
 	m_header->WriteLn( wxT("") );
