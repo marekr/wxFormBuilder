@@ -161,7 +161,7 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 				else
 				{
 					wxColour colour = TypeConv::StringToColour( value.c_str() );
-					result << wxT("wxColour( ") << (int)colour.Red() << wxT(", ") << (int)colour.Green() << wxT(", ") << (int)colour.Blue() << wxT(" )");
+					result = wxString::Format( wxT("wxColour( %i, %i, %i )"), colour.Red(), colour.Green(), colour.Blue() );
 				}
 			}
 			else
@@ -547,8 +547,6 @@ void CppCodeGenerator::GenEnumIds(shared_ptr< ObjectBase > class_obj)
 		m_header->WriteLn( wxT("{") );
 		m_header->Indent();
 
-		//wxString firstEnum;
-		//firstEnum << *it << wxT(" = ") << m_firstID << wxT(",");
 		m_header->WriteLn( wxString::Format( wxT("%s = %i,"), it->c_str(), m_firstID ) );
 		it++;
 		while ( it != macro_set.end() )
@@ -942,8 +940,6 @@ void CppCodeGenerator::GenDefines( shared_ptr< ObjectBase > project)
 	}
 	for (it = macro_set.begin() ; it != macro_set.end(); it++)
 	{
-		//wxString define;
-		//define << wxT("#define ") << *it << wxT(" ") << (int)id << ;
 		m_header->WriteLn( wxString::Format( wxT("#define %s %i"), it->c_str(), id ) );
 		id++;
 	}
