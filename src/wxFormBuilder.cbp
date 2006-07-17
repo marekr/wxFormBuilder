@@ -665,15 +665,6 @@
 			<Option target="Release (Unicode)" />
 			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="utils\wxfbException.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release" />
-			<Option target="Release (Unicode)" />
-		</Unit>
 		<Unit filename="wxFormBuilder.rc">
 			<Option compilerVar="WINDRES" />
 			<Option objectName="wxFormBuilder.res" />
