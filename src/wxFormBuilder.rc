@@ -4,7 +4,7 @@
 //#if (_MSC_VER >= 1400) // VC8+
 //	#define wxUSE_NO_MANIFEST 1
 //#else
-	#define wxUSE_NO_MANIFEST 0
+//	#define wxUSE_NO_MANIFEST 0
 //#endif
 
 #include "wx/msw/wx.rc"

@@ -30,6 +30,7 @@
 #include "rad/bitmaps.h"
 #include <wx/filename.h>
 #include "rad/global.h"
+#include <string>
 
 ////////////////////////////////////
 
@@ -44,6 +45,12 @@ wxString TypeConv::_StringToWxString(const string &str)
 wxString TypeConv::_StringToWxString( const wxString& str )
 {
 	return str.c_str();
+}
+
+wxString TypeConv::_StringToWxString(const char *str)
+{
+	wxString newstr( str, *wxConvCurrent );
+	return newstr;
 }
 
 string TypeConv::_WxStringToString(const wxString &str)

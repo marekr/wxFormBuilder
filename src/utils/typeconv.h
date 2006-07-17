@@ -43,6 +43,7 @@ namespace TypeConv
 {
   wxString _StringToWxString(const string &str);
   wxString _StringToWxString( const wxString& str );
+  wxString _StringToWxString(const char *str);
   string _WxStringToString(const wxString &str);
 
   wxPoint StringToPoint (const wxString &str);
