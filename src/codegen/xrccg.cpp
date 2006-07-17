@@ -63,7 +63,7 @@ bool XrcCodeGenerator::GenerateCode(shared_ptr<ObjectBase> project)
   XrcFilter xrc;
   TiXmlDocument *doc = xrc.GetXrcDocument(project);
 
-  string tmpFileName = _STDSTR(wxFileName::CreateTempFileName(_T("wxfb")));
+  string tmpFileName = _STDSTR(wxFileName::CreateTempFileName(wxT("wxfb")));
   doc->SaveFile(tmpFileName);
   delete doc;
 
@@ -103,8 +103,8 @@ bool XrcCodeGenerator::GenerateCode(shared_ptr<ObjectBase> project)
   doc.LinkEndChild(element);
 
 	std::string xrcFile = doc.GetAsString();
-	
-	m_cw->Write( xrcFile );
+
+	m_cw->Write( _WXSTR( xrcFile ) );
 
   return true;
 
@@ -122,7 +122,7 @@ TiXmlElement* XrcCodeGenerator::GetElement(shared_ptr<ObjectBase> obj)
 
   if (element)
   {
-  	if (element->Attribute("class") == string("__dummyitem__"))
+  	if (element->Attribute("class") == std::string("__dummyitem__"))
     {
     	delete element;
     	element = NULL;

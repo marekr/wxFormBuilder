@@ -58,7 +58,7 @@ void XrcPanel::InitStyledTextCtrl(wxScintilla *stc)
   #elif defined(__WXGTK__)
   // Debe haber un bug en wxGTK ya que la familia wxMODERN no es de ancho fijo.
   wxFont font(12, wxMODERN, wxNORMAL, wxNORMAL);
-  font.SetFaceName(_T("Monospace"));
+  font.SetFaceName(wxT("Monospace"));
   #endif
 
   stc->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
@@ -81,7 +81,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
 {
   shared_ptr<ObjectBase> project = GetData()->GetProjectData();
 
-  shared_ptr<Property> pCodeGen = project->GetProperty("code_generation");
+  shared_ptr<Property> pCodeGen = project->GetProperty( wxT("code_generation") );
   if (pCodeGen)
   {
     if (!TypeConv::FlagSet (wxT("XRC"),_WXSTR(pCodeGen->GetValue())))
@@ -114,13 +114,13 @@ void XrcPanel::CodeGeneration( bool panelOnly )
     bool useRelativePath = false;
 
    	// Determine if the path is absolute or relative
-	shared_ptr<Property> pRelPath = project->GetProperty("relative_path");
+	shared_ptr<Property> pRelPath = project->GetProperty( wxT("relative_path") );
 	if (pRelPath)
 		useRelativePath = (pRelPath->GetValueAsInteger() ? true : false);
 
 
 	// Get the output path
-	shared_ptr<Property> ppath = project->GetProperty("path");
+	shared_ptr<Property> ppath = project->GetProperty( wxT("path") );
 	if (ppath)
 	{
 		pathEntry = _WXSTR(ppath->GetValue());
@@ -147,7 +147,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
 		}
 	}
 
-    shared_ptr<Property> pfile = project->GetProperty("file");
+    shared_ptr<Property> pfile = project->GetProperty( wxT("file") );
     if (pfile)
       file = _WXSTR(pfile->GetValue());
 

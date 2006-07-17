@@ -125,51 +125,51 @@ MainFrame::MainFrame(DataObservable *data,wxWindow *parent, int id)
 	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	wxMenu *menuFile = new wxMenu;
-	menuFile->Append(ID_NEW_PRJ, _T("&New"), _T("create an empty project"));
-	menuFile->Append(ID_OPEN_PRJ, _T("&Open...\tF2"), _T("Open a project"));
+	menuFile->Append(ID_NEW_PRJ, wxT("&New"), wxT("create an empty project"));
+	menuFile->Append(ID_OPEN_PRJ, wxT("&Open...\tF2"), wxT("Open a project"));
 
-	menuFile->Append(ID_SAVE_PRJ,          _T("&Save\tCtrl+S"), _T("Save current project"));
-	menuFile->Append(ID_SAVE_AS_PRJ, _T("Save &As...\tF3"), _T("Save current project as..."));
+	menuFile->Append(ID_SAVE_PRJ,          wxT("&Save\tCtrl+S"), wxT("Save current project"));
+	menuFile->Append(ID_SAVE_AS_PRJ, wxT("Save &As...\tF3"), wxT("Save current project as..."));
 	menuFile->AppendSeparator();
-	menuFile->Append(ID_IMPORT_XRC, _T("&Import XRC..."), _T("Import XRC file"));
+	menuFile->Append(ID_IMPORT_XRC, wxT("&Import XRC..."), wxT("Import XRC file"));
 	menuFile->AppendSeparator();
-	menuFile->Append(ID_GENERATE_CODE, _T("&Generate Code\tF8"), _T("Generate Code"));
+	menuFile->Append(ID_GENERATE_CODE, wxT("&Generate Code\tF8"), wxT("Generate Code"));
 	menuFile->AppendSeparator();
-	menuFile->Append(ID_QUIT, _T("E&xit\tAlt-F4"), _T("Quit wxFormBuilder"));
+	menuFile->Append(ID_QUIT, wxT("E&xit\tAlt-F4"), wxT("Quit wxFormBuilder"));
 	menuFile->AppendSeparator();
 
 	wxMenu *menuEdit = new wxMenu;
-	menuEdit->Append(ID_UNDO, _T("&Undo \tCtrl+Z"), _T("Undo changes"));
-	menuEdit->Append(ID_REDO, _T("&Redo \tCtrl+Y"), _T("Redo changes"));
+	menuEdit->Append(ID_UNDO, wxT("&Undo \tCtrl+Z"), wxT("Undo changes"));
+	menuEdit->Append(ID_REDO, wxT("&Redo \tCtrl+Y"), wxT("Redo changes"));
 	menuEdit->AppendSeparator();
-	menuEdit->Append(ID_COPY, _T("&Copy \tCtrl+C"), _T("Copy selected object"));
-	menuEdit->Append(ID_CUT, _T("&Cut \tCtrl+X"), _T("Cut selected object"));
-	menuEdit->Append(ID_PASTE, _T("&Paste \tCtrl+V"), _T("Paste on selected object"));
-	menuEdit->Append(ID_DELETE, _T("&Delete \tCtrl+D"), _T("Delete selected object"));
+	menuEdit->Append(ID_COPY, wxT("&Copy \tCtrl+C"), wxT("Copy selected object"));
+	menuEdit->Append(ID_CUT, wxT("&Cut \tCtrl+X"), wxT("Cut selected object"));
+	menuEdit->Append(ID_PASTE, wxT("&Paste \tCtrl+V"), wxT("Paste on selected object"));
+	menuEdit->Append(ID_DELETE, wxT("&Delete \tCtrl+D"), wxT("Delete selected object"));
 	menuEdit->AppendSeparator();
-	menuEdit->Append(ID_EXPAND, _T("&Toggle Expand\tAlt+W"), _T("Toggle wxEXPAND flag of sizeritem properties"));
-	menuEdit->Append(ID_STRETCH, _T("&Toggle Stretch\tAlt+S"), _T("Toggle option property of sizeritem properties"));
-	menuEdit->Append(ID_MOVE_UP, _T("&Move Up\tAlt+Up"), _T("Move Up selected object"));
-	menuEdit->Append(ID_MOVE_DOWN, _T("&Move Down\tAlt+Down"), _T("Move Down selected object"));
-	menuEdit->Append(ID_MOVE_LEFT, _T("&Move Left\tAlt+Left"), _T("Move Left selected object"));
-	menuEdit->Append(ID_MOVE_RIGHT, _T("&Move Right\tAlt+Right"), _T("Move Right selected object"));
+	menuEdit->Append(ID_EXPAND, wxT("&Toggle Expand\tAlt+W"), wxT("Toggle wxEXPAND flag of sizeritem properties"));
+	menuEdit->Append(ID_STRETCH, wxT("&Toggle Stretch\tAlt+S"), wxT("Toggle option property of sizeritem properties"));
+	menuEdit->Append(ID_MOVE_UP, wxT("&Move Up\tAlt+Up"), wxT("Move Up selected object"));
+	menuEdit->Append(ID_MOVE_DOWN, wxT("&Move Down\tAlt+Down"), wxT("Move Down selected object"));
+	menuEdit->Append(ID_MOVE_LEFT, wxT("&Move Left\tAlt+Left"), wxT("Move Left selected object"));
+	menuEdit->Append(ID_MOVE_RIGHT, wxT("&Move Right\tAlt+Right"), wxT("Move Right selected object"));
 	menuEdit->AppendSeparator();
-	menuEdit->Append(ID_ALIGN_LEFT,     _T("&Align Left"),           _T("Align item to the left"));
-	menuEdit->Append(ID_ALIGN_CENTER_H, _T("&Align Center Horizontal"), _T("Align item to the center horizontally"));
-	menuEdit->Append(ID_ALIGN_RIGHT,    _T("&Align Right"),         _T("Align item to the right"));
-	menuEdit->Append(ID_ALIGN_TOP,      _T("&Align Top"),              _T("Align item to the top"));
-	menuEdit->Append(ID_ALIGN_CENTER_H, _T("&Align Center Vertical"),   _T("Align item to the center vertically"));
-	menuEdit->Append(ID_ALIGN_BOTTOM,   _T("&Align Bottom"),         _T("Align item to the bottom"));
+	menuEdit->Append(ID_ALIGN_LEFT,     wxT("&Align Left"),           wxT("Align item to the left"));
+	menuEdit->Append(ID_ALIGN_CENTER_H, wxT("&Align Center Horizontal"), wxT("Align item to the center horizontally"));
+	menuEdit->Append(ID_ALIGN_RIGHT,    wxT("&Align Right"),         wxT("Align item to the right"));
+	menuEdit->Append(ID_ALIGN_TOP,      wxT("&Align Top"),              wxT("Align item to the top"));
+	menuEdit->Append(ID_ALIGN_CENTER_H, wxT("&Align Center Vertical"),   wxT("Align item to the center vertically"));
+	menuEdit->Append(ID_ALIGN_BOTTOM,   wxT("&Align Bottom"),         wxT("Align item to the bottom"));
 
 	wxMenu *menuHelp = new wxMenu;
-	menuHelp->Append(ID_ABOUT, _T("&About...\tF1"), _T("Show about dialog"));
+	menuHelp->Append(ID_ABOUT, wxT("&About...\tF1"), wxT("Show about dialog"));
 
 
 	// now append the freshly created menu to the menu bar...
 	wxMenuBar *menuBar = new wxMenuBar();
-	menuBar->Append(menuFile, _T("&File"));
-	menuBar->Append(menuEdit, _T("&Edit"));
-	menuBar->Append(menuHelp, _T("&Help"));
+	menuBar->Append(menuFile, wxT("&File"));
+	menuBar->Append(menuEdit, wxT("&Edit"));
+	menuBar->Append(menuHelp, wxT("&Help"));
 
 	// ... and attach this menu bar to the frame
 	SetMenuBar(menuBar);
@@ -270,13 +270,13 @@ MainFrame::MainFrame(DataObservable *data,wxWindow *parent, int id)
 	toolbar->AddTool(ID_OPEN_PRJ,wxT("Open Project"),AppBitmaps::GetBitmap(wxT("open"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Open"), wxT("Open an existing project.") );
 	toolbar->AddTool(ID_SAVE_PRJ,wxT("Save Project"),AppBitmaps::GetBitmap(wxT("save"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Save"), wxT("Save the current project.") );
 	toolbar->AddSeparator();
-	toolbar->AddTool(ID_UNDO, _T("Undo"), AppBitmaps::GetBitmap(wxT("undo"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Undo"), wxT("Undo the last action.") );
-	toolbar->AddTool(ID_REDO, _T("Redo"), AppBitmaps::GetBitmap(wxT("redo"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Redo"), wxT("Redo the last action that was undone.") );
+	toolbar->AddTool(ID_UNDO, wxT("Undo"), AppBitmaps::GetBitmap(wxT("undo"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Undo"), wxT("Undo the last action.") );
+	toolbar->AddTool(ID_REDO, wxT("Redo"), AppBitmaps::GetBitmap(wxT("redo"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Redo"), wxT("Redo the last action that was undone.") );
 	toolbar->AddSeparator();
-	toolbar->AddTool(ID_CUT, _T("Cut"), AppBitmaps::GetBitmap(wxT("cut"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Cut"), wxT("Remove the selected object and place it on the clipboard.") );
-	toolbar->AddTool(ID_COPY, _T("Copy"), AppBitmaps::GetBitmap(wxT("copy"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Copy"), wxT("Copy the selected object to the clipboard.") );
-	toolbar->AddTool(ID_PASTE, _T("Paste"), AppBitmaps::GetBitmap(wxT("paste"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Paste"), wxT("Insert an object from the clipboard.") );
-	toolbar->AddTool(ID_DELETE, _T("Delete"), AppBitmaps::GetBitmap(wxT("delete"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Delete"), wxT("Remove the selected object.") );
+	toolbar->AddTool(ID_CUT, wxT("Cut"), AppBitmaps::GetBitmap(wxT("cut"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Cut"), wxT("Remove the selected object and place it on the clipboard.") );
+	toolbar->AddTool(ID_COPY, wxT("Copy"), AppBitmaps::GetBitmap(wxT("copy"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Copy"), wxT("Copy the selected object to the clipboard.") );
+	toolbar->AddTool(ID_PASTE, wxT("Paste"), AppBitmaps::GetBitmap(wxT("paste"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Paste"), wxT("Insert an object from the clipboard.") );
+	toolbar->AddTool(ID_DELETE, wxT("Delete"), AppBitmaps::GetBitmap(wxT("delete"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Delete"), wxT("Remove the selected object.") );
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_GENERATE_CODE,wxT("Generate Code"),AppBitmaps::GetBitmap(wxT("generate"), TOOL_SIZE), wxNullBitmap, wxITEM_NORMAL, wxT("Generate Code"), wxT("Create code from the current project.") );
 	toolbar->AddSeparator();
@@ -299,13 +299,13 @@ MainFrame::MainFrame(DataObservable *data,wxWindow *parent, int id)
 	toolbar->Realize();
 
 	SetSizer(top_sizer);
-	top_sizer->SetSizeHints(this);
+//	top_sizer->SetSizeHints(this);
 	SetAutoLayout(true);
 	Layout();
 	Fit();
 
 	//SetSize(wxSize(1000,800));
-	RestorePosition(_T("mainframe"));
+	RestorePosition(wxT("mainframe"));
 	//Centre();
 	Refresh();
 
@@ -341,27 +341,27 @@ void MainFrame::RestorePosition(const wxString &name)
 
 	wxConfigBase *config = wxConfigBase::Get();
 	config->SetPath(name);
-	if (config->Read(_T("IsMaximized"), &maximized))
+	if (config->Read(wxT("IsMaximized"), &maximized))
 	{
 		Maximize(maximized);
 		x = y = w = h = -1;
-		config->Read(_T("PosX"), &x);
-		config->Read(_T("PosY"), &y);
-		config->Read(_T("SizeW"), &w);
-		config->Read(_T("SizeH"), &h);
+		config->Read(wxT("PosX"), &x);
+		config->Read(wxT("PosY"), &y);
+		config->Read(wxT("SizeW"), &w);
+		config->Read(wxT("SizeH"), &h);
 		SetSize(x, y, w, h);
 		bool iconized = false;
-		config->Read(_T("IsIconized"), &iconized);
+		config->Read(wxT("IsIconized"), &iconized);
 		if (iconized) Iconize(iconized);
 	}
-	config->Read(_T("CurrentDirectory"), &m_currentDir);
+	config->Read(wxT("CurrentDirectory"), &m_currentDir);
 
-	config->Read(_T("RecentFile0"),&m_recentProjects[0]);
-	config->Read(_T("RecentFile1"),&m_recentProjects[1]);
-	config->Read(_T("RecentFile2"),&m_recentProjects[2]);
-	config->Read(_T("RecentFile3"),&m_recentProjects[3]);
+	config->Read(wxT("RecentFile0"),&m_recentProjects[0]);
+	config->Read(wxT("RecentFile1"),&m_recentProjects[1]);
+	config->Read(wxT("RecentFile2"),&m_recentProjects[2]);
+	config->Read(wxT("RecentFile3"),&m_recentProjects[3]);
 
-	config->SetPath(_T(".."));
+	config->SetPath(wxT(".."));
 	UpdateRecentProjects();
 }
 
@@ -374,21 +374,21 @@ void MainFrame::SavePosition(const wxString &name)
 	config->SetPath(name);
 	if (!isMaximized)
 	{
-		config->Write(_T("PosX"), isIconized ? -1 : GetPosition().x);
-		config->Write(_T("PosY"), isIconized ? -1 : GetPosition().y);
-		config->Write(_T("SizeW"), isIconized ? -1 : GetSize().GetWidth());
-		config->Write(_T("SizeH"), isIconized ? -1 : GetSize().GetHeight());
+		config->Write(wxT("PosX"), isIconized ? -1 : GetPosition().x);
+		config->Write(wxT("PosY"), isIconized ? -1 : GetPosition().y);
+		config->Write(wxT("SizeW"), isIconized ? -1 : GetSize().GetWidth());
+		config->Write(wxT("SizeH"), isIconized ? -1 : GetSize().GetHeight());
 	}
-	config->Write(_T("IsMaximized"), isMaximized);
-	config->Write(_T("IsIconized"), isIconized);
-	config->Write(_T("CurrentDirectory"), m_currentDir);
+	config->Write(wxT("IsMaximized"), isMaximized);
+	config->Write(wxT("IsIconized"), isIconized);
+	config->Write(wxT("CurrentDirectory"), m_currentDir);
 
-	config->Write(_T("RecentFile0"),m_recentProjects[0]);
-	config->Write(_T("RecentFile1"),m_recentProjects[1]);
-	config->Write(_T("RecentFile2"),m_recentProjects[2]);
-	config->Write(_T("RecentFile3"),m_recentProjects[3]);
+	config->Write(wxT("RecentFile0"),m_recentProjects[0]);
+	config->Write(wxT("RecentFile1"),m_recentProjects[1]);
+	config->Write(wxT("RecentFile2"),m_recentProjects[2]);
+	config->Write(wxT("RecentFile3"),m_recentProjects[3]);
 
-	config->SetPath(_T(".."));
+	config->SetPath(wxT(".."));
 }
 
 void MainFrame::OnSaveProject(wxCommandEvent &event)
@@ -517,7 +517,7 @@ void MainFrame::OnClose(wxCloseEvent &event)
 	if (!SaveWarning())
 		return;
 
-	SavePosition(_T("mainframe"));
+	SavePosition(wxT("mainframe"));
 	event.Skip();
 }
 
@@ -534,7 +534,7 @@ void MainFrame::ProjectSaved()
 void MainFrame::ObjectSelected(shared_ptr<ObjectBase> obj)
 {
 	wxString name;
-	shared_ptr<Property> prop(obj->GetProperty("name"));
+	shared_ptr<Property> prop(obj->GetProperty(wxT("name")));
 
 	if (prop)
 		name = prop->GetValueAsString();

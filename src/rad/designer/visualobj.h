@@ -33,6 +33,7 @@
 #include <wx/listbook.h>
 #include <wx/choicebk.h>
 #include "rad/appobserver.h"
+#include <wx/wxscintilla.h>
 
 class VisualObject;
 class VisualWindow;
@@ -147,6 +148,9 @@ class VObjEvtHandler : public wxEvtHandler
    void OnFlatNotebookPageChanged(wxFlatNotebookEvent &event);
    void OnChoicebookPageChanged(wxChoicebookEvent &event);
    void OnBookPageChanged( shared_ptr<ObjectBase> obj, int selPage );
+
+   // Enable folding for wxScintilla
+   void OnMarginClick ( wxScintillaEvent& event );
 };
 
 

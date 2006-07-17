@@ -88,7 +88,7 @@
         wxString __choices[] = { $choices }; #nl
         int __nchoices = sizeof( __choices ) / sizeof( wxString ); #nl
         $name = new wxRadioBox( #wxparent $name, $id, $label, $pos, $size, __nchoices, __choices, $majorDimension, $style #ifnotnull $window_style @{ |$window_style @} ); #nl
-      } #nl
+      }
     </template>
   </templates>
 

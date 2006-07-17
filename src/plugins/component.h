@@ -30,7 +30,7 @@
 #include "wx/wx.h"
 #include <wx/dynarray.h>
 #include "tinyxml.h"
-#include <string>
+#include <wx/string.h>
 
 
 #define COMPONENT_TYPE_ABSTRACT 0
@@ -85,7 +85,7 @@ class IObjectView
  public:
   virtual wxWindow* Window() = 0;
   virtual wxSizer*  Sizer() = 0;
-  virtual IObject*  Object() = 0;   
+  virtual IObject*  Object() = 0;
   virtual ~IObjectView(){}
 };
 
@@ -94,7 +94,7 @@ class IObjectView
 class IComponentLibrary
 {
  public:
-    
+
   // usadas por el plugin para registrar los componentes y macros
   virtual void RegisterComponent(const wxString &text, IComponent *c) = 0;
   virtual void RegisterMacro(const wxString &text, const int value) = 0;
@@ -104,11 +104,11 @@ class IComponentLibrary
   virtual IComponent* GetComponent(unsigned int idx) = 0;
   virtual wxString    GetComponentName(unsigned int idx) = 0;
   virtual wxString    GetMacroName(unsigned int i) = 0;
-  virtual int         GetMacroValue(unsigned int i) = 0; 
+  virtual int         GetMacroValue(unsigned int i) = 0;
   //virtual wxString    GetMacroSynonymous(unsigned int i) = 0;
   //virtual wxString    GetSynonymousName(unsigned int i) = 0;
   virtual bool FindSynonymous(const wxString& syn, wxString& trans) = 0;
-  
+
   virtual unsigned int GetMacroCount() = 0;
   virtual unsigned int GetComponentCount() = 0;
   //virtual unsigned int GetSynonymousCount() = 0;
@@ -123,13 +123,13 @@ class IComponent
  public:
   /**
    * Crea la instancia del objeto-wx, bien sea un wxWindow* o un wxSizer*
-   */  
+   */
   virtual wxObject* Create(IObject *obj, wxObject *parent) = 0;
-  
+
   /**
    * Es llamada una vez creado el objeto y sus respectivos hijos.
-   * Esta función será de utilidad en los objetos "ficticios" tales 
-   * como "sizeritem" o "notebookpage", gracias al puntero al primer_hijo 
+   * Esta función será de utilidad en los objetos "ficticios" tales
+   * como "sizeritem" o "notebookpage", gracias al puntero al primer_hijo
    * (y único) podremos añadir el objeto al sizer o al notebook.
    *
    * @param obj vista del objeto que se ha creado.
@@ -137,7 +137,7 @@ class IComponent
    * @param parent vista del objeto padre
    * @param first_child vista del primer hijo.
    */
-  virtual void OnCreated(IObjectView *obj, wxWindow *wxparent, 
+  virtual void OnCreated(IObjectView *obj, wxWindow *wxparent,
                          IObjectView *parent,
                          IObjectView *first_child) = 0;
 
@@ -145,14 +145,14 @@ class IComponent
    * Dada una instancia del objeto obtenemos un nodo XRC.
    */
   virtual TiXmlElement* ExportToXrc(IObject *obj) = 0;
-  
+
   /**
    * Dado un objeto XML en formato XRC devuelve otro objeto XML en formato
    * wxFormBuilder.
    */
   virtual TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj) = 0;
-  
-  
+
+
   virtual int GetComponentType() = 0;
   virtual ~IComponent(){}
 };
@@ -172,17 +172,17 @@ extern "C" WXEXPORT IComponentLibrary * GetComponentLibrary()  \
 { \
   IComponentLibrary * lib = new ComponentLibrary();
 
-/*  
+/*
 #define COMPONENT(name,class)  \
-  lib->RegisterComponent(_T(name),new class());
+  lib->RegisterComponent(wxT(name),new class());
 */
 
 #define MACRO(name) \
-  lib->RegisterMacro(_T(#name),name);
-  
+  lib->RegisterMacro(wxT(#name),name);
+
 #define SYNONYMOUS(syn,name) \
-  lib->RegisterMacroSynonymous(_T(#syn),_T(#name));
-  
+  lib->RegisterMacroSynonymous(wxT(#syn),wxT(#name));
+
 #define END_LIBRARY()   return lib; }
 
 #define WINDOW_COMPONENT(name,class) \
@@ -198,7 +198,7 @@ extern "C" WXEXPORT IComponentLibrary * GetComponentLibrary()  \
   {                                     \
     ComponentBase *c = new class();     \
     c->__SetComponentType(type);        \
-    lib->RegisterComponent(_T(name),c); \
+    lib->RegisterComponent(wxT(name),c); \
   }
 
 

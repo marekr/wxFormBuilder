@@ -29,11 +29,11 @@
 #include <wx/image.h>
 #include "utils/typeconv.h"
 
-static std::map< wxString, wxBitmap > m_bitmaps;
+static map< wxString, wxBitmap > m_bitmaps;
 
 wxBitmap AppBitmaps::GetBitmap( wxString iconname, unsigned int size )
 {
-	std::map< wxString, wxBitmap >::iterator bitmap;
+	map< wxString, wxBitmap >::iterator bitmap;
 	bitmap = m_bitmaps.find( iconname );
 	wxBitmap bmp;
 	if ( bitmap != m_bitmaps.end() )
@@ -47,7 +47,7 @@ wxBitmap AppBitmaps::GetBitmap( wxString iconname, unsigned int size )
 	if ( size != 0 )
 	{
 		// rescale it to requested size
-		if ( bmp.GetWidth() != size || bmp.GetHeight() != size )
+		if ( bmp.GetWidth() != (int)size || bmp.GetHeight() != (int)size )
 		{
 			wxImage image = bmp.ConvertToImage();
 			bmp = wxBitmap( image.Scale(size, size) );

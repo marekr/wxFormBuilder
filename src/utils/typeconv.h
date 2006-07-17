@@ -27,7 +27,7 @@
 #define __TYPE_UTILS__
 
 #include "wx/wx.h"
-#include <string>
+#include <wx/string.h>
 #include <vector>
 #include <map>
 #include "model/types.h"
@@ -35,61 +35,62 @@
 
 using namespace std;
 
-// macros para la conversión entre wxString <-> std::string
-#define _WXSTR(x)  TypeConv::_StringToWxString(x) 
+// macros para la conversión entre wxString <-> wxString
+#define _WXSTR(x)  TypeConv::_StringToWxString(x)
 #define _STDSTR(x) TypeConv::_WxStringToString(x)
 
 namespace TypeConv
 {
   wxString _StringToWxString(const string &str);
+  wxString _StringToWxString( const wxString& str );
   string _WxStringToString(const wxString &str);
-  
+
   wxPoint StringToPoint (const wxString &str);
   bool    StringToPoint(const wxString &str, wxPoint *point);
   wxSize  StringToSize (const wxString &str);
-  
+
   wxString PointToString(const wxPoint &point);
   wxString SizeToString(const wxSize &size);
-  
+
   int     BitlistToInt (const wxString &str);
   int     GetMacroValue(const wxString &str);
   int     StringToInt (const wxString &str);
-  
+
   bool     FlagSet  (const wxString &flag, const wxString &currentValue);
   wxString ClearFlag(const wxString &flag, const wxString &currentValue);
   wxString SetFlag  (const wxString &flag, const wxString &currentValue);
-  
+
   wxBitmap StringToBitmap( const wxString& filename );
 
   wxFont StringToFont (const wxString &str);
   wxString FontToString (const wxFont &font);
-  
+
   wxColour StringToColour(const wxString &str);
   wxSystemColour StringToSystemColour( const wxString& str );
   wxString ColourToString(const wxColour &colour);
   wxString SystemColourToString( long colour );
-  
+
   bool StringToBool(const wxString &str);
   wxString BoolToString(bool val);
-  
+
   wxArrayString StringToArrayString(const wxString &str);
   wxString ArrayStringToString(const wxArrayString &arrayStr);
-  
+
   wxString ReplaceSynonymous(const wxString &bitlist);
-  
+
   // Obtiene la ruta absoluta de un archivo
   wxString MakeAbsolutePath(const wxString &filename, const wxString &basePath);
-  
+
   // Obtiene la ruta relativa de un archivo
   wxString MakeRelativePath(const wxString &filename, const wxString &basePath);
-  
+
   // dada una cadena de caracteres obtiene otra transformando los caracteres
   // especiales denotados al estilo C ('\n' '\\' '\t')
-  string StringToText(const string &str);
-  string TextToString(const string &str);
+  wxString StringToText(const wxString &str);
+  wxString TextToString(const wxString &str);
 
-  double StringToFloat( const string& str );
-  string FloatToString( const double& val );
+  double StringToFloat( const wxString& str );
+  wxString FloatToString( const double& val );
 };
 
 
@@ -102,22 +103,22 @@ typedef MacroDictionary* PMacroDictionary;
 class MacroDictionary
 {
  private:
-  typedef map<string,int> MacroMap;
+  typedef map<wxString,int> MacroMap;
   static PMacroDictionary s_instance;
-  
-  typedef map<string,string> SynMap;
+
+  typedef map<wxString,wxString> SynMap;
 
   MacroMap m_map;
   SynMap m_synMap;
-  
-  MacroDictionary(); 
-  
+
+  MacroDictionary();
+
  public:
   static PMacroDictionary GetInstance();
-  bool SearchMacro(string name, int *result);
-  void AddMacro(string name, int value);
-  void AddSynonymous(string synName, string name);
-  bool SearchSynonymous(string synName, string& result);
+  bool SearchMacro(wxString name, int *result);
+  void AddMacro(wxString name, int value);
+  void AddSynonymous(wxString synName, wxString name);
+  bool SearchSynonymous(wxString synName, wxString& result);
 };
 
 #endif //__TYPE_UTILS__

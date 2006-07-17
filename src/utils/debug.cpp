@@ -28,7 +28,7 @@
 
 #include "wx/wx.h"
 
-void Debug::Print(char *format,...)
+void Debug::Print(wxChar *format,...)
 {
 #ifdef DEBUG_WRAPPER
   va_list argptr;
@@ -36,10 +36,10 @@ void Debug::Print(char *format,...)
 
   wxString s;
   s.PrintfV(format, argptr);
-  
+
   wxLogMessage(s);
 
-  va_end(argptr);     
+  va_end(argptr);
 #endif // DEBUG_WRAPPER
 
 }

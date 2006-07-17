@@ -32,8 +32,7 @@
 #ifndef __CODEGEN__
 #define __CODEGEN__
 
-#include <string>
-#include <sstream>
+#include <wx/sstream.h>
 #include <map>
 #include "model/objectbase.h"
 #include <boost/smart_ptr.hpp>
@@ -60,9 +59,9 @@ using namespace std;
 
 /**
 * Preprocessor directives:
-* 
+*
 * - #wxparent $property
-*   Used to get the property of the parent of the current object. 
+*   Used to get the property of the parent of the current object.
 *	 This directive is necessary to generate the parameter "wxWindow* parent" in the constructors of each widget.
 *   Example:
 *     $name = new wxButton( #wxparent $name, ....
@@ -75,8 +74,8 @@ using namespace std;
 *   Used to generate code as long as the property is not null
 *
 * - #foreach $property @{ ..... @}
-*   Used to repeat code for each subproperty of $property, where &propery is a comma delimited list. 
-*   The code is contained between '@{' and '@}'. The code will be generated as many times as there are subexpressions 
+*   Used to repeat code for each subproperty of $property, where &propery is a comma delimited list.
+*   The code is contained between '@{' and '@}'. The code will be generated as many times as there are subexpressions
 *   in the value of the property. Within the brace, access to the subexpression is obtained with the #pred directive.
 *   Example:
 *    #foreach $growable_cols
@@ -94,10 +93,10 @@ using namespace std;
 class TemplateParser
 {
 private:
-	shared_ptr<ObjectBase> m_obj;   
-	istringstream m_in;
-	ostringstream m_out;
-	string m_pred;
+	shared_ptr<ObjectBase> m_obj;
+	wxStringInputStream m_in;
+	wxString m_out;
+	wxString m_pred;
 	void ignore_whitespaces();
 
 protected:
@@ -113,7 +112,7 @@ protected:
 		ID_WXPARENT,
 		ID_PARENT,
 		ID_CHILD,
-		ID_IFNOTNULL, 
+		ID_IFNOTNULL,
 		ID_IFNULL,
 		ID_FOREACH,
 		ID_PREDEFINED,  // simbolo predefinido '#pred'
@@ -124,21 +123,21 @@ protected:
 	} Ident;
 
 
-	Ident SearchIdent(string ident);
+	Ident SearchIdent(wxString ident);
 	Ident ParseIdent();
 
-	string ParsePropertyName();
+	wxString ParsePropertyName();
 	/**
 	* Esta rutina extrae el codigo de una plantilla encerrada entre
 	* las macros #begin y #end, teniendo en cuenta que puede estar anidados
 	*/
-	string ExtractInnerTemplate();
+	wxString ExtractInnerTemplate();
 
 	/**
 	* Un valor literal es una cadena encerrada entre '"' (ej. "xxx"),
 	* el caracter " se representa con "".
 	*/
-	string ExtractLiteral();
+	wxString ExtractLiteral();
 
 	/**
 	* Consulta el siguiente símbolo de la entrada y devuelve el token.
@@ -184,19 +183,19 @@ protected:
 	bool ParsePred();
 
 public:
-	TemplateParser(shared_ptr<ObjectBase> obj, string _template); 
+	TemplateParser(shared_ptr<ObjectBase> obj, wxString _template);
 
 	/**
 	* Devuelve el código del valor de una propiedad en el formato del lenguaje.
 	* @note use ValueToCode
 	*/
-	string PropertyToCode( shared_ptr<Property> property );
+	wxString PropertyToCode( shared_ptr<Property> property );
 
 	/**
 	* Este método crea un nuevo parser del mismo tipo que el objeto que llama
 	* a dicho método.
 	*/
-	virtual shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, string _template ) = 0; 
+	virtual shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, wxString _template ) = 0;
 
 	virtual ~TemplateParser() {};
 
@@ -204,29 +203,29 @@ public:
 	* En C++ será el puntero "this" pero en otros lenguajes no tiene porqué
 	* llamarse así.
 	*/
-	virtual string RootWxParentToCode() = 0;
+	virtual wxString RootWxParentToCode() = 0;
 
 	/**
 	* A partir del valor de una propiedad genera el código.
 	*/
-	virtual string ValueToCode(PropertyType type, string value) = 0;
+	virtual wxString ValueToCode(PropertyType type, wxString value) = 0;
 
 	/**
 	* La función "estrella" de la clase. Analiza una plantilla devolviendo el
 	* código.
 	*/
-	string ParseTemplate();
+	wxString ParseTemplate();
 
 	/**
 	* establece el texto predefinido, el cual será devuelto con la directiva
 	* #pred.
 	*/
-	void SetPredefined(string pred) { m_pred = pred; };
+	void SetPredefined(wxString pred) { m_pred = pred; };
 };
 
 /**
 * CodeWriter.
-* 
+*
 * This class abstracts the code generation from the target.
 * Because, in some cases the target is a file, sometimes a TextCtrl, and sometimes both
 */
@@ -238,13 +237,13 @@ private:
 
 protected:
 	/**
-	* Write a string
+	* Write a wxString
 	*/
-	virtual void DoWrite( string code ) {};
+	virtual void DoWrite( wxString code ) {};
 
 	/**
 	* Returns the size of the indentation - was useful when using spaces, now it is 1 because using tabs
-	*/  
+	*/
 	virtual int GetIndentSize() { return 1; }
 
 	/**
@@ -254,15 +253,15 @@ protected:
 	virtual int GetColumns() { return 80; }
 
 	/**
-	* Verifies that the string does not contain carraige return characters
+	* Verifies that the wxString does not contain carraige return characters
 	*/
-	bool StringOk( string s );  
+	bool StringOk( wxString s );
 
 	/**
 	* Divide una cadena de texto mal formada (con retornos de carro), en
 	* columnas simples insertándolas una a una respetando el indentado.
 	*/
-	void FixWrite( string s );
+	void FixWrite( wxString s );
 
 public:
 	/**
@@ -279,9 +278,9 @@ public:
 	* Increment the indent
 	*/
 	void Indent()
-	{ 
-		m_indent += GetIndentSize(); 
-	} 
+	{
+		m_indent += GetIndentSize();
+	}
 
 	/**
 	* Decrement the indent
@@ -291,21 +290,21 @@ public:
 		m_indent -= GetIndentSize();
 		if ( m_indent < 0 )
 		{
-			m_indent = 0; 
+			m_indent = 0;
 		}
-	} 
+	}
 
 	/**
 	* Write a line of code
-	*/   
-	void WriteLn(string code);
+	*/
+	void WriteLn(wxString code);
 
 	/**
 	* Escribe una cadena de texto en el código.
 	*/
-	void Write( string code );
+	void Write( wxString code );
 
-	/** 
+	/**
 	* borra todo el código previamente escrito.
 	*/
 	virtual void Clear() = 0;
@@ -338,12 +337,12 @@ protected:
 public:
 	/**
 	* Virtual destructor.
-	*/   
+	*/
 	virtual ~CodeGenerator() {};
 	/**
 	* Generate the code of the project
-	*/  
-	virtual bool GenerateCode( shared_ptr<ObjectBase> project ) = 0;   
+	*/
+	virtual bool GenerateCode( shared_ptr<ObjectBase> project ) = 0;
 };
 
 

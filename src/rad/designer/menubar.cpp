@@ -36,10 +36,10 @@ Menubar::Menubar(wxWindow *parent, int id, const wxPoint& pos, const wxSize &siz
 {
     wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
     m_sizer = new wxBoxSizer(wxHORIZONTAL);
-    m_sizer->Add(new wxStaticText(this, -1, _T(" ")), 0, wxRIGHT | wxLEFT, 0);
+    m_sizer->Add(new wxStaticText(this, -1, wxT(" ")), 0, wxRIGHT | wxLEFT, 0);
     mainSizer->Add(m_sizer, 1, wxTOP | wxBOTTOM, 3);
-    SetSizer(mainSizer);   
-    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE)); 
+    SetSizer(mainSizer);
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 }
 
 Menubar::~Menubar()
@@ -58,7 +58,7 @@ void Menubar::AppendMenu(const wxString& name, wxMenu *menu)
     st->PushEventHandler(new MenuEvtHandler(st, menu));
     m_sizer->Add(st, 0, wxALIGN_LEFT | wxRIGHT | wxLEFT, 5);
     Layout();
-    m_menus.push_back(menu);    
+    m_menus.push_back(menu);
 }
 
 wxMenu* Menubar::GetMenu(int i)
@@ -74,11 +74,11 @@ int Menubar::GetMenuCount()
 
 wxMenu* Menubar::Remove(int i)
 {
-    return NULL; //TODO: Implementar Menubar::Remove    
+    return NULL; //TODO: Implementar Menubar::Remove
 }
 
 BEGIN_EVENT_TABLE(MenuEvtHandler, wxEvtHandler)
-    EVT_LEFT_DOWN(MenuEvtHandler::OnMouseEvent) 
+    EVT_LEFT_DOWN(MenuEvtHandler::OnMouseEvent)
 END_EVENT_TABLE()
 
 MenuEvtHandler::MenuEvtHandler(wxStaticText *st, wxMenu *menu)
@@ -90,7 +90,7 @@ MenuEvtHandler::MenuEvtHandler(wxStaticText *st, wxMenu *menu)
 }
 
 void MenuEvtHandler::OnMouseEvent(wxMouseEvent& event)
-{ 
+{
     m_label->PopupMenu(m_menu, 0, m_label->GetSize().y + 3);
 }
 

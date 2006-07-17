@@ -89,14 +89,14 @@ class ModifyPropertyCmd : public Command
 {
 private:
 	shared_ptr<Property> m_property;
-	string m_oldValue, m_newValue;
+	wxString m_oldValue, m_newValue;
 
 protected:
 	void DoExecute();
 	void DoRestore();
 
 public:
-	ModifyPropertyCmd(shared_ptr<Property> prop, string value);
+	ModifyPropertyCmd(shared_ptr<Property> prop, wxString value);
 };
 
 /**
@@ -213,7 +213,7 @@ void RemoveObjectCmd::DoRestore()
 
 //-----------------------------------------------------------------------------
 
-ModifyPropertyCmd::ModifyPropertyCmd(shared_ptr<Property> prop, string value)
+ModifyPropertyCmd::ModifyPropertyCmd(shared_ptr<Property> prop, wxString value)
 : m_property(prop), m_newValue(value)
 {
 	m_oldValue = prop->GetValue();
@@ -321,13 +321,13 @@ void ReparentObjectCmd::DoRestore()
 // ApplicationData
 ///////////////////////////////////////////////////////////////////////////////
 
-ApplicationData::ApplicationData(const string &rootdir)
+ApplicationData::ApplicationData(const wxString &rootdir)
 {
 	m_rootDir = rootdir;
-	AppBitmaps::LoadBitmaps( _WXSTR(m_rootDir + "/xml/icons.xml"), _WXSTR(m_rootDir + "/resources/icons/") );
+	AppBitmaps::LoadBitmaps( _WXSTR(m_rootDir + wxT("/xml/icons.xml") ), _WXSTR(m_rootDir + wxT("/resources/icons/") ) );
 	m_objDb = PObjectDatabase(new ObjectDatabase());
-	m_objDb->SetXmlPath(m_rootDir + "/xml/");
-	m_objDb->SetIconPath(m_rootDir + "/resources/icons/");
+	m_objDb->SetXmlPath(_STDSTR( (m_rootDir + wxT("/xml/")).c_str() ) ) ;
+	m_objDb->SetIconPath( _STDSTR( (m_rootDir + wxT("/resources/icons/")).c_str() ) );
 	m_objDb->LoadObjectTypes();
 	m_objDb->LoadFile();
 }
@@ -339,10 +339,10 @@ shared_ptr<ObjectBase> ApplicationData::GetSelectedObject()
 
 shared_ptr<ObjectBase> ApplicationData::GetSelectedForm()
 {
-	if (m_selObj->GetObjectTypeName() == "form")
+	if (m_selObj->GetObjectTypeName() == wxT("form") )
 		return m_selObj;
 	else
-		return m_selObj->FindNearAncestor("form");
+		return m_selObj->FindNearAncestor( wxT("form") );
 }
 
 
@@ -351,11 +351,11 @@ shared_ptr<ObjectBase> ApplicationData::GetProjectData()
 	return m_project;
 }
 
-void ApplicationData::BuildNameSet(shared_ptr<ObjectBase> obj, shared_ptr<ObjectBase> top, set<string> &name_set)
+void ApplicationData::BuildNameSet(shared_ptr<ObjectBase> obj, shared_ptr<ObjectBase> top, set<wxString> &name_set)
 {
 	if (obj != top)
 	{
-		shared_ptr<Property> nameProp = top->GetProperty("name");
+		shared_ptr<Property> nameProp = top->GetProperty( wxT("name") );
 		if (nameProp)
 			name_set.insert(nameProp->GetValue());
 	}
@@ -374,26 +374,26 @@ void ApplicationData::ResolveNameConflict(shared_ptr<ObjectBase> obj)
 			return;
 	}
 
-	shared_ptr<Property> nameProp = obj->GetProperty("name");
+	shared_ptr<Property> nameProp = obj->GetProperty( wxT("name") );
 	if (!nameProp)
 		return;
 
-	string name = nameProp->GetValue();
+	wxString name = nameProp->GetValue();
 
 	// el nombre no puede estar repetido dentro del mismo form
-	shared_ptr<ObjectBase> top = obj->FindNearAncestor("form");
+	shared_ptr<ObjectBase> top = obj->FindNearAncestor( wxT("form") );
 	if (!top)
 		top = m_project; // el objeto es un form.
 
 	// construimos el conjunto de nombres
-	set<string> name_set;
+	set<wxString> name_set;
 	BuildNameSet(obj, top, name_set);
 
 	// comprobamos si hay conflicto
-	set<string>::iterator it = name_set.find(name);
+	set<wxString>::iterator it = name_set.find(name);
 	while (it != name_set.end())
 	{
-		name = name + "_";
+		name = name + wxT("_");
 		it = name_set.find(name);
 	}
 
@@ -404,7 +404,7 @@ void ApplicationData::ResolveSubtreeNameConflicts(shared_ptr<ObjectBase> obj, sh
 {
 	if (!topObj)
 	{
-		topObj = obj->FindNearAncestor("form");
+		topObj = obj->FindNearAncestor( wxT("form") );
 		if (!topObj)
 			topObj = m_project; // object is the project
 	}
@@ -482,7 +482,7 @@ shared_ptr< ObjectBase >  ApplicationData::SearchSizerInto(shared_ptr<ObjectBase
 {
 	shared_ptr<ObjectBase> theSizer;
 
-	if (obj->GetObjectTypeName() == "sizer")
+	if (obj->GetObjectTypeName() == wxT("sizer") )
 		theSizer = obj;
 	else
 	{
@@ -497,7 +497,7 @@ shared_ptr< ObjectBase >  ApplicationData::SearchSizerInto(shared_ptr<ObjectBase
 
 void ApplicationData::SelectObject(shared_ptr<ObjectBase> obj)
 {
-	Debug::Print("Object Selected!");
+	Debug::Print( wxT("Object Selected!") );
 	m_selObj = obj;
 	/*
 	if (obj->GetObjectType() != T_FORM)
@@ -512,7 +512,7 @@ void ApplicationData::SelectObject(shared_ptr<ObjectBase> obj)
 
 void ApplicationData::CreateObject(wxString name)
 {
-	Debug::Print("ApplicationData::CreateObject] New %s",name.c_str());
+	Debug::Print( wxT("ApplicationData::CreateObject] New %s"),name.c_str());
 
 	shared_ptr<ObjectBase> parent = GetSelectedObject();
 	shared_ptr<ObjectBase> obj;
@@ -526,7 +526,7 @@ void ApplicationData::CreateObject(wxString name)
 		while (parent && !created)
 		{
 			// además, el objeto se insertará a continuación del objeto seleccionado
-			obj = m_objDb->CreateObject(string(name.mb_str()),parent);
+			obj = m_objDb->CreateObject( _STDSTR(name.c_str()),parent);
 
 			if (obj)
 			{
@@ -602,7 +602,7 @@ void ApplicationData::DoRemoveObject(shared_ptr<ObjectBase> obj, bool cutObject)
 	}
 	else
 	{
-		if (obj->GetObjectTypeName()!="project")
+		if (obj->GetObjectTypeName()!=wxT("project") )
 			assert(false);
 	}
 
@@ -646,7 +646,7 @@ void ApplicationData::PasteObject(shared_ptr<ObjectBase> parent)
 		shared_ptr<ObjectBase> old_parent = parent;
 
 		shared_ptr<ObjectBase> obj =
-			m_objDb->CreateObject(m_clipboard->GetObjectInfo()->GetClassName(), parent);
+			m_objDb->CreateObject(_STDSTR(m_clipboard->GetObjectInfo()->GetClassName().c_str() ), parent);
 
 		int pos = -1;
 
@@ -665,7 +665,7 @@ void ApplicationData::PasteObject(shared_ptr<ObjectBase> parent)
 
 			if (parent)
 			{
-				obj = m_objDb->CreateObject(m_clipboard->GetObjectInfo()->GetClassName(), parent);
+				obj = m_objDb->CreateObject( _STDSTR( m_clipboard->GetObjectInfo()->GetClassName().c_str() ), parent);
 
 				if (obj)
 					pos = CalcPositionOfInsertion(selected,parent);
@@ -754,9 +754,9 @@ void ApplicationData::ModifyProperty(shared_ptr<Property> prop, wxString str)
 {
 	shared_ptr<ObjectBase> object = prop->GetObject();
 
-	if (_STDSTR(str) != prop->GetValue())
+	if ( str.c_str() != prop->GetValue())
 	{
-		PCommand command(new ModifyPropertyCmd(prop,_STDSTR(str)));
+		PCommand command(new ModifyPropertyCmd(prop,str.c_str()));
 		Execute(command); //m_cmdProc.Execute(command);
 
 		DataObservable::NotifyPropertyModified(prop);
@@ -768,7 +768,7 @@ void ApplicationData::SaveProject(const wxString &filename)
 	TiXmlDocument *doc = m_project->Serialize();
 	m_modFlag = false;
 	doc->SaveFile(filename.mb_str());
-	m_projectFile = _STDSTR(filename);
+	m_projectFile = filename.c_str();
 	GlobalData()->SetProjectPath(::wxPathOnly(filename));
 	delete doc;
 
@@ -777,7 +777,7 @@ void ApplicationData::SaveProject(const wxString &filename)
 
 bool ApplicationData::LoadProject(const wxString &file)
 {
-	Debug::Print("LOADING");
+	Debug::Print( wxT("LOADING") );
 
 	bool result = false;
 
@@ -873,7 +873,7 @@ bool ApplicationData::LoadProject(const wxString &file)
 			return false;
 		}
 		shared_ptr<ObjectBase> proj = m_objDb->CreateObject(object);
-		if (proj && proj->GetObjectTypeName()== "project")
+		if (proj && proj->GetObjectTypeName() == wxT("project") )
 		{
 			shared_ptr<ObjectBase> old_proj = m_project;
 			//m_project = shared_dynamic_cast<ProjectObject>(proj);
@@ -882,7 +882,7 @@ bool ApplicationData::LoadProject(const wxString &file)
 			result = true;
 			m_modFlag = false;
 			m_cmdProc.Reset();
-			m_projectFile = _STDSTR(file);
+			m_projectFile = file;
 			GlobalData()->SetProjectPath(::wxPathOnly(file));
 			DataObservable::NotifyProjectLoaded();
 			DataObservable::NotifyProjectRefresh();
@@ -1128,7 +1128,7 @@ void ApplicationData::NewProject()
 	m_selObj = m_project;
 	m_modFlag = false;
 	m_cmdProc.Reset();
-	m_projectFile = "";
+	m_projectFile = wxT("");
 	GlobalData()->SetProjectPath(wxT(""));
 	DataObservable::NotifyProjectRefresh();
 }
@@ -1178,7 +1178,7 @@ void ApplicationData::MoveHierarchy(shared_ptr<ObjectBase> obj, bool up)
 	shared_ptr<ObjectBase> sizeritem = obj->GetParent();
 
 	// object must be inside a sizer
-	if (sizeritem && sizeritem->GetObjectTypeName() == "sizeritem")
+	if (sizeritem && sizeritem->GetObjectTypeName() == wxT("sizeritem") )
 	{
 		shared_ptr<ObjectBase> nextSizer = sizeritem->GetParent(); // points to the object's sizer
 		if (nextSizer)
@@ -1189,9 +1189,9 @@ void ApplicationData::MoveHierarchy(shared_ptr<ObjectBase> obj, bool up)
 				{
 					nextSizer = nextSizer->GetParent();
 				}
-				while (nextSizer && nextSizer->GetObjectTypeName() != "sizer");
+				while (nextSizer && nextSizer->GetObjectTypeName() != wxT("sizer") );
 
-				if (nextSizer && nextSizer->GetObjectTypeName() == "sizer")
+				if (nextSizer && nextSizer->GetObjectTypeName() == wxT("sizer") )
 				{
 					PCommand cmdReparent(new ReparentObjectCmd(sizeritem,nextSizer));
 					Execute(cmdReparent);
@@ -1248,11 +1248,11 @@ void ApplicationData::ToggleExpandLayout(shared_ptr<ObjectBase> obj)
 
 	shared_ptr<ObjectBase> object;
 	shared_ptr<ObjectBase> parent = obj->GetParent();
-	if ( obj->GetObjectTypeName() == "spacer" )
+	if ( obj->GetObjectTypeName() == wxT("spacer") )
 	{
 		object = obj;
 	}
-	else if ( parent && parent->GetObjectTypeName() == "sizeritem" )
+	else if ( parent && parent->GetObjectTypeName() == wxT("sizeritem") )
 	{
 		object = parent;
 	}
@@ -1261,7 +1261,7 @@ void ApplicationData::ToggleExpandLayout(shared_ptr<ObjectBase> obj)
 		return;
 	}
 
-	shared_ptr<Property> propFlag = object->GetProperty("flag");
+	shared_ptr<Property> propFlag = object->GetProperty( wxT("flag") );
 	assert(propFlag);
 
 	wxString value;
@@ -1284,11 +1284,11 @@ void ApplicationData::ToggleStretchLayout(shared_ptr<ObjectBase> obj)
 
 	shared_ptr<ObjectBase> object;
 	shared_ptr<ObjectBase> parent = obj->GetParent();
-	if ( obj->GetObjectTypeName() == "spacer" )
+	if ( obj->GetObjectTypeName() == wxT("spacer") )
 	{
 		object = obj;
 	}
-	else if ( parent && parent->GetObjectTypeName() == "sizeritem" )
+	else if ( parent && parent->GetObjectTypeName() == wxT("sizeritem") )
 	{
 		object = parent;
 	}
@@ -1297,10 +1297,10 @@ void ApplicationData::ToggleStretchLayout(shared_ptr<ObjectBase> obj)
 		return;
 	}
 
-	shared_ptr<Property> propOption = object->GetProperty("proportion");
+	shared_ptr<Property> propOption = object->GetProperty( wxT("proportion") );
 	assert(propOption);
 
-	string value = ( propOption->GetValue() == "1" ? "0" : "1");
+	wxString value = ( propOption->GetValue() == wxT("1") ? wxT("0") : wxT("1") );
 
 	ModifyProperty(propOption, _WXSTR(value));
 }
@@ -1323,11 +1323,11 @@ bool ApplicationData::GetLayoutSettings(shared_ptr<ObjectBase> obj, int *flag, i
 	if (obj)
 	{
 		shared_ptr<ObjectBase> parent = obj->GetParent();
-		if ( parent && parent->GetObjectTypeName() == "sizeritem" )
+		if ( parent && parent->GetObjectTypeName() == wxT("sizeritem") )
 		{
-			shared_ptr<Property> propOption = parent->GetProperty("proportion");
-			shared_ptr<Property> propFlag   = parent->GetProperty("flag");
-			shared_ptr<Property> propBorder = parent->GetProperty("border");
+			shared_ptr<Property> propOption = parent->GetProperty( wxT("proportion") );
+			shared_ptr<Property> propFlag   = parent->GetProperty( wxT("flag") );
+			shared_ptr<Property> propBorder = parent->GetProperty( wxT("border") );
 			assert(propOption && propFlag && propBorder);
 
 			*option = propOption->GetValueAsInteger();
@@ -1336,11 +1336,11 @@ bool ApplicationData::GetLayoutSettings(shared_ptr<ObjectBase> obj, int *flag, i
 
 			return true;
 		}
-		else if ( obj->GetObjectTypeName() == "spacer" )
+		else if ( obj->GetObjectTypeName() == wxT("spacer") )
 		{
-			shared_ptr<Property> propOption = obj->GetProperty("proportion");
-			shared_ptr<Property> propFlag   = obj->GetProperty("flag");
-			shared_ptr<Property> propBorder = obj->GetProperty("border");
+			shared_ptr<Property> propOption = obj->GetProperty( wxT("proportion") );
+			shared_ptr<Property> propFlag   = obj->GetProperty( wxT("flag") );
+			shared_ptr<Property> propBorder = obj->GetProperty( wxT("border") );
 			assert(propOption && propFlag && propBorder);
 
 			*option = propOption->GetValueAsInteger();
@@ -1362,11 +1362,11 @@ void ApplicationData::ChangeAlignment (shared_ptr<ObjectBase> obj, int align, bo
 
 	shared_ptr<ObjectBase> object;
 	shared_ptr<ObjectBase> parent = obj->GetParent();
-	if ( obj->GetObjectTypeName() == "spacer" )
+	if ( obj->GetObjectTypeName() == wxT("spacer") )
 	{
 		object = obj;
 	}
-	else if ( parent && parent->GetObjectTypeName() == "sizeritem" )
+	else if ( parent && parent->GetObjectTypeName() == wxT("sizeritem") )
 	{
 		object = parent;
 	}
@@ -1375,7 +1375,7 @@ void ApplicationData::ChangeAlignment (shared_ptr<ObjectBase> obj, int align, bo
 		return;
 	}
 
-	shared_ptr<Property> propFlag = object->GetProperty("flag");
+	shared_ptr<Property> propFlag = object->GetProperty( wxT("flag") );
 	assert(propFlag);
 
 	wxString value = propFlag->GetValueAsString();
@@ -1425,11 +1425,11 @@ void ApplicationData::ToggleBorderFlag(shared_ptr<ObjectBase> obj, int border)
 
 	shared_ptr<ObjectBase> borderObject;
 	shared_ptr<ObjectBase> parent = obj->GetParent();
-	if ( obj->GetObjectTypeName() == "spacer" )
+	if ( obj->GetObjectTypeName() == wxT("spacer") )
 	{
 		borderObject = obj;
 	}
-	else if ( parent && parent->GetObjectTypeName() == "sizeritem" )
+	else if ( parent && parent->GetObjectTypeName() == wxT("sizeritem") )
 	{
 		borderObject = parent;
 	}
@@ -1438,7 +1438,7 @@ void ApplicationData::ToggleBorderFlag(shared_ptr<ObjectBase> obj, int border)
 		return;
 	}
 
-	shared_ptr<Property> propFlag = borderObject->GetProperty("flag");
+	shared_ptr<Property> propFlag = borderObject->GetProperty( wxT("flag") );
 	assert(propFlag);
 
 	wxString value = propFlag->GetValueAsString();
@@ -1470,7 +1470,7 @@ void ApplicationData::CreateBoxSizerWithObject(shared_ptr<ObjectBase> obj)
 	shared_ptr<ObjectBase> sizer, sizeritem;
 
 	sizeritem = obj->GetParent();
-	if (sizeritem && sizeritem->GetObjectTypeName()=="sizeritem")
+	if (sizeritem && sizeritem->GetObjectTypeName() == wxT("sizeritem") )
 	{
 		sizer = sizeritem->GetParent();
 		unsigned int childPos = sizer->GetChildPosition(sizeritem);
@@ -1482,7 +1482,7 @@ void ApplicationData::CreateBoxSizerWithObject(shared_ptr<ObjectBase> obj)
 			PCommand cmd(new InsertObjectCmd(this,newSizer,sizer,childPos));
 			Execute(cmd);
 
-			if (newSizer->GetObjectTypeName() == "sizeritem")
+			if (newSizer->GetObjectTypeName() == wxT("sizeritem") )
 				newSizer = newSizer->GetChild(0);
 
 			PCommand cmdReparent(new ReparentObjectCmd(sizeritem,newSizer));
@@ -1495,7 +1495,7 @@ void ApplicationData::CreateBoxSizerWithObject(shared_ptr<ObjectBase> obj)
 bool ApplicationData::CanPasteObject()
 {
 	shared_ptr<ObjectBase> obj = GetSelectedObject();
-	if (obj && obj->GetObjectTypeName() != "project")
+	if (obj && obj->GetObjectTypeName() != wxT("project") )
 		return (m_clipboard != NULL);
 
 	return false;
@@ -1504,7 +1504,7 @@ bool ApplicationData::CanPasteObject()
 bool ApplicationData::CanCopyObject()
 {
 	shared_ptr<ObjectBase> obj = GetSelectedObject();
-	if (obj && obj->GetObjectTypeName() != "project")
+	if (obj && obj->GetObjectTypeName() != wxT("project") )
 		return true;
 
 	return false;

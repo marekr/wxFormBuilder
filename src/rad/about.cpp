@@ -46,14 +46,14 @@ class HtmlWindow : public wxHtmlWindow
 
     void LaunchBrowser(const wxString& url)
     {
-      wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
+      wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(wxT("html"));
       if (!ft) {
         wxLogError(wxT("Impossible to determine the file type for extension html.\nPlease edit your MIME types."));
         return;
       }
 
       wxString cmd;
-      bool ok = ft->GetOpenCommand(&cmd, wxFileType::MessageParameters(url, _T("")));
+      bool ok = ft->GetOpenCommand(&cmd, wxFileType::MessageParameters(url, wxT("")));
       delete ft;
 
       if (ok)
@@ -107,7 +107,7 @@ AboutDialog::AboutDialog(wxWindow *parent, int id) : wxDialog(parent,id,wxT("Abo
   mainSizer->Add(htmlWin, 1, wxEXPAND | wxALL, 5);
   mainSizer->Add(new wxButton(this, wxID_OK, wxT("OK")), 0, wxALIGN_CENTER | wxBOTTOM, 5);
 
-  htmlWin->LoadFile(wxFileName(GlobalData()->GetApplicationPath() + wxFILE_SEP_PATH + _T("resources/about.html")));
+  htmlWin->LoadFile(wxFileName(GlobalData()->GetApplicationPath() + wxFILE_SEP_PATH + wxT("resources/about.html")));
 
   SetSizer(mainSizer);
   Layout();

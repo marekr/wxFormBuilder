@@ -45,7 +45,7 @@ class TCCodeWriter : public CodeWriter
  private:
   wxScintilla *m_tc;
  protected:
-  void DoWrite(string code);
+  void DoWrite(wxString code);
 
  public:
   TCCodeWriter();
@@ -62,7 +62,7 @@ class FileCodeWriter : public CodeWriter
   wxString m_filename;
 
  protected:
-  void DoWrite(string code);
+  void DoWrite(wxString code);
 
  public:
   FileCodeWriter(const wxString &file);

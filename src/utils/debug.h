@@ -25,10 +25,11 @@
 
 #ifndef __DEBUG_H__
 #define __DEBUG_H__
+#include <wx/string.h>
 
 namespace Debug
 {
-  void Print(char *,...);
+  void Print(wxChar *,...);
 };
 
 #endif

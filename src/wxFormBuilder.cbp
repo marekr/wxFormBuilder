@@ -23,6 +23,7 @@
 					<Add library="tinyxmld" />
 					<Add library="wxmsw$(WX_VER)md_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)md_propgrid_gcc" />
+					<Add library="wxmsw$(WX_VER)md_scintilla_gcc" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="d" />
@@ -46,6 +47,7 @@
 					<Add library="tinyxmld" />
 					<Add library="wxmsw$(WX_VER)umd_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)umd_propgrid_gcc" />
+					<Add library="wxmsw$(WX_VER)umd_scintilla_gcc" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="ud" />
@@ -68,6 +70,7 @@
 					<Add library="tinyxml" />
 					<Add library="wxmsw$(WX_VER)m_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)m_propgrid_gcc" />
+					<Add library="wxmsw$(WX_VER)m_scintilla_gcc" />
 				</Linker>
 			</Target>
 			<Target title="Release (Unicode)">
@@ -89,6 +92,7 @@
 					<Add library="tinyxml" />
 					<Add library="wxmsw$(WX_VER)um_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)um_propgrid_gcc" />
+					<Add library="wxmsw$(WX_VER)um_scintilla_gcc" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="u" />
@@ -112,7 +116,6 @@
 			<Add option="-D__WX__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DLIB_USINGDLL" />
 			<Add option="-DTIXML_USE_TICPP" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
@@ -124,7 +127,6 @@
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add library="$(#wxadditions.lib)\gcc_libdll\libwxmsw$(WX_VER)$(WX_SUFFIX)_scintilla.a" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
 			<Add library="advapi32" />
 			<Add library="comctl32" />

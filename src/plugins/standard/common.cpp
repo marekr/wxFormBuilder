@@ -240,8 +240,6 @@ public:
 		xrc.AddWindowProperties();
 		//xrc.AddProperty(_("style"),_("style"),XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("label"),_("label"),XRC_TYPE_TEXT);
-		TiXmlElement* el = xrc.GetXrcObject();
-		std::string val = el->FirstChildElement()->GetText();
 		return xrc.GetXrcObject();
 	}
 
@@ -452,7 +450,7 @@ public:
 		wxString buf;
 		for (i=0;i<4;i++)
 		{
-			buf.Printf(_T("Label %d"),i);
+			buf.Printf(wxT("Label %d"),i);
 			wxListItem itemCol;
 			itemCol.SetText(buf);
 			itemCol.SetAlign(wxLIST_FORMAT_LEFT);
@@ -462,11 +460,11 @@ public:
 		for (j=0;j<10;j++)
 		{
 			long temp;
-			buf.Printf(_T("Cell (0,%d)"),j);
+			buf.Printf(wxT("Cell (0,%d)"),j);
 			temp = lc->InsertItem(j,buf);
 			for (i=1;i<4;i++)
 			{
-				buf.Printf(_T("Cell (%d,%d)"),i,j);
+				buf.Printf(wxT("Cell (%d,%d)"),i,j);
 				lc->SetItem(temp,i,buf);
 			}
 		}
@@ -689,7 +687,7 @@ public:
 		if (shortcut.IsEmpty())
 			label = obj->GetPropertyAsString(_("label"));
 		else
-			label = obj->GetPropertyAsString(_("label")) + _T("\\t") + shortcut;
+			label = obj->GetPropertyAsString(_("label")) + wxT("\\t") + shortcut;
 
 		xrc.AddPropertyValue(_("label"), label);
 		xrc.AddProperty(_("help"),_("help"),XRC_TYPE_TEXT);
@@ -728,7 +726,7 @@ public:
 			if (labelNode && labelNode->ToText())
 			{
 				label = wxString(labelNode->ToText()->Value(),wxConvUTF8);
-				int pos = label.Find(_T("\\t"));
+				int pos = label.Find(wxT("\\t"));
 				if (pos >= 0)
 				{
 					shortcut = label.Mid(pos + 2);

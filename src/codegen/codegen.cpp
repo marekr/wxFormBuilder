@@ -29,7 +29,7 @@
 #include "wx/wx.h"
 #include <wx/tokenzr.h>
 
-void CodeWriter::WriteLn(string code)
+void CodeWriter::WriteLn(wxString code)
 {
 	// no se permitirán saltos de linea dentro de "code"
 	// si los hubiera, FixWrite toma la cadena y la trocea en líneas
@@ -41,22 +41,26 @@ void CodeWriter::WriteLn(string code)
 	else
 	{
 		Write( code );
-		Write( "\n" );
+		Write( wxT("\n") );
 		m_cols = 0;
 	}
-}  
-
-bool CodeWriter::StringOk(string s)
-{
-	if (s.find("\n",0) == string::npos)
-		return true;
-	else
-		return false;
 }
 
-void CodeWriter::FixWrite(string s)
+bool CodeWriter::StringOk(wxString s)
 {
-	wxString str = _WXSTR(s);
+	if ( s.find( wxT("\n"), 0 ) == wxString::npos )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void CodeWriter::FixWrite(wxString s)
+{
+	wxString str = s.c_str();
 
 	wxStringTokenizer tkz( str, wxT("\n"), wxTOKEN_RET_EMPTY_ALL );
 	bool prev_is_null = false;
@@ -69,7 +73,7 @@ void CodeWriter::FixWrite(string s)
 
 		if ( !line.empty() || !prev_is_null )
 		{
-			WriteLn( _STDSTR(line) );
+			WriteLn( line.c_str() );
 		}
 
 		//prev_is_null = line.empty();
@@ -77,13 +81,15 @@ void CodeWriter::FixWrite(string s)
 }
 
 
-void CodeWriter::Write(string code)
+void CodeWriter::Write(wxString code)
 {
 	if (m_cols == 0)
 	{
 		// insertamos el indentado
-		for (int i=0 ; i< m_indent ; i++)
-			DoWrite("\t");
+		for ( int i = 0; i < m_indent; i++ )
+		{
+			DoWrite( wxT("\t") );
+		}
 
 		m_cols = m_indent;
 	}
@@ -94,10 +100,10 @@ void CodeWriter::Write(string code)
 	//    BreakLine(code)
 
 
-	DoWrite(code);
-}  
+	DoWrite( code );
+}
 
-TemplateParser::TemplateParser(shared_ptr<ObjectBase> obj, string _template)
+TemplateParser::TemplateParser(shared_ptr<ObjectBase> obj, wxString _template)
 : m_obj(obj), m_in(_template)
 {
 }
@@ -112,12 +118,12 @@ TemplateParser::Token TemplateParser::GetNextToken()
 
 	Token result = TOK_ERROR;
 
-	if (!m_in.eof())
+	if (!m_in.Eof())
 	{
-		char c = m_in.peek();
-		if (c == '#')
+		wxChar c = m_in.Peek();
+		if ( c == wxT('#') )
 			result = TOK_MACRO;
-		else if (c == '$')
+		else if (c == wxT('$') )
 			result = TOK_PROPERTY;
 		else
 			result = TOK_TEXT;
@@ -179,61 +185,60 @@ bool TemplateParser::ParseMacro()
 
 TemplateParser::Ident TemplateParser::ParseIdent()
 {
-	Ident ident;
+	Ident ident = ID_ERROR;
 
-	if (!m_in.eof())
+	if (!m_in.Eof())
 	{
-		ostringstream macro;
-		m_in.get();
+		wxString macro;
+		m_in.GetC();
 
-		while (m_in.peek() != EOF && m_in.peek() != '#' && m_in.peek() != '$'
-			&& ( (m_in.peek() >= 'a' && m_in.peek() <= 'z') ||
-			(m_in.peek() >= 'A' && m_in.peek() <= 'Z') ||
-			(m_in.peek() >= '0' && m_in.peek() <= '9')))
+		wxChar peek( m_in.Peek() );
+		while (peek != wxChar(EOF) && !m_in.Eof() && peek != wxT('#') && peek != wxT('$')
+			&& ( (peek >= wxT('a') && peek <= wxT('z') ) ||
+			(peek >= wxT('A') && peek <= wxT('Z') ) ||
+			(peek >= wxT('0') && peek <= wxT('9') )))
 		{
-			char c = m_in.get();
-			macro << c;
+			macro += wxChar( m_in.GetC() );
+			peek = wxChar( m_in.Peek() );
 		}
 
 		// buscar el identificador
-		ident = SearchIdent(macro.str());
+		ident = SearchIdent( macro );
 	}
 	return ident;
 }
 
-string TemplateParser::ParsePropertyName()
+wxString TemplateParser::ParsePropertyName()
 {
-	string propname;
+	wxString propname;
 
-	if (!m_in.eof())
+	if (!m_in.Eof())
 	{
-		ostringstream propstream;
-		m_in.get();
+		m_in.GetC();
 
-		while (m_in.peek() != EOF && m_in.peek() != '#' && m_in.peek() != '$'
-			&& ( (m_in.peek() >= 'a' && m_in.peek() <= 'z') ||
-			(m_in.peek() >= 'A' && m_in.peek() <= 'Z') ||
-			(m_in.peek() >= '0' && m_in.peek() <= '9') ||
-			m_in.peek() == '_'))
+		wxChar peek( m_in.Peek() );
+		while (peek != wxChar(EOF) && !m_in.Eof() && peek != wxT('#') && peek != wxT('$')
+			&& ( (peek >= wxT('a') && peek <= wxT('z') ) ||
+			(peek >= wxT('A') && peek <= wxT('Z') ) ||
+			(peek >= wxT('0') && peek <= wxT('9') ) ||
+			peek == wxT('_') ) )
 		{
-			char c = m_in.get(); 
-			propstream << c << flush;
+			propname << wxChar( m_in.GetC() );
+			peek = wxChar( m_in.Peek() );
 		}
-
-		// buscar el comando
-		propname = propstream.str();
 	}
 	return propname;
 }
 
 bool TemplateParser::ParseProperty()
 {
-	string propname = ParsePropertyName();
+	wxString propname = ParsePropertyName();
 
 	shared_ptr<Property> property = m_obj->GetProperty(propname);
 	if ( property.get() != NULL )
 	{
-		m_out << PropertyToCode(property);
+		wxString code = PropertyToCode(property);
+		m_out << code;
 	}
 	else
 	{
@@ -247,22 +252,26 @@ bool TemplateParser::ParseProperty()
 
 bool TemplateParser::ParseText()
 {
-	ostringstream aux;
+	wxString text;
 
-	while (m_in.peek() != EOF && m_in.peek() != '#' && m_in.peek() != '$')
+	if ( !m_in.Eof() )
 	{
-		char c = m_in.get();
-		if (c == '@')
-			c = m_in.get();
+		wxChar peek( m_in.Peek() );
+		while (peek != wxChar(EOF) && !m_in.Eof() && peek != wxT('#') && peek != wxT('$') && !m_in.Eof() )
+		{
+			wxChar c( m_in.GetC() );
+			if (c == wxT('@') )
+				c = wxChar(m_in.GetC());
 
-		aux << c;
-	}
-	
-	// If text is all whitespace, ignore it
-	std::string text = aux.str();
-	if ( text.find_first_not_of( "\r\n\t " ) != text.npos )
-	{
-		m_out << text;
+			text << c;
+			peek = wxChar( m_in.Peek() );
+		}
+
+		// If text is all whitespace, ignore it
+		if ( text.find_first_not_of( wxT("\r\n\t ") ) != text.npos )
+		{
+			m_out << text;
+		}
 	}
 
 	//  Debug::Print("Parsed Text: %s",aux.str().c_str());
@@ -278,13 +287,13 @@ shared_ptr< ObjectBase > TemplateParser::GetWxParent()
 {
 	shared_ptr<ObjectBase> wxparent;
 
-	std::vector< shared_ptr<ObjectBase> > candidates;
-	candidates.push_back( m_obj->FindNearAncestor("container") );
-	candidates.push_back( m_obj->FindNearAncestor("notebook") );
-	candidates.push_back( m_obj->FindNearAncestor("splitter") );
-	candidates.push_back( m_obj->FindNearAncestor("flatnotebook") );
-	candidates.push_back( m_obj->FindNearAncestor("listbook") );
-	candidates.push_back( m_obj->FindNearAncestor("choicebook") );
+	vector< shared_ptr<ObjectBase> > candidates;
+	candidates.push_back( m_obj->FindNearAncestor( wxT("container") ) );
+	candidates.push_back( m_obj->FindNearAncestor( wxT("notebook") ) );
+	candidates.push_back( m_obj->FindNearAncestor( wxT("splitter") ) );
+	candidates.push_back( m_obj->FindNearAncestor( wxT("flatnotebook") ) );
+	candidates.push_back( m_obj->FindNearAncestor( wxT("listbook") ) );
+	candidates.push_back( m_obj->FindNearAncestor( wxT("choicebook") ) );
 
 	for ( size_t i = 0; i < candidates.size(); i++ )
 	{
@@ -332,7 +341,9 @@ bool TemplateParser::ParseParent()
 		m_out << PropertyToCode(property);
 	}
 	else
-		m_out << "ERROR";
+	{
+		m_out << wxT("ERROR");
+	}
 
 	return true;
 }
@@ -356,7 +367,7 @@ bool TemplateParser::ParseChild()
 shared_ptr<Property> TemplateParser::GetRelatedProperty( shared_ptr<ObjectBase> relative )
 {
 	ignore_whitespaces();
-	string propname = ParsePropertyName();
+	wxString propname = ParsePropertyName();
 	return relative->GetProperty( propname );
 }
 
@@ -368,11 +379,11 @@ bool TemplateParser::ParseForEach()
 	// parseamos la propiedad
 	if (GetNextToken() == TOK_PROPERTY)
 	{
-		string propname = ParsePropertyName();
-		string inner_template = ExtractInnerTemplate();
+		wxString propname = ParsePropertyName();
+		wxString inner_template = ExtractInnerTemplate();
 
 		shared_ptr<Property> property = m_obj->GetProperty(propname);
-		string propvalue = property->GetValue();
+		wxString propvalue = property->GetValue();
 
 		// el valor de la propiedad debe ser una cadena de caracteres
 		// separada por ','. Se va a generar la plantilla anidada tantas
@@ -381,7 +392,7 @@ bool TemplateParser::ParseForEach()
 		if (property->GetType() == PT_INTLIST)
 		{
 			// Para ello se utiliza la clase wxStringTokenizer de wxWidgets
-			wxStringTokenizer tkz( _WXSTR(propvalue), wxT(","));
+			wxStringTokenizer tkz( propvalue.c_str(), wxT(","));
 			while (tkz.HasMoreTokens())
 			{
 				wxString token;
@@ -391,11 +402,11 @@ bool TemplateParser::ParseForEach()
 
 				// parseamos la plantilla interna
 				{
-					string code;
+					wxString code;
 					shared_ptr<TemplateParser> parser = CreateParser(m_obj,inner_template);
-					parser->SetPredefined(string(token.mb_str()));
+					parser->SetPredefined( wxString(token.c_str()) );
 					code = parser->ParseTemplate();
-					m_out << endl << code;        
+					m_out << wxT("\n") << code;
 				}
 			}
 		}
@@ -404,11 +415,11 @@ bool TemplateParser::ParseForEach()
 			wxArrayString array = property->GetValueAsArrayString();
 			for (unsigned int i=0 ; i<array.Count() ; i++)
 			{
-				string code;
+				wxString code;
 				shared_ptr<TemplateParser> parser = CreateParser(m_obj,inner_template);
-				parser->SetPredefined(ValueToCode(PT_WXSTRING_I18N,string(array[i].mb_str())));
+				parser->SetPredefined(ValueToCode(PT_WXSTRING_I18N,wxString(array[i].c_str())));
 				code = parser->ParseTemplate();
-				m_out << endl << code;        
+				m_out << wxT("\n") << code;
 			}
 		}
 		else
@@ -464,7 +475,7 @@ shared_ptr< Property > TemplateParser::GetProperty()
 	{
 		if ( GetNextToken() == TOK_PROPERTY )
 		{
-			string propname = ParsePropertyName();
+			wxString propname = ParsePropertyName();
 			property = m_obj->GetProperty( propname );
 		}
 	}
@@ -474,13 +485,17 @@ shared_ptr< Property > TemplateParser::GetProperty()
 
 void TemplateParser::ignore_whitespaces()
 {
-	while (m_in.peek() != EOF && m_in.peek() == ' ')
-		m_in.get();
+	wxChar peek( m_in.Peek() );
+	while ( peek != wxChar(EOF) && !m_in.Eof() && peek == wxT(' ') )
+	{
+		m_in.GetC();
+		peek = wxChar( m_in.Peek() );
+	}
 }
 
 
 bool TemplateParser::ParseIfNotNull()
-{      
+{
 	ignore_whitespaces();
 
 	// Get the property
@@ -490,7 +505,7 @@ bool TemplateParser::ParseIfNotNull()
 		return false;
 	}
 
-	string inner_template = ExtractInnerTemplate();
+	wxString inner_template = ExtractInnerTemplate();
 
 	if ( !property->GetValue().empty() )
 	{
@@ -503,7 +518,7 @@ bool TemplateParser::ParseIfNotNull()
 }
 
 bool TemplateParser::ParseIfNull()
-{      
+{
 	ignore_whitespaces();
 
 	// Get the property
@@ -513,7 +528,7 @@ bool TemplateParser::ParseIfNull()
 		return false;
 	}
 
-	string inner_template = ExtractInnerTemplate();
+	wxString inner_template = ExtractInnerTemplate();
 
 	if ( property->GetValue().empty() )
 	{
@@ -525,32 +540,32 @@ bool TemplateParser::ParseIfNull()
 	return true;
 }
 
-string TemplateParser::ExtractLiteral()
+wxString TemplateParser::ExtractLiteral()
 {
-	ostringstream os;
+	wxString os;
 
-	char c;
+	wxChar c;
 
 	// ignoramos los espacios que pudiera haber al principio
 	ignore_whitespaces();
 
-	c = m_in.get(); // comillas de inicio
+	c = wxChar(m_in.GetC()); // comillas de inicio
 
-	if (c == '"')
+	if ( c == wxT('"') )
 	{
 		bool end = false;
-		// comenzamos la extracción de la plantilla  
-		while (!end && m_in.peek() != EOF)
+		// comenzamos la extracción de la plantilla
+		while (!end && !m_in.Eof() && m_in.Peek() != EOF )
 		{
-			c = m_in.get(); // extraemos un caracter
+			c = wxChar(m_in.GetC()); // extraemos un caracter
 
 			// comprobamos si estamos ante un posible cierre de comillas
-			if (c == '"')
+			if ( c == wxT('"') )
 			{
-				if (m_in.peek() == '"') // caracter (") denotado por ("")
+				if ( m_in.Peek() == wxT('"') ) // caracter (") denotado por ("")
 				{
-					m_in.get(); // ignoramos la segunda comilla
-					os << '"';
+					m_in.GetC(); // ignoramos la segunda comilla
+					os << wxT('"');
 				}
 				else // cierre
 				{
@@ -558,16 +573,20 @@ string TemplateParser::ExtractLiteral()
 
 					// ignoramos todo los caracteres siguientes hasta un espacio
 					// así errores como "hola"mundo" -> "hola"
-					while (m_in.peek() != EOF && m_in.peek() != ' ')
-						m_in.get();
+					wxChar peek( m_in.Peek() );
+					while (peek != wxChar(EOF) && !m_in.Eof() && peek != wxT(' ') )
+					{
+						m_in.GetC();
+						peek = wxChar( m_in.Peek() );
+					}
 				}
 			}
 			else // un caracter del literal
 				os << c;
 		}
-	}  
+	}
 
-	return os.str();
+	return os;
 }
 
 bool TemplateParser::ParseIfEqual()
@@ -580,10 +599,10 @@ bool TemplateParser::ParseIfEqual()
 	if ( property )
 	{
 		// Get the value to compare to
-		string value = ExtractLiteral();
+		wxString value = ExtractLiteral();
 
 		// Get the template to generate if comparison is true
-		string inner_template = ExtractInnerTemplate();
+		wxString inner_template = ExtractInnerTemplate();
 
 		if ( property->GetValue() == value )
 		{
@@ -606,10 +625,10 @@ bool TemplateParser::ParseIfNotEqual()
 	if ( property )
 	{
 		// Get the value to compare to
-		string value = ExtractLiteral();
+		wxString value = ExtractLiteral();
 
 		// Get the template to generate if comparison is false
-		string inner_template = ExtractInnerTemplate();
+		wxString inner_template = ExtractInnerTemplate();
 
 		if ( property->GetValue() != value )
 		{
@@ -623,39 +642,39 @@ bool TemplateParser::ParseIfNotEqual()
 	return false;
 }
 
-TemplateParser::Ident TemplateParser::SearchIdent(string ident)
+TemplateParser::Ident TemplateParser::SearchIdent(wxString ident)
 {
 	//  Debug::Print("Parsing command %s",ident.c_str());
 
-	if (ident == "wxparent")
+	if (ident == wxT("wxparent") )
 		return ID_WXPARENT;
-	else if (ident == "ifnotnull")
+	else if (ident == wxT("ifnotnull") )
 		return ID_IFNOTNULL;
-	else if (ident == "ifnull")
+	else if (ident == wxT("ifnull") )
 		return ID_IFNULL;
-	else if (ident == "foreach")
+	else if (ident == wxT("foreach") )
 		return ID_FOREACH;
-	else if (ident == "pred")
+	else if (ident == wxT("pred") )
 		return ID_PREDEFINED;
-	else if (ident == "child")
+	else if (ident == wxT("child") )
 		return ID_CHILD;
-	else if (ident == "parent")
+	else if (ident == wxT("parent") )
 		return ID_PARENT;
-	else if (ident == "nl")
+	else if (ident == wxT("nl") )
 		return ID_NEWLINE;
-	else if (ident == "ifequal")
+	else if (ident == wxT("ifequal") )
 		return ID_IFEQUAL;
-	else if (ident == "ifnotequal")
+	else if (ident == wxT("ifnotequal") )
 		return ID_IFNOTEQUAL;
-	else if (ident == "append")
+	else if (ident == wxT("append") )
 		return ID_APPEND;
 	else
-		return ID_ERROR;  
+		return ID_ERROR;
 }
 
-string TemplateParser::ParseTemplate()
+wxString TemplateParser::ParseTemplate()
 {
-	while (!m_in.eof())
+	while (!m_in.Eof())
 	{
 		Token token = GetNextToken();
 		switch (token)
@@ -670,48 +689,48 @@ string TemplateParser::ParseTemplate()
 			ParseText();
 			break;
 		default:
-			return "";
+			return wxT("");
 		}
 	}
 
-	return m_out.str();
+	return m_out;
 }
 
 /**
 * Extrae la plantilla encerrada entre '@{' y '@}'.
 * Nota: Los espacios al comienzo serán ignorados.
 */
-string TemplateParser::ExtractInnerTemplate()
+wxString TemplateParser::ExtractInnerTemplate()
 {
 	//  bool error = false;
-	ostringstream os;
+	wxString os;
 
-	char c1, c2;
+	wxChar c1, c2;
 
 	// ignoramos los espacios que pudiera haber al principio
 	ignore_whitespaces();
 
 	// los dos caracteres siguientes deberán ser '@{'
-	c1 = m_in.get();
-	c2 = m_in.get();
+	c1 = wxChar(m_in.GetC());
+	c2 = wxChar(m_in.GetC());
 
-	if (c1 == '@' && c2 == '{')
+	if (c1 == wxT('@') && c2 == wxT('{') )
 	{
 		ignore_whitespaces();
 
 		int level = 1;
 		bool end = false;
-		// comenzamos la extracción de la plantilla  
-		while (!end && m_in.peek() != EOF)
+		// comenzamos la extracción de la plantilla
+		while ( !end && !m_in.Eof() && m_in.Peek() != EOF )
 		{
-			c1 = m_in.get();
+			c1 = wxChar(m_in.GetC());
 
 			// comprobamos si estamos ante un posible cierre o apertura de llaves.
-			if (c1 == '@')
+			if (c1 == wxT('@') )
 			{
-				c2 = m_in.get();
+				c2 = wxChar(m_in.GetC());
 
-				if (c2 == '}')
+				if (c2 == wxT('}') )
 				{
 					level--;
 					if (level == 0)
@@ -729,22 +748,22 @@ string TemplateParser::ExtractInnerTemplate()
 					os << c1;
 					os << c2;
 
-					if (c2 == '{')
+					if (c2 == wxT('{') )
 						level++;
 				}
 			}
 			else
 				os << c1;
 		}
-	}  
+	}
 
-	return os.str();
+	return os;
 }
 
 
 bool TemplateParser::ParsePred()
 {
-	if (m_pred != "")
+	if (m_pred != wxT("") )
 		m_out << m_pred;
 
 	return true;
@@ -752,7 +771,7 @@ bool TemplateParser::ParsePred()
 
 bool TemplateParser::ParseNewLine()
 {
-	m_out << '\n';
+	m_out << wxT('\n');
 	return true;
 }
 
@@ -761,7 +780,7 @@ void TemplateParser::ParseAppend()
 	ignore_whitespaces();
 }
 
-string TemplateParser::PropertyToCode(shared_ptr<Property> property)
+wxString TemplateParser::PropertyToCode(shared_ptr<Property> property)
 {
 	return ValueToCode(property->GetType(), property->GetValue());
 }
@@ -771,4 +790,4 @@ CodeWriter::CodeWriter()
 {
 	m_indent = 0;
 	m_cols = 0;
-}  
+}

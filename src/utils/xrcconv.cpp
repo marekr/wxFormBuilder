@@ -237,7 +237,7 @@ void ObjectToXrcFilter::LinkColour(const wxColour &colour,
                                    TiXmlElement *propElement)
 {
 
-  wxString value = wxString::Format(_T("#%02x%02x%02x"),
+  wxString value = wxString::Format(wxT("#%02x%02x%02x"),
                      colour.Red(), colour.Green(), colour.Blue());
 
   propElement->LinkEndChild(new TiXmlText(value.mb_str()));
@@ -247,7 +247,7 @@ void ObjectToXrcFilter::LinkFont(const wxFont &font, TiXmlElement *propElement)
 {
   wxString aux;
   TiXmlElement *element = new TiXmlElement("size");
-  aux.Printf(_T("%d"), font.GetPointSize());
+  aux.Printf(wxT("%d"), font.GetPointSize());
   element->LinkEndChild(new TiXmlText(aux.mb_str()));
   propElement->LinkEndChild(element);
 
@@ -352,7 +352,7 @@ void ObjectToXrcFilter::AddWindowProperties()
     AddProperty(_("font"), _("font"), XRC_TYPE_FONT);
 
   if (!m_obj->IsNull(_("tooltip")))
-    AddProperty(_("tooltip"), _T("tooltip"), XRC_TYPE_TEXT);
+    AddProperty(_("tooltip"), wxT("tooltip"), XRC_TYPE_TEXT);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -687,7 +687,7 @@ void XrcToXfbFilter::ImportStringListProperty(const wxString &xrcPropName,
       if (parseXrcText)
         value = XrcTextToString(value);
 
-      res += wxChar('\'') + value + _T("' ");
+      res += wxChar('\'') + value + wxT("' ");
     }
 
     element = element->NextSiblingElement("item");

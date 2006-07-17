@@ -75,8 +75,8 @@
       { #nl
         wxString __choices[] = { $choices }; #nl
         int __nchoices = sizeof(__choices) / sizeof(wxString); #nl
-        $name = new wxCheckListBox(#wxparent $name, $id, $pos, $size,__nchoices,__choices,$style #ifnotnull $window_style @{ |$window_style @});
-      }#nl
+        $name = new wxCheckListBox(#wxparent $name, $id, $pos, $size,__nchoices,__choices,$style #ifnotnull $window_style @{ |$window_style @}); #nl
+      }
     </template>
     <template name="include">@#include &lt;wx/checklst.h&gt;</template>
   </templates>
@@ -193,7 +193,7 @@
   <templates class="wxScrolledWindow">
     <template name="declaration">wxScrolledWindow* $name;</template>
     <template name="construction">
-      $name = new wxScrolledWindow( #wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} ); #nl
+      $name = new wxScrolledWindow( #wxparent $name, $id, $pos, $size, $window_style ); #nl
       $name->SetScrollRate( $scroll_rate_x, $scroll_rate_y );
     </template>
   </templates>

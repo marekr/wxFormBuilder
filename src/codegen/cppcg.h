@@ -37,6 +37,7 @@ The value of all properties that are file or a directory paths must be absolute,
 
 #include <set>
 #include "codegen.h"
+#include <wx/string.h>
 
 using namespace std;
 
@@ -48,19 +49,19 @@ class CppTemplateParser : public TemplateParser
 private:
 	bool m_useRelativePath;
 	bool m_i18n;
-	string m_basePath;
+	wxString m_basePath;
 
 public:
-	CppTemplateParser( shared_ptr<ObjectBase> obj, string _template);
+	CppTemplateParser( shared_ptr<ObjectBase> obj, wxString _template);
 
 	// redefinidas para C++
-	shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, string _template);
-	string RootWxParentToCode();
-	//string PropertyToCode( shared_ptr<Property> property);
-	string ValueToCode( PropertyType type, string value);
+	shared_ptr<TemplateParser> CreateParser( shared_ptr<ObjectBase> obj, wxString _template);
+	wxString RootWxParentToCode();
+	//wxString PropertyToCode( shared_ptr<Property> property);
+	wxString ValueToCode( PropertyType type, wxString value);
 
 	// genera rutas relativas en los nombres de archivo
-	void UseRelativePath( bool relative = false, string basePath = "");
+	void UseRelativePath( bool relative = false, wxString basePath = wxString());
 	void UseI18n( bool i18n);
 };
 
@@ -82,20 +83,20 @@ private:
 
 	bool m_useRelativePath;
 	bool m_i18n;
-	string m_basePath;
+	wxString m_basePath;
 	unsigned int m_firstID;
 
 	/**
 	* Las macros predefinidas no generarán defines.
 	*/
-	set<string> m_predMacros;
+	set<wxString> m_predMacros;
 
 	void SetupPredefinedMacros();
 
 	/**
 	* Dado un objeto y el nombre de una plantilla, obtiene el código.
 	*/
-	string GetCode( shared_ptr<ObjectBase> obj, string name);
+	wxString GetCode( shared_ptr<ObjectBase> obj, wxString name);
 
 	/**
 	* Guarda el conjunto de clases de objetos del proyecto para generar
@@ -107,13 +108,13 @@ private:
 	* Guarda el conjunto de "includes" que hay que generar para las propiedades
 	* PT_XPM_BITMAP.
 	*/
-	void FindXpmProperties( shared_ptr<ObjectBase> obj, set<string> &set);
+	void FindXpmProperties( shared_ptr<ObjectBase> obj, set<wxString> &set);
 
 	/**
 	* Guarda todos las propiedades de objetos de tipo "macro" para generar
 	* su posterior '#define'.
 	*/
-	void FindMacros( shared_ptr<ObjectBase> obj, set<string> &macro_set);
+	void FindMacros( shared_ptr<ObjectBase> obj, set<wxString> &macro_set);
 
 	/**
 	* Genera la declaración de clases en el fichero de cabecera.
@@ -129,22 +130,22 @@ private:
 	/**
 	* Genera la sección de '#include' fichero.
 	*/
-	void GenIncludes( shared_ptr<ObjectBase> project, set<string>* includes);
+	void GenIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes);
 
 	/**
 	* Generate compiler directives for linking libraries ( mostly for widgets that aren't in the standard distribution )
 	*/
-	void GenLibraries( shared_ptr< ObjectBase > project, set< string >* libraries );
+	void GenLibraries( shared_ptr< ObjectBase > project, set< wxString >* libraries );
 
 	/**
 	* Using the Generated Library names, create #ifdef block to link correct library for the application settings
 	*/
-	void WriteLibrariesBlock( const set< string >& libraries );
+	void WriteLibrariesBlock( const set< wxString >& libraries );
 
 	/**
 	* Write a set of libraries with the given prefix and suffic
 	*/
-	void WriteLibraries( const set< string >& libraries, const string& prefix, const string& suffix );
+	void WriteLibraries( const set< wxString >& libraries, const wxString& prefix, const wxString& suffix );
 
 	/**
 	* Genera la sección de '#include' para las propiedades XPM.
@@ -160,7 +161,7 @@ private:
 	* Generate a enum with wxWindow identifiers.
 	*/
 	void GenEnumIds( shared_ptr<ObjectBase> class_obj);
-  
+
 	/**
 	* Generate the constructor of a classs
 	*/
@@ -188,19 +189,19 @@ private:
 
 public:
 	/**
-	* Convert a string to the "C/C++" format.
+	* Convert a wxString to the "C/C++" format.
 	*/
-	static string ConvertCppString( string text);
+	static wxString ConvertCppString( wxString text);
 
 	/**
 	* Convert a path to a relative path.
 	*/
-	//static string ConvertToRelativePath( string path, string basePath);
+	//static wxString ConvertToRelativePath( wxString path, wxString basePath);
 
 	/**
 	* Convert an XPM filename to the name of the XPM's internal character array.
 	*/
-	static std::string ConvertXpmName( const std::string& text );
+	static wxString ConvertXpmName( const wxString& text );
 
 	CppCodeGenerator();
 
@@ -228,7 +229,7 @@ public:
 	* @note path is generated with the separators, '/', since on Windows
 	*		the compilers interpret path correctly.
 	*/
-	void UseRelativePath( bool relative = false, string basePath = "" );
+	void UseRelativePath( bool relative = false, wxString basePath = wxString() );
 
 	/**
 	* Set the First ID used during Code Generation.

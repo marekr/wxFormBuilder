@@ -32,14 +32,14 @@
 #include <sstream>
 int ObjectBase::s_instances = 0;
 
-/*string OptionList::GetOption(unsigned int idx)
+/*wxString OptionList::GetOption(unsigned int idx)
 {
 assert (idx < m_options.size());
 
 return m_options[idx];
 }*/
 
-PropertyInfo::PropertyInfo(string name, PropertyType type, string def_value, string description,
+PropertyInfo::PropertyInfo(wxString name, PropertyType type, wxString def_value, wxString description,
 						   bool hidden, shared_ptr<OptionList> opt_list)
 {
 	m_name = name;
@@ -66,27 +66,27 @@ void Property::SetDefaultValue()
 
 void Property::SetValue(const wxFont &font)
 {
-	m_value = _STDSTR(TypeConv::FontToString(font));
+	m_value = TypeConv::FontToString(font).c_str();
 }
 void Property::SetValue(const wxColour &colour)
 {
-	m_value = _STDSTR(TypeConv::ColourToString(colour));
+	m_value = TypeConv::ColourToString(colour).c_str();
 }
 void Property::SetValue(const wxString &str, bool format)
 {
-	string value = _STDSTR(str);
+	wxString value = str.c_str();
 
 	m_value = (format ? TypeConv::TextToString(value) : value );
 }
 
 void Property::SetValue(const wxPoint &point)
 {
-	m_value = _STDSTR(TypeConv::PointToString(point));
+	m_value = TypeConv::PointToString(point).c_str();
 }
 
 void Property::SetValue(const wxSize &size)
 {
-	m_value = _STDSTR(TypeConv::SizeToString(size));
+	m_value = TypeConv::SizeToString(size).c_str();
 }
 
 void Property::SetValue(const int integer)
@@ -166,13 +166,13 @@ double Property::GetValueAsFloat()
 ///////////////////////////////////////////////////////////////////////////////
 const int ObjectBase::INDENT = 2;
 
-ObjectBase::ObjectBase (string class_name)
+ObjectBase::ObjectBase (wxString class_name)
 {
 	s_instances++;
 
 	m_class = class_name;
 
-	Debug::Print("new ObjectBase (%d)",s_instances);
+	Debug::Print(wxT("new ObjectBase (%d)"),s_instances);
 }
 
 ObjectBase::~ObjectBase()
@@ -188,31 +188,31 @@ ObjectBase::~ObjectBase()
 		parent->RemoveChild(pobj);
 	}
 
-	Debug::Print("delete ObjectBase (%d)",s_instances);
+	Debug::Print(wxT("delete ObjectBase (%d)"),s_instances);
 }
 
-string ObjectBase::GetIndentString(int indent)
+wxString ObjectBase::GetIndentString(int indent)
 {
 	int i;
-	string s;
+	wxString s;
 
 	for (i=0;i<indent;i++)
-		s += " ";
+		s += wxT(" ");
 
 	return s;
 }
 
 
-shared_ptr<Property> ObjectBase::GetProperty (string name)
+shared_ptr<Property> ObjectBase::GetProperty (wxString name)
 {
-	map< string, shared_ptr< Property > >::iterator it = m_properties.find( name );
+	map< wxString, shared_ptr< Property > >::iterator it = m_properties.find( name );
 	if ( it != m_properties.end() )
 	{
 		return it->second;
 	}
 	else
 	{
-		Debug::Print("[ObjectBase::GetProperty] Property %s not found!",name.c_str());
+		Debug::Print(wxT("[ObjectBase::GetProperty] Property %s not found!"),name.c_str());
 		// este aserto falla siempre que se crea un sizeritem
 		// assert(false);
 		return shared_ptr<Property>((Property*)NULL);
@@ -223,7 +223,7 @@ shared_ptr<Property> ObjectBase::GetProperty (unsigned int idx)
 {
 	assert (idx < m_properties.size());
 
-	map< string, shared_ptr< Property > >::iterator it = m_properties.begin();
+	map< wxString, shared_ptr< Property > >::iterator it = m_properties.begin();
 	unsigned int i = 0;
 	while (i < idx && it != m_properties.end())
 	{
@@ -241,12 +241,12 @@ shared_ptr<Property> ObjectBase::GetProperty (unsigned int idx)
 	}
 }
 
-void ObjectBase::AddProperty (string propname, shared_ptr<Property> value)
+void ObjectBase::AddProperty (wxString propname, shared_ptr<Property> value)
 {
-	m_properties.insert( map< string, shared_ptr< Property > >::value_type( propname, value ) );
+	m_properties.insert( map< wxString, shared_ptr< Property > >::value_type( propname, value ) );
 }
 
-shared_ptr<ObjectBase> ObjectBase::FindNearAncestor(string type)
+shared_ptr<ObjectBase> ObjectBase::FindNearAncestor(wxString type)
 {
 	shared_ptr<ObjectBase> result;
 	shared_ptr<ObjectBase> parent = GetParent();
@@ -287,7 +287,7 @@ bool ObjectBase::AddChild (unsigned int idx, shared_ptr<ObjectBase> obj)
 	return result;
 }
 /*
-bool ObjectBase::DoChildTypeOk(string type_child, string type_parent)
+bool ObjectBase::DoChildTypeOk(wxString type_child, wxString type_parent)
 {
 bool result;
 
@@ -326,7 +326,7 @@ result = false;
 return result;
 }
 
-bool ObjectBase::ChildTypeOk (string type)
+bool ObjectBase::ChildTypeOk (wxString type)
 {
 return DoChildTypeOk(type, GetObjectTypeName());
 }*/
@@ -362,7 +362,7 @@ shared_ptr<ObjectBase> ObjectBase::GetLayout()
 {
 	shared_ptr<ObjectBase> result;
 
-	if (GetParent() && GetParent()->GetObjectTypeName()=="sizeritem")
+	if (GetParent() && GetParent()->GetObjectTypeName()==wxT("sizeritem"))
 		result = GetParent();
 
 	return result;
@@ -410,10 +410,10 @@ int ObjectBase::Deep()
 
 //void ObjectBase::PrintOut(ostream &s, int indent)
 //{
-//  string ind_str = GetIndentString(indent);
+//  wxString ind_str = GetIndentString(indent);
 //
 //  s << ind_str << "[ " << GetClassName() << " ] " << GetObjectType() << endl;
-//  map< string, shared_ptr< Property > >::const_iterator it_prop;
+//  map< wxString, shared_ptr< Property > >::const_iterator it_prop;
 //  for (it_prop = m_properties.begin(); it_prop!= m_properties.end(); it_prop++)
 //  {
 //    s << ind_str << "property '" << it_prop->first << "' = '" <<
@@ -436,15 +436,15 @@ int ObjectBase::Deep()
 TiXmlElement* ObjectBase::SerializeObject()
 {
 	TiXmlElement *element = new TiXmlElement("object");
-	element->SetAttribute("class",GetClassName());
+	element->SetAttribute("class", _STDSTR( GetClassName().c_str() ));
 
 	for (unsigned int i=0; i< GetPropertyCount(); i++)
 	{
 		shared_ptr<Property> prop = GetProperty(i);
 		TiXmlElement *prop_element = new TiXmlElement("property");
-		prop_element->SetAttribute("name",prop->GetName());
+		prop_element->SetAttribute("name", _STDSTR(prop->GetName().c_str() ));
 
-		TiXmlText* prop_value = new TiXmlText(prop->GetValue());
+		TiXmlText* prop_value = new TiXmlText( _STDSTR(prop->GetValue()));
 		prop_element->LinkEndChild(prop_value);
 		element->LinkEndChild(prop_element);
 	}
@@ -509,7 +509,7 @@ bool ObjectBase::ChangeChildPosition(shared_ptr<ObjectBase> obj, unsigned int po
 
 bool ObjectBase::IsNull (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str() );
 	if (property)
 		return property->GetValueAsString() == wxT("");
 	else
@@ -518,7 +518,7 @@ bool ObjectBase::IsNull (const wxString& pname)
 
 int ObjectBase::GetPropertyAsInteger (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str() );
 	if (property)
 		return property->GetValueAsInteger();
 	else
@@ -527,7 +527,7 @@ int ObjectBase::GetPropertyAsInteger (const wxString& pname)
 
 wxFont   ObjectBase::GetPropertyAsFont    (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str() );
 	if (property)
 		return property->GetValueAsFont();
 	else
@@ -536,7 +536,7 @@ wxFont   ObjectBase::GetPropertyAsFont    (const wxString& pname)
 
 wxColour ObjectBase::GetPropertyAsColour  (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsColour();
 	else
@@ -545,7 +545,7 @@ wxColour ObjectBase::GetPropertyAsColour  (const wxString& pname)
 
 wxString ObjectBase::GetPropertyAsString  (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsString();
 	else
@@ -554,7 +554,7 @@ wxString ObjectBase::GetPropertyAsString  (const wxString& pname)
 
 wxPoint  ObjectBase::GetPropertyAsPoint   (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsPoint();
 	else
@@ -563,7 +563,7 @@ wxPoint  ObjectBase::GetPropertyAsPoint   (const wxString& pname)
 
 wxSize   ObjectBase::GetPropertyAsSize    (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsSize();
 	else
@@ -572,7 +572,7 @@ wxSize   ObjectBase::GetPropertyAsSize    (const wxString& pname)
 
 wxBitmap ObjectBase::GetPropertyAsBitmap  (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsBitmap();
 	else
@@ -580,7 +580,7 @@ wxBitmap ObjectBase::GetPropertyAsBitmap  (const wxString& pname)
 }
 double ObjectBase::GetPropertyAsFloat( const wxString& pname )
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsFloat();
 	else
@@ -589,7 +589,7 @@ double ObjectBase::GetPropertyAsFloat( const wxString& pname )
 wxArrayInt ObjectBase::GetPropertyAsArrayInt(const wxString& pname)
 {
 	wxArrayInt array;
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 	{
 		IntList il;
@@ -603,7 +603,7 @@ wxArrayInt ObjectBase::GetPropertyAsArrayInt(const wxString& pname)
 
 wxArrayString ObjectBase::GetPropertyAsArrayString(const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty(_STDSTR(pname));
+	shared_ptr<Property> property = GetProperty( pname.c_str());
 	if (property)
 		return property->GetValueAsArrayString();
 	else
@@ -612,7 +612,7 @@ wxArrayString ObjectBase::GetPropertyAsArrayString(const wxString& pname)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ObjectInfo::ObjectInfo(string class_name, PObjectType type)
+ObjectInfo::ObjectInfo(wxString class_name, PObjectType type)
 {
 	m_class = class_name;
 	m_type = type;
@@ -620,11 +620,11 @@ ObjectInfo::ObjectInfo(string class_name, PObjectType type)
 	m_component = NULL;
 }
 
-shared_ptr<PropertyInfo> ObjectInfo::GetPropertyInfo(string name)
+shared_ptr<PropertyInfo> ObjectInfo::GetPropertyInfo(wxString name)
 {
 	shared_ptr<PropertyInfo> result;
 
-	map< string, shared_ptr< PropertyInfo > >::iterator it = m_properties.find(name);
+	map< wxString, shared_ptr< PropertyInfo > >::iterator it = m_properties.find(name);
 	if (it != m_properties.end())
 		result = it->second;
 
@@ -637,7 +637,7 @@ shared_ptr<PropertyInfo> ObjectInfo::GetPropertyInfo(unsigned int idx)
 
 	assert (idx < m_properties.size());
 
-	map< string, shared_ptr< PropertyInfo > >::iterator it = m_properties.begin();
+	map< wxString, shared_ptr< PropertyInfo > >::iterator it = m_properties.begin();
 	unsigned int i = 0;
 	while (i < idx && it != m_properties.end())
 	{
@@ -653,36 +653,36 @@ shared_ptr<PropertyInfo> ObjectInfo::GetPropertyInfo(unsigned int idx)
 void ObjectInfo::AddPropertyInfo(shared_ptr<PropertyInfo> prop)
 {
 	//m_properties[ prop->GetName() ] = prop;
-	m_properties.insert( map< string, shared_ptr< PropertyInfo > >::value_type(prop->GetName(), prop) );
+	m_properties.insert( map< wxString, shared_ptr< PropertyInfo > >::value_type(prop->GetName(), prop) );
 }
 
-void ObjectInfo::AddBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName, const string& defaultValue )
+void ObjectInfo::AddBaseClassDefaultPropertyValue( size_t baseIndex, const wxString& propertyName, const wxString& defaultValue )
 {
-	map< size_t, map< string, string > >::iterator baseClassMap = m_baseClassDefaultPropertyValues.find( baseIndex );
+	map< size_t, map< wxString, wxString > >::iterator baseClassMap = m_baseClassDefaultPropertyValues.find( baseIndex );
 	if ( baseClassMap != m_baseClassDefaultPropertyValues.end() )
 	{
-		baseClassMap->second.insert( map< string, string >::value_type( propertyName, defaultValue ) );
+		baseClassMap->second.insert( map< wxString, wxString >::value_type( propertyName, defaultValue ) );
 	}
 	else
 	{
-		map< string, string > propertyDefaultValues;
+		map< wxString, wxString > propertyDefaultValues;
 		propertyDefaultValues[ propertyName ] = defaultValue;
 		m_baseClassDefaultPropertyValues[ baseIndex ] = propertyDefaultValues;
 	}
 }
 
-string ObjectInfo::GetBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName )
+wxString ObjectInfo::GetBaseClassDefaultPropertyValue( size_t baseIndex, const wxString& propertyName )
 {
-	map< size_t, map< string, string > >::iterator baseClassMap = m_baseClassDefaultPropertyValues.find( baseIndex );
+	map< size_t, map< wxString, wxString > >::iterator baseClassMap = m_baseClassDefaultPropertyValues.find( baseIndex );
 	if ( baseClassMap != m_baseClassDefaultPropertyValues.end() )
 	{
-		map< string, string >::iterator defaultValue = baseClassMap->second.find( propertyName );
+		map< wxString, wxString >::iterator defaultValue = baseClassMap->second.find( propertyName );
 		if ( defaultValue != baseClassMap->second.end() )
 		{
 			return defaultValue->second;
 		}
 	}
-	return string();
+	return wxString();
 }
 
 shared_ptr<ObjectInfo> ObjectInfo::GetBaseClass(unsigned int idx)
@@ -696,7 +696,7 @@ unsigned int ObjectInfo::GetBaseClassCount()
 	return (unsigned int)m_base.size();
 }
 
-bool ObjectInfo::IsSubclassOf(string classname)
+bool ObjectInfo::IsSubclassOf(wxString classname)
 {
 	bool found = false;
 
@@ -716,12 +716,12 @@ bool ObjectInfo::IsSubclassOf(string classname)
 //
 //void ObjectInfo::PrintOut(ostream &s, int indent)
 //{
-//  string ind_str = "";
+//  wxString ind_str = "";
 //  for (int i=0;i<indent;i++)
 //    ind_str = ind_str + " ";
 //
 //  s << ind_str << "[ " << GetClassName() << " ] " << GetObjectType() << endl;
-//  map< string, shared_ptr< PropertyInfo > >::const_iterator it_prop;
+//  map< wxString, shared_ptr< PropertyInfo > >::const_iterator it_prop;
 //  for (it_prop = m_properties.begin(); it_prop!= m_properties.end(); it_prop++)
 //  {
 //    s << ind_str << "property '" << it_prop->first << "' type = '" <<
@@ -730,15 +730,15 @@ bool ObjectInfo::IsSubclassOf(string classname)
 //  }
 //}
 
-void ObjectInfo::AddCodeInfo(string lang, shared_ptr<CodeInfo> codeinfo)
+void ObjectInfo::AddCodeInfo(wxString lang, shared_ptr<CodeInfo> codeinfo)
 {
-	m_codeTemp.insert(map< string, shared_ptr< CodeInfo > >::value_type(lang, codeinfo));
+	m_codeTemp.insert(map< wxString, shared_ptr< CodeInfo > >::value_type(lang, codeinfo));
 }
 
-shared_ptr<CodeInfo> ObjectInfo::GetCodeInfo(string lang)
+shared_ptr<CodeInfo> ObjectInfo::GetCodeInfo(wxString lang)
 {
 	shared_ptr<CodeInfo> result;
-	map< string, shared_ptr< CodeInfo > >::iterator it = m_codeTemp.find(lang);
+	map< wxString, shared_ptr< CodeInfo > >::iterator it = m_codeTemp.find(lang);
 	if (it != m_codeTemp.end())
 		result = it->second;
 
@@ -752,9 +752,9 @@ shared_ptr<CodeInfo> ObjectInfo::GetCodeInfo(string lang)
 //}
 
 ///////////////////////////////////////////////////////////////////////////////
-string CodeInfo::GetTemplate(string name)
+wxString CodeInfo::GetTemplate(wxString name)
 {
-	string result;
+	wxString result;
 
 	TemplateMap::iterator it = m_templates.find(name);
 	if (it != m_templates.end())
@@ -763,7 +763,7 @@ string CodeInfo::GetTemplate(string name)
 	return result;
 }
 
-void CodeInfo::AddTemplate(string name, string _template)
+void CodeInfo::AddTemplate(wxString name, wxString _template)
 {
 	m_templates.insert(TemplateMap::value_type(name,_template));
 }

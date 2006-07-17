@@ -34,7 +34,7 @@
 #define __OBJ__
 
 #include <iostream>
-#include <string>
+#include <wx/string.h>
 #include <map>
 #include <vector>
 #include <set>
@@ -57,11 +57,11 @@ class OptionList
 {
 private:
 
-	map< string, string > m_options;
+	map< wxString, wxString > m_options;
 
 public:
 
-	void AddOption( string option, string description = "" )
+	void AddOption( wxString option, wxString description = wxString() )
 	{
 		m_options[option] = description;
 	}
@@ -69,7 +69,7 @@ public:
 	{
 		return (unsigned int)m_options.size();
 	}
-	const map< string, string >& GetOptions()
+	const map< wxString, wxString >& GetOptions()
 	{
 		return m_options;
 	}
@@ -80,25 +80,25 @@ public:
 class PropertyInfo
 {
 private:
-	string       m_name;
+	wxString       m_name;
 	PropertyType m_type;
-	string       m_def_value;
+	wxString       m_def_value;
 	shared_ptr<OptionList>  m_opt_list;
 	bool m_hidden; // Juan. Determina si la propiedad aparece o no en XRC
-	string		m_description;
+	wxString		m_description;
 
 public:
 
-	PropertyInfo(string name, PropertyType type, string def_value, string description = "",
+	PropertyInfo(wxString name, PropertyType type, wxString def_value, wxString description = wxString(),
 		bool hidden = false, shared_ptr<OptionList> opt_list = shared_ptr<OptionList>()); //Juan
 
 	~PropertyInfo();
 
-	string       GetDefaultValue()        { return m_def_value;  }
+	wxString       GetDefaultValue()        { return m_def_value;  }
 	PropertyType GetType()                { return m_type;       }
-	string       GetName()                { return m_name;       }
+	wxString       GetName()                { return m_name;       }
 	shared_ptr<OptionList>  GetOptionList ()         { return m_opt_list;   }
-	string		 GetDescription	()		  { return m_description;}
+	wxString		 GetDescription	()		  { return m_description;}
 	bool         IsHidden()               { return m_hidden; } // Juan
 	void         SetHidden(bool hidden)   { m_hidden = hidden; } // Juan
 };
@@ -111,8 +111,8 @@ private:
 	shared_ptr<PropertyInfo> m_info; // puntero a su descriptor
 	weak_ptr<ObjectBase> m_object; // una propiedad siempre pertenece a un objeto
 
-	string m_name;
-	string m_value;
+	wxString m_name;
+	wxString m_value;
 
 public:
 	Property(shared_ptr<PropertyInfo> info, shared_ptr<ObjectBase> obj = shared_ptr<ObjectBase>())
@@ -123,9 +123,13 @@ public:
 	};
 
 	shared_ptr<ObjectBase> GetObject() { return m_object.lock(); }
-	string GetName() { return m_name; };
-	string GetValue() { return m_value; };
-	void SetValue(string val)
+	wxString GetName() { return m_name; };
+	wxString GetValue() { return m_value; };
+	void SetValue( wxString& val )
+	{
+		m_value = val;
+	};
+	void SetValue( wxChar* val )
 	{
 		m_value = val;
 	};
@@ -168,22 +172,22 @@ private:
 	// efectivamente no se están produciendo leaks de memoria
 	static int s_instances;
 
-	string m_class;            // clase que repesenta el objeto
-	string m_type; //ObjectType m_type;         // RTTI
+	wxString m_class;            // clase que repesenta el objeto
+	wxString m_type; //ObjectType m_type;         // RTTI
 	weak_ptr<ObjectBase> m_parent;     // no parent
 
 	vector< shared_ptr<ObjectBase> > m_children;   // children
-	map< string,shared_ptr<Property> >  m_properties; // Properties of the object
+	map< wxString,shared_ptr<Property> >  m_properties; // Properties of the object
 	shared_ptr<ObjectInfo> m_info;
 
 
 protected:
 	// utilites for implementing the tree
 	static const int INDENT;  // size of indent
-	string GetIndentString(int indent); // obtiene la cadena con el indentado
+	wxString GetIndentString(int indent); // obtiene la cadena con el indentado
 
 	vector< shared_ptr<ObjectBase> >& GetChildren()   { return m_children; };
-	map< string,shared_ptr<Property> >&  GetProperties() { return m_properties; };
+	map< wxString,shared_ptr<Property> >&  GetProperties() { return m_properties; };
 
 	// Crea un elemento del objeto
 	virtual TiXmlElement* SerializeObject();
@@ -195,7 +199,7 @@ protected:
 	}
 
 
-	//bool DoChildTypeOk (string type_child ,string type_parent);
+	//bool DoChildTypeOk (wxString type_child ,wxString type_parent);
 	/*
 	* Configura la instancia en su creación.
 	*
@@ -212,7 +216,7 @@ public:
 	/**
 	* Constructor. (debe ser "protegido" -> NewInstance)
 	*/
-	ObjectBase (string class_name);
+	ObjectBase (wxString class_name);
 
 	// Mejor es que sea el propio objeto quien construya todas sus propiedades...
 	//ObjectBase(shared_ptr<ObjectInfo> obj_info);
@@ -225,7 +229,7 @@ public:
 	* de un puntero normal.
 	*/
 	/*  static shared_ptr<ObjectBase> NewInstance
-	(string class_name, shared_ptr<ObjectBase> parent = shared_ptr<ObjectBase>());*/
+	(wxString class_name, shared_ptr<ObjectBase> parent = shared_ptr<ObjectBase>());*/
 
 
 	/**
@@ -240,7 +244,7 @@ public:
 	*       Cada objeto tiene un nombre, el cual será el mismo que el usado
 	*       como clave en el registro de descriptores.
 	*/
-	string     GetClassName ()            { return m_class;  }
+	wxString     GetClassName ()            { return m_class;  }
 
 	/**
 	* Obtiene el nodo padre.
@@ -258,7 +262,7 @@ public:
 	* @note Notar que no existe el método SetProperty, ya que la modificación
 	*       se hace a través de la referencia.
 	*/
-	shared_ptr<Property> GetProperty (string name);
+	shared_ptr<Property> GetProperty (wxString name);
 
 	/**
 	* Añade una propiedad al objeto.
@@ -267,7 +271,7 @@ public:
 	* instancia del objeto.
 	* Los objetos siempre se crearán a través del registro de descriptores.
 	*/
-	void AddProperty (string propname, shared_ptr<Property> value);
+	void AddProperty (wxString propname, shared_ptr<Property> value);
 
 	/**
 	* Obtiene el número de propiedades del objeto.
@@ -331,7 +335,7 @@ public:
 	*
 	* Será útil para encontrar el widget padre.
 	*/
-	shared_ptr<ObjectBase> FindNearAncestor(string type);
+	shared_ptr<ObjectBase> FindNearAncestor(wxString type);
 
 	/**
 	* Obtiene el documento xml del arbol tomando como raíz el nodo actual.
@@ -381,10 +385,10 @@ public:
 	* Comprueba si el tipo de objeto pasado es válido como hijo del objeto.
 	* Esta rutina es importante, ya que define las restricciónes de ubicación.
 	*/
-	//bool ChildTypeOk (string type);
+	//bool ChildTypeOk (wxString type);
 	bool ChildTypeOk (PObjectType type);
 
-	bool IsContainer() { return (GetObjectTypeName() == "container"); }
+	bool IsContainer() { return (GetObjectTypeName() == wxT("container") ); }
 
 	shared_ptr<ObjectBase> GetLayout();
 
@@ -393,8 +397,8 @@ public:
 	*
 	* Deberá ser redefinida en cada clase derivada.
 	*/
-	string GetObjectTypeName() { return m_type; }
-	void SetObjectTypeName(string type) { m_type = type; }
+	wxString GetObjectTypeName() { return m_type; }
+	void SetObjectTypeName(wxString type) { m_type = type; }
 
 	/**
 	* Devuelve el descriptor del objeto.
@@ -442,11 +446,11 @@ public:
 class CodeInfo
 {
 private:
-	typedef map<string,string> TemplateMap;
+	typedef map<wxString,wxString> TemplateMap;
 	TemplateMap m_templates;
 public:
-	string GetTemplate(string name);
-	void AddTemplate(string name, string _template);
+	wxString GetTemplate(wxString name);
+	void AddTemplate(wxString name, wxString _template);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -460,7 +464,7 @@ public:
 	/**
 	* Constructor.
 	*/
-	ObjectInfo(string class_name, PObjectType type);
+	ObjectInfo(wxString class_name, PObjectType type);
 
 	virtual ~ObjectInfo() {};
 
@@ -469,7 +473,7 @@ public:
 	/**
 	* Obtiene el descriptor de la propiedad.
 	*/
-	shared_ptr<PropertyInfo> GetPropertyInfo(string name);
+	shared_ptr<PropertyInfo> GetPropertyInfo(wxString name);
 	shared_ptr<PropertyInfo> GetPropertyInfo(unsigned int idx);
 
 	/**
@@ -483,7 +487,7 @@ public:
 	* @param propertyName Property of base class to assign a default value to.
 	* @param defaultValue Default value of the inherited property.
 	*/
-	void AddBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName, const string& defaultValue );
+	void AddBaseClassDefaultPropertyValue( size_t baseIndex, const wxString& propertyName, const wxString& defaultValue );
 
 	/**
 	* Get a default value for an inherited property.
@@ -491,18 +495,18 @@ public:
 	* @param propertName Name of the property to get the default value for
 	* @return The default value for the property
 	*/
-	string GetBaseClassDefaultPropertyValue( size_t baseIndex, const string& propertyName );
+	wxString GetBaseClassDefaultPropertyValue( size_t baseIndex, const wxString& propertyName );
 
 	/**
 	* Devuelve el tipo de objeto, será util para que el constructor de objetos
 	* sepa la clase derivada de ObjectBase que ha de crear a partir del
 	* descriptor.
 	*/
-	string GetObjectTypeName() { return m_type->GetName();   }
+	wxString GetObjectTypeName() { return m_type->GetName();   }
 
 	PObjectType GetObjectType() { return m_type; }
 
-	string GetClassName () { return m_class;  }
+	wxString GetClassName () { return m_class;  }
 
 	/**
 	* Imprime el descriptor en un stream.
@@ -523,16 +527,16 @@ public:
 	/**
 	* Añade la información de un objeto al conjunto de clases base.
 	*/
-	size_t AddBaseClass(shared_ptr<ObjectInfo> base) 
-	{  
-		m_base.push_back(base); 
+	size_t AddBaseClass(shared_ptr<ObjectInfo> base)
+	{
+		m_base.push_back(base);
 		return m_base.size() - 1;
 	}
 
 	/**
 	* Comprueba si el tipo es derivado del que se pasa como parámetro.
 	*/
-	bool IsSubclassOf(string classname);
+	bool IsSubclassOf(wxString classname);
 
 	shared_ptr<ObjectInfo> GetBaseClass(unsigned int idx);
 	unsigned int GetBaseClassCount();
@@ -545,8 +549,8 @@ public:
 	void SetSmallIconFile(wxBitmap icon) { m_smallIcon = icon; };
 	wxBitmap GetSmallIconFile() { return m_smallIcon; }
 
-	void AddCodeInfo(string lang, shared_ptr<CodeInfo> codeinfo);
-	shared_ptr<CodeInfo> GetCodeInfo(string lang);
+	void AddCodeInfo(wxString lang, shared_ptr<CodeInfo> codeinfo);
+	shared_ptr<CodeInfo> GetCodeInfo(wxString lang);
 
 	/**
 	* Le asigna un componente a la clase.
@@ -555,20 +559,20 @@ public:
 	IComponent* GetComponent() { return m_component; };
 
 private:
-	string m_class;         // nombre de la clase (tipo de objeto)
+	wxString m_class;         // nombre de la clase (tipo de objeto)
 
 	PObjectType m_type;     // tipo del objeto
 
 	wxBitmap m_icon;
 	wxBitmap m_smallIcon; // The icon for the property grid toolbar
 
-	map< string, shared_ptr< CodeInfo > > m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
+	map< wxString, shared_ptr< CodeInfo > > m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
 
 	unsigned int m_numIns;  // número de instancias del objeto
 
-	map< string, shared_ptr< PropertyInfo > > m_properties;
+	map< wxString, shared_ptr< PropertyInfo > > m_properties;
 	vector< shared_ptr< ObjectInfo > > m_base; // base classes
-	map< size_t, map< string, string > > m_baseClassDefaultPropertyValues;
+	map< size_t, map< wxString, wxString > > m_baseClassDefaultPropertyValues;
 	IComponent* m_component;  // componente asociado a la clase los objetos del
 	// designer
 };

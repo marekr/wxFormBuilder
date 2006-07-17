@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="Common Components Plugin" />
 		<Option pch_mode="0" />
+		<Option default_target="1" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
@@ -29,6 +30,7 @@
 				<Option object_output=".objsud" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="..\..\..\bin\wxFormBuilderd.exe" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-O0" />

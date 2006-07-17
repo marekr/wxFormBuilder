@@ -157,7 +157,7 @@ void ObjectTree::ObjectRemoved(shared_ptr<ObjectBase> obj)
 
 void ObjectTree::PropertyModified(shared_ptr<Property> prop)
 {
-	if (prop->GetName() == "name")
+	if (prop->GetName() == wxT("name") )
 	{
 		ObjectItemMap::iterator it = m_map.find(prop->GetObject());
 		if (it != m_map.end())
@@ -233,7 +233,7 @@ void ObjectTree::AddChildren(shared_ptr<ObjectBase> obj, wxTreeItemId &parent, b
 }
 
 
-int ObjectTree::GetImageIndex (string name)
+int ObjectTree::GetImageIndex (wxString name)
 {
 	int index = 0; //default icon
 
@@ -248,7 +248,7 @@ void ObjectTree::UpdateItem(wxTreeItemId id, shared_ptr<ObjectBase> obj)
 {
 	// mostramos el nombre
 	wxString class_name( _WXSTR(obj->GetClassName()) );
-	shared_ptr<Property> prop = obj->GetProperty("name");
+	shared_ptr<Property> prop = obj->GetProperty( wxT("name") );
 	wxString obj_name;
 	if (prop)
 	{
@@ -270,7 +270,7 @@ void ObjectTree::Create()
 	{
 		wxBitmap icon = AppBitmaps::GetBitmap(wxT("project"), ICON_SIZE);
 		m_iconList->Add(icon);
-		m_iconIdx.insert(IconIndexMap::value_type("_default_",index++));
+		m_iconIdx.insert(IconIndexMap::value_type( wxT("_default_"),index++));
 	}
 
 	unsigned int pkg_count = GetData()->GetPackageCount();
@@ -281,7 +281,7 @@ void ObjectTree::Create()
 		unsigned int j;
 		for (j=0;j<pkg->GetObjectCount();j++)
 		{
-			string comp_name(pkg->GetObjectInfo(j)->GetClassName());
+			wxString comp_name(pkg->GetObjectInfo(j)->GetClassName());
 			m_iconList->Add( pkg->GetObjectInfo(j)->GetIconFile() );
 			m_iconIdx.insert(IconIndexMap::value_type(comp_name,index++));
 		}
@@ -403,25 +403,25 @@ void ItemPopupMenu::OnMenuEvent (wxCommandEvent & event)
 	case MENU_EDIT_MENUS:
 		{
 			shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-			if (obj && (obj->GetClassName() == "wxMenuBar" || obj->GetClassName() == "Frame"))
+			if (obj && (obj->GetClassName() == wxT("wxMenuBar") || obj->GetClassName() == wxT("Frame") ) )
 			{
 				MenuEditor me(NULL);
-				if (obj->GetClassName() == "Frame")
+				if (obj->GetClassName() == wxT("Frame") )
 				{
 					bool found = false;
 					shared_ptr<ObjectBase> menubar;
 					for (unsigned int i = 0; i < obj->GetChildCount() && !found; i++)
 					{
 						menubar = obj->GetChild(i);
-						found = menubar->GetClassName() == "wxMenuBar";
+						found = menubar->GetClassName() == wxT("wxMenuBar");
 					}
 					if (found) obj = menubar;
 				}
 
-				if (obj->GetClassName() == "wxMenuBar") me.Populate(obj);
+				if (obj->GetClassName() == wxT("wxMenuBar")) me.Populate(obj);
 				if (me.ShowModal() == wxID_OK)
 				{
-					if (obj->GetClassName() == "wxMenuBar")
+					if (obj->GetClassName() == wxT("wxMenuBar"))
 					{
 						shared_ptr<ObjectBase> menubar = me.GetMenubar(m_data->GetObjectDatabase());
 						while (obj->GetChildCount() > 0)
@@ -452,8 +452,8 @@ void ItemPopupMenu::OnUpdateEvent(wxUpdateUIEvent& e)
 	switch (e.GetId())
 	{
 	case MENU_EDIT_MENUS:
-		e.Enable(m_object && (m_object->GetClassName() == "wxMenuBar"
-			|| m_object->GetClassName() == "Frame"));
+		e.Enable(m_object && (m_object->GetClassName() == wxT("wxMenuBar" )
+			|| m_object->GetClassName() == wxT("Frame")));
 		break;
 	case MENU_CUT:
 	case MENU_COPY:
@@ -465,7 +465,7 @@ void ItemPopupMenu::OnUpdateEvent(wxUpdateUIEvent& e)
 
 	case MENU_MOVE_UP:
 	case MENU_MOVE_DOWN:
-		e.Enable(m_object && m_object->GetObjectTypeName() != "project");
+		e.Enable(m_object && m_object->GetObjectTypeName() != wxT("project"));
 		break;
 	}
 }

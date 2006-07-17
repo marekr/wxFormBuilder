@@ -38,38 +38,38 @@ class ObjectTree : public wxPanel, public DataObserver
 {
 private:
    typedef map<shared_ptr<ObjectBase>, wxTreeItemId> ObjectItemMap;
-   typedef map<string, int> IconIndexMap;
+   typedef map<wxString, int> IconIndexMap;
    typedef map<shared_ptr<ObjectBase>, bool> ItemExpandedMap;
-   
+
    ObjectItemMap m_map;
    ItemExpandedMap m_expandedMap;
-   
+
    wxImageList *m_iconList;
    IconIndexMap m_iconIdx;
 
    wxTextCtrl* m_txtSelected;
    wxTreeCtrl* m_tcObjects;
-   
+
    /**
     * Crea el arbol completamente.
     */
    void RebuildTree();
    void AddChildren(shared_ptr<ObjectBase> child, wxTreeItemId &parent, bool is_root = false);
-   int GetImageIndex (string type);
+   int GetImageIndex (wxString type);
    void UpdateItem(wxTreeItemId id, shared_ptr<ObjectBase> obj);
-   
+
    void SaveItemStatus(shared_ptr<ObjectBase> obj);
    void RestoreItemStatus(shared_ptr<ObjectBase> obj);
-   
+
    DECLARE_EVENT_TABLE()
-   
+
 public:
   ObjectTree(wxWindow *parent, int id);
   void Create();
-  
+
   void OnSelChanged(wxTreeEvent &event);
   void OnRightClick(wxTreeEvent &event);
-   
+
   void ProjectLoaded();
   void ProjectSaved();
   void ObjectSelected(shared_ptr<ObjectBase> obj);
@@ -77,19 +77,19 @@ public:
   void ObjectRemoved(shared_ptr<ObjectBase> obj);
   void PropertyModified(shared_ptr<Property> prop);
   void ProjectRefresh();
-  
+
   void AddCustomKeysHandler(CustomKeysEvtHandler *h) { m_tcObjects->PushEventHandler(h); };
 };
 
 /**
  * Gracias a que podemos asociar un objeto a cada item, esta clase nos va
- * a facilitar obtener el objeto (ObjectBase) asociado a un item para 
+ * a facilitar obtener el objeto (ObjectBase) asociado a un item para
  * seleccionarlo pinchando en el item.
  */
 class ObjectTreeItemData : public wxTreeItemData
 {
  private:
-  shared_ptr<ObjectBase> m_object;   
+  shared_ptr<ObjectBase> m_object;
  public:
   ObjectTreeItemData(shared_ptr<ObjectBase> obj);
   shared_ptr<ObjectBase> GetObject() { return m_object; }
@@ -106,13 +106,13 @@ class ItemPopupMenu : public wxMenu
  private:
   DataObservable *m_data;
   shared_ptr<ObjectBase> m_object;
-  
+
   DECLARE_EVENT_TABLE()
-     
+
  public:
   void OnUpdateEvent(wxUpdateUIEvent& e);
   ItemPopupMenu(DataObservable *data, shared_ptr<ObjectBase> obj);
   void OnMenuEvent (wxCommandEvent & event);
 };
- 
+
 #endif //__OBJECT_TREE__

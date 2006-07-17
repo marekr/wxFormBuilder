@@ -72,8 +72,8 @@ bool MyApp::OnInit()
   // Guardamos la ruta del ejecutable
   GlobalData()->SetApplicationPath(path);
 
-  wxSystemOptions::SetOption(_T("msw.remap"), 0);
-  wxSystemOptions::SetOption(_T("msw.staticbox.optimized-paint"), 0);
+  wxSystemOptions::SetOption(wxT("msw.remap"), 0);
+  wxSystemOptions::SetOption(wxT("msw.staticbox.optimized-paint"), 0);
 
 #ifndef _DEBUG
   wxBitmap bitmap;
@@ -102,7 +102,7 @@ bool MyApp::OnInit()
 
 
 
-  DataObservable *data = new ApplicationData(string(path.mb_str()));
+  DataObservable *data = new ApplicationData(wxString(path.c_str()));
 
   MainFrame *frame = new MainFrame(data, NULL);
   frame->Show(TRUE);

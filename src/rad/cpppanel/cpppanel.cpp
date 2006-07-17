@@ -71,7 +71,7 @@ CppPanel::CppPanel(wxWindow *parent, int id)
 void CppPanel::InitStyledTextCtrl(wxScintilla *stc)
 {
 	stc->SetLexer(wxSCI_LEX_CPP);
-	stc->SetKeyWords(0, _T("asm auto bool break case catch char class const const_cast \
+	stc->SetKeyWords(0, wxT("asm auto bool break case catch char class const const_cast \
 						   continue default delete do double dynamic_cast else enum explicit \
 						   export extern false float for friend goto if inline int long \
 						   mutable namespace new operator private protected public register \
@@ -84,8 +84,8 @@ void CppPanel::InitStyledTextCtrl(wxScintilla *stc)
 	wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
 #elif defined(__WXGTK__)
 	// Debe haber un bug en wxGTK ya que la familia wxMODERN no es de ancho fijo.
-	wxFont font(12, wxMODERN, wxNORMAL, wxNORMAL);
-	font.SetFaceName(_T("Monospace"));
+	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+	font.SetFaceName(wxT("Monospace"));
 #endif
 	stc->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
 	stc->StyleClearAll();
@@ -119,7 +119,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	bool useRelativePath = false;
 	unsigned int firstID;
 
-	shared_ptr<Property> pCodeGen = project->GetProperty("code_generation");
+	shared_ptr<Property> pCodeGen = project->GetProperty(wxT("code_generation"));
 	if (pCodeGen)
 	{
 		if (!TypeConv::FlagSet  (wxT("C++"),_WXSTR(pCodeGen->GetValue())))
@@ -127,12 +127,12 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	}
 
 	// Get First ID from Project File
-	shared_ptr<Property> pFirstID = project->GetProperty("first_id");
+	shared_ptr<Property> pFirstID = project->GetProperty(wxT("first_id"));
 	if (pFirstID)
 		firstID = pFirstID->GetValueAsInteger();
 
 	// Get the file name
-	shared_ptr<Property> pfile = project->GetProperty("file");
+	shared_ptr<Property> pfile = project->GetProperty(wxT("file"));
 	if (pfile)
 		file = _WXSTR(pfile->GetValue());
 
@@ -140,13 +140,13 @@ void CppPanel::CodeGeneration( bool panelOnly )
 		file = wxT("noname");
 
 	// Determine if the path is absolute or relative
-	shared_ptr<Property> pRelPath = project->GetProperty("relative_path");
+	shared_ptr<Property> pRelPath = project->GetProperty(wxT("relative_path"));
 	if (pRelPath)
 		useRelativePath = (pRelPath->GetValueAsInteger() ? true : false);
 
 
 	// Get the output path
-	shared_ptr<Property> ppath = project->GetProperty("path");
+	shared_ptr<Property> ppath = project->GetProperty(wxT("path"));
 	if (ppath)
 	{
 		pathEntry = _WXSTR(ppath->GetValue());
@@ -178,7 +178,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 		CppCodeGenerator codegen;
 		//codegen.SetBasePath(ppath->GetValue());
 		//codegen.SetRelativePath(useRelativePath);
-		codegen.UseRelativePath(useRelativePath,_STDSTR(path.GetPath()));
+		codegen.UseRelativePath(useRelativePath, path.GetPath().c_str());
 
 		if (pFirstID)
 			codegen.SetFirstID( firstID );
@@ -203,7 +203,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	// Generate code in the file
 	{
 		CppCodeGenerator codegen;
-		codegen.UseRelativePath(useRelativePath,_STDSTR(path.GetPath()));
+		codegen.UseRelativePath(useRelativePath, path.GetPath().c_str());
 
 		if (pFirstID)
 			codegen.SetFirstID( firstID );
@@ -231,22 +231,22 @@ CodeEditor::CodeEditor(wxWindow *parent, int id)
 
 	// Line Numbers
 	m_code->SetMarginType( 0, wxSCI_MARGIN_NUMBER );
-	m_code->SetMarginWidth( 0, m_code->TextWidth (wxSCI_STYLE_LINENUMBER, _T("_99999"))  );
+	m_code->SetMarginWidth( 0, m_code->TextWidth (wxSCI_STYLE_LINENUMBER, wxT("_99999"))  );
 
 	// markers
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS);
-    m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDER, wxColour (_T("BLACK")));
-    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDER, wxColour (_T("WHITE")));
+    m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDER, wxColour (wxT("BLACK")));
+    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDER, wxColour (wxT("WHITE")));
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_BOXMINUS);
-    m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDEROPEN, wxColour (_T("BLACK")));
-    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDEROPEN, wxColour (_T("WHITE")));
+    m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDEROPEN, wxColour (wxT("BLACK")));
+    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDEROPEN, wxColour (wxT("WHITE")));
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_EMPTY);
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUS);
-	m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDEREND, wxColour (_T("BLACK")));
-    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDEREND, wxColour (_T("WHITE")));
+	m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDEREND, wxColour (wxT("BLACK")));
+    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDEREND, wxColour (wxT("WHITE")));
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUS);
-	m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDEROPENMID, wxColour (_T("BLACK")));
-    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDEROPENMID, wxColour (_T("WHITE")));
+	m_code->MarkerSetBackground (wxSCI_MARKNUM_FOLDEROPENMID, wxColour (wxT("BLACK")));
+    m_code->MarkerSetForeground (wxSCI_MARKNUM_FOLDEROPENMID, wxColour (wxT("WHITE")));
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_EMPTY);
     m_code->MarkerDefine (wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_EMPTY);
 
@@ -256,19 +256,19 @@ CodeEditor::CodeEditor(wxWindow *parent, int id)
 	m_code->SetMarginWidth (1, 16);
 	m_code->SetMarginSensitive (1, true);
 
-	m_code->SetProperty( _T("fold"),					_T("1") );
-	m_code->SetProperty( _T("fold.comment"),			_T("1") );
-	m_code->SetProperty( _T("fold.compact"),			_T("1") );
-	m_code->SetProperty( _T("fold.preprocessor"),		_T("1") );
-	m_code->SetProperty( _T("fold.html"),				_T("1") );
-	m_code->SetProperty( _T("fold.html.preprocessor"),	_T("1") );
+	m_code->SetProperty( wxT("fold"),					wxT("1") );
+	m_code->SetProperty( wxT("fold.comment"),			wxT("1") );
+	m_code->SetProperty( wxT("fold.compact"),			wxT("1") );
+	m_code->SetProperty( wxT("fold.preprocessor"),		wxT("1") );
+	m_code->SetProperty( wxT("fold.html"),				wxT("1") );
+	m_code->SetProperty( wxT("fold.html.preprocessor"),	wxT("1") );
 	m_code->SetFoldFlags( wxSCI_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED );
 
 	m_code->SetIndentationGuides( true );
 
 	m_code->SetMarginWidth( 2, 0 );
 	wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
-	m_code->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
+//	m_code->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
 	sizer->Add(m_code,1,wxEXPAND|wxALL);
 	SetSizer(sizer);
 	sizer->SetSizeHints(this);
@@ -311,7 +311,7 @@ TCCodeWriter::TCCodeWriter(wxScintilla *tc )
 	SetTextCtrl(tc);
 }
 
-void TCCodeWriter::DoWrite(string code)
+void TCCodeWriter::DoWrite(wxString code)
 {
 	if (m_tc)
 		m_tc->AddText( _WXSTR(code) );
@@ -330,9 +330,9 @@ FileCodeWriter::FileCodeWriter(const wxString &file)
 	m_file.Create(file,true);
 }
 
-void FileCodeWriter::DoWrite(string code)
+void FileCodeWriter::DoWrite(wxString code)
 {
-	wxString fixEOL = _WXSTR(code);
+	wxString fixEOL = code;
 	#if defined( __WXMSW__ )
 		fixEOL.Replace( wxT("\n"), wxT("\r\n") );
 	#elif defined( __WXMAC__ )

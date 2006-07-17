@@ -411,10 +411,10 @@ class SplitterWindowComponent : public ComponentBase
 		xrc.AddProperty(_("style"),_("style"),XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("sashpos"),_("sashpos"),XRC_TYPE_INTEGER);
 		//xrc.AddProperty(_("minsize"),_("minsize"),...
-		if (obj->GetPropertyAsString(_("splitmode")) == _T("wxSPLIT_VERTICAL"))
-			xrc.AddPropertyValue(_("orientation"),_T("vertical"));
+		if (obj->GetPropertyAsString(_("splitmode")) == wxT("wxSPLIT_VERTICAL"))
+			xrc.AddPropertyValue(_("orientation"),wxT("vertical"));
 		else
-			xrc.AddPropertyValue(_("orientation"),_T("horizontal"));
+			xrc.AddPropertyValue(_("orientation"),wxT("horizontal"));
 
 		return xrc.GetXrcObject();
 	}
@@ -434,9 +434,9 @@ class SplitterWindowComponent : public ComponentBase
 			{
 				string value = xmlValue->Value();
 				if (value == "vertical")
-					filter.AddPropertyValue(_T("splitmode"),_T("wxSPLIT_VERTICAL"));
+					filter.AddPropertyValue(wxT("splitmode"),wxT("wxSPLIT_VERTICAL"));
 				else
-					filter.AddPropertyValue(_T("splitmode"),_T("wxSPLIT_HORIZONTAL"));
+					filter.AddPropertyValue(wxT("splitmode"),wxT("wxSPLIT_HORIZONTAL"));
 			}
 		}
 
@@ -458,7 +458,7 @@ public:
 	TiXmlElement* ExportToXrc(IObject *obj)
 	{
 		// A __dummyitem__ will be ignored...
-		ObjectToXrcFilter xrc(obj, _("__dummyitem__"),_T(""));
+		ObjectToXrcFilter xrc(obj, _("__dummyitem__"),wxT(""));
 		return xrc.GetXrcObject();
 	}
 };

@@ -30,16 +30,20 @@
 #include "rad/bitmaps.h"
 #include <wx/filename.h>
 #include "rad/global.h"
-#include <sstream>
 
 ////////////////////////////////////
 
 using namespace TypeConv;
 
 wxString TypeConv::_StringToWxString(const string &str)
-{	
+{
 	wxString newstr( str.c_str(), *wxConvCurrent );
 	return newstr;
+}
+
+wxString TypeConv::_StringToWxString( const wxString& str )
+{
+	return str.c_str();
 }
 
 string TypeConv::_WxStringToString(const wxString &str)
@@ -57,7 +61,7 @@ bool TypeConv::StringToPoint(const wxString &val, wxPoint *point)
 	long val_x = -1, val_y = -1;
 
 
-	Debug::Print("[wxPointEditor::ParseValue] Parsing value %s",val.c_str());
+	Debug::Print(wxT("[wxPointEditor::ParseValue] Parsing value %s"),val.c_str());
 
 	if (val != wxT(""))
 	{
@@ -67,13 +71,13 @@ bool TypeConv::StringToPoint(const wxString &val, wxPoint *point)
 			str_x = tkz.GetNextToken();
 			str_x.Trim(true);
 			str_x.Trim(false);
-			Debug::Print("[wxPointEditor::ParseValue] Parse %s", str_x.c_str());
+			Debug::Print(wxT("[wxPointEditor::ParseValue] Parse %s"), str_x.c_str());
 			if (tkz.HasMoreTokens())
 			{
 				str_y = tkz.GetNextToken();
 				str_y.Trim(true);
 				str_y.Trim(false);
-				Debug::Print("[wxPointEditor::ParseValue] Parse %s", str_y.c_str());
+				Debug::Print(wxT("[wxPointEditor::ParseValue] Parse %s"), str_y.c_str());
 			}
 			else
 				error = true;
@@ -149,7 +153,7 @@ int TypeConv::GetMacroValue(const wxString &str)
 	int value = 0;
 
 	PMacroDictionary dic = MacroDictionary::GetInstance();
-	dic->SearchMacro(_STDSTR(str),&value);
+	dic->SearchMacro( str.c_str(), &value );
 
 	return value;
 }
@@ -285,7 +289,7 @@ wxString TypeConv::MakeAbsolutePath ( const wxString& filename, const wxString& 
 			}
 		}
 	}
-	
+
 	return filename; // Either it is already absolute, or it could not be made absolute, so give it back
 }
 
@@ -311,7 +315,7 @@ wxString TypeConv::MakeRelativePath( const wxString& filename, const wxString& b
 	else if ( value == wxT(#NAME) )						\
 	{												\
 		systemVal =	NAME;							\
-	}								
+	}
 
 wxSystemColour TypeConv::StringToSystemColour( const wxString& str )
 {
@@ -354,13 +358,13 @@ wxColour TypeConv::StringToColour( const wxString& str )
 
 	// check for system colour
 	if ( str.find_first_of( wxT("wx") ) == 0 )
-	{		
+	{
 		return wxSystemSettings::GetColour( StringToSystemColour( str ) );
 	}
 	else
 	{
 		wxStringTokenizer tkz(str,wxT(","));
-		unsigned char red,green,blue;
+		unsigned int red,green,blue;
 
 		red = green = blue = 0;
 
@@ -422,7 +426,7 @@ wxString TypeConv::ColourToString( const wxColour& colour )
 wxString TypeConv::SystemColourToString( long colour )
 {
 	wxString s;
-	
+
 	switch ( colour )
 	{
 		SystemColourConvertCase( wxSYS_COLOUR_SCROLLBAR )
@@ -451,7 +455,7 @@ wxString TypeConv::SystemColourToString( long colour )
 		SystemColourConvertCase( wxSYS_COLOUR_INFOTEXT )
 		SystemColourConvertCase( wxSYS_COLOUR_INFOBK )
 	}
-	
+
 	return s;
 }
 
@@ -531,7 +535,7 @@ wxString TypeConv::SetFlag  (const wxString &flag, const wxString &currentValue)
 // la representación de un array de cadenas será:
 // 'string1' 'string2' 'string3'
 // el caracter (') se representa dentro de una cadena como ('')
-// 'string''1'''
+// 'wxString''1'''
 wxArrayString TypeConv::StringToArrayString(const wxString &str)
 {
 	int i=0, size = (int)str.Length(), state = 0;
@@ -591,7 +595,7 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
 {
 	wxMessageBox(wxT("Antes: ")+bitlist);
 	wxString result;
-	string translation;
+	wxString translation;
 	wxStringTokenizer tkz(bitlist, wxT("|"));
 	while (tkz.HasMoreTokens())
 	{
@@ -603,8 +607,8 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
 		if (result != wxT(""))
 			result = result + wxChar('|');
 
-		if (MacroDictionary::GetInstance()->SearchSynonymous(_STDSTR(token), translation))
-			result += _WXSTR(translation);
+		if (MacroDictionary::GetInstance()->SearchSynonymous( token.c_str(), translation))
+			result += translation.c_str();
 		else
 			result += token;
 
@@ -614,84 +618,83 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
 }
 
 
-string TypeConv::TextToString(const string &str)
+wxString TypeConv::TextToString(const wxString &str)
 {
-	string result;
+	wxString result;
 
 	for (unsigned int i=0 ; i < str.length() ; i++)
 	{
-		char c = str[i];
-		if (c == '\\')
+		wxChar c = str[i];
+		if ( c == wxT('\\') )
 		{
 			if (i < str.length() - 1)
 			{
-				char next = str[i+1];
+				wxChar next = str[i+1];
 
 				switch (next)
 				{
-				case 'n': result = result + '\n'; i++;
+				case wxT('n'): result += wxT('\n'); i++;
 					break;
 
-				case 't': result = result + '\t'; i++;
+				case wxT('t'): result += wxT('\t'); i++;
 					break;
 
-				case 'r': result = result + '\r'; i++;
+				case wxT('r'): result += wxT('\r'); i++;
 					break;
 
-				case '\\': result = result + '\\'; i++;
+				case wxT('\\'): result += wxT('\\'); i++;
 					break;
 				}
 			}
 		}
 		else
-			result = result + c;
+			result += c;
 	}
 
 	return result;
 }
 
-string TypeConv::StringToText(const string &str)
+wxString TypeConv::StringToText(const wxString &str)
 {
-	string result;
+	wxString result;
 
 	for (unsigned int i=0 ; i < str.length() ; i++)
 	{
-		char c = str[i];
+		wxChar c = str[i];
 
 		switch (c)
 		{
-		case '\n': result = result + "\\n";
+		case wxT('\n'): result += wxT("\\n");
 			break;
 
-		case '\t': result = result + "\\t";
+		case wxT('\t'): result += wxT("\\t");
 			break;
 
-		case '\r': result = result + "\\r";
+		case wxT('\r'): result += wxT("\\r");
 			break;
 
-		case '\\': result = result + "\\\\";
+		case wxT('\\'): result += wxT("\\\\");
 			break;
 
-		default:   result = result + c;
+		default:   result += c;
 			break;
 		}
 	}
 	return result;
 }
 
-double TypeConv::StringToFloat( const string& str )
+double TypeConv::StringToFloat( const wxString& str )
 {
-	std::stringstream convert( str );
 	double out;
-	convert >> out;
+	str.ToDouble( &out );
 	return out;
 }
 
-string TypeConv::FloatToString( const double& val )
+wxString TypeConv::FloatToString( const double& val )
 {
-	std::stringstream convert;
+	wxString convert;
 	convert << val;
-	return convert.str();
+	return convert;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -708,7 +711,7 @@ PMacroDictionary MacroDictionary::GetInstance()
 	return s_instance;
 }
 
-bool MacroDictionary::SearchMacro(string name, int *result)
+bool MacroDictionary::SearchMacro(wxString name, int *result)
 {
 	bool found = false;
 	MacroMap::iterator it = m_map.find(name);
@@ -721,7 +724,7 @@ bool MacroDictionary::SearchMacro(string name, int *result)
 	return found;
 }
 
-bool MacroDictionary::SearchSynonymous(string synName, string& result)
+bool MacroDictionary::SearchSynonymous(wxString synName, wxString& result)
 {
 	bool found = false;
 	SynMap::iterator it = m_synMap.find(synName);
@@ -737,12 +740,12 @@ bool MacroDictionary::SearchSynonymous(string synName, string& result)
 #define MACRO(x) m_map.insert(MacroMap::value_type(#x,x))
 #define MACRO2(x,y) m_map.insert(MacroMap::value_type(#x,y))
 
-void MacroDictionary::AddMacro(string name, int value)
+void MacroDictionary::AddMacro(wxString name, int value)
 {
 	m_map.insert(MacroMap::value_type(name,value));
 }
 
-void MacroDictionary::AddSynonymous(string synName, string name)
+void MacroDictionary::AddSynonymous(wxString synName, wxString name)
 {
 	m_synMap.insert(SynMap::value_type(synName, name));
 }

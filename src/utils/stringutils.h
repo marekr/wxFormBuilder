@@ -23,11 +23,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <string>
+#include <wx/string.h>
 
 using namespace std;
 
 namespace StringUtils
 {
-  string IntToStr(int num);
-};  
+  wxString IntToStr(int num);
+};

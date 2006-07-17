@@ -29,7 +29,7 @@
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 
-ObjectType::ObjectType(string name, int id, bool hidden, bool item)
+ObjectType::ObjectType(wxString name, int id, bool hidden, bool item)
 {
   m_id = id;
   m_name = name;
@@ -70,28 +70,28 @@ unsigned int ObjectType::GetChildTypeCount()
 PObjectType ObjectType::GetChildType(unsigned int idx)
 {
   PObjectType result;
-  
+
   assert (idx < GetChildTypeCount());
-  
+
   unsigned int i = 0;
   ChildTypeMap::iterator it = m_childTypes.begin();
-  
+
   while (i < idx && it != m_childTypes.end())
   {
     i++;
     it++;
   }
-  
+
   if (i == idx)
     result = PObjectType(it->first);
-    
-    
+
+
   return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-IntList::IntList(string value)
+IntList::IntList(wxString value)
 {
   SetList(value);
 }
@@ -101,7 +101,7 @@ void IntList::DeleteList()
   m_ints.erase(m_ints.begin(), m_ints.end());
 }
 
-void IntList::SetList(string str)
+void IntList::SetList(wxString str)
 {
   wxString wxstr( _WXSTR(str) );
   DeleteList();
@@ -113,20 +113,20 @@ void IntList::SetList(string str)
     token = tkz.GetNextToken();
     token.Trim(true);
     token.Trim(false);
-    
+
     if (token.ToLong(&value))
       Add((int)value);
   }
 }
 
-string IntList::ToString()
+wxString IntList::ToString()
 {
-  string result;
-  
+  wxString result;
+
   for (unsigned int i=0; i< m_ints.size() ; i++)
   {
     result = result + StringUtils::IntToStr(m_ints[i]);
   }
-  
+
   return result;
 }

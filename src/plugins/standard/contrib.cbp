@@ -97,17 +97,17 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DTIXML_USE_TICPP" />
-			<Add option="-DLIB_USINGDLL" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
 			<Add directory="..\.." />
 		</Compiler>
 		<Linker>
-			<Add library="$(#wxadditions.lib)\gcc_libdll\libwxmsw$(WX_VER)$(WX_SUFFIX)_plot.a" />
-			<Add library="$(#wxadditions.lib)\gcc_libdll\libwxmsw$(WX_VER)$(WX_SUFFIX)_awx.a" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_plot_gcc" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_awx_gcc" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
 			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_propgrid_gcc" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_scintilla_gcc" />
 			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_flatnotebook_gcc" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#wxadditions.lib)\gcc_dll" />

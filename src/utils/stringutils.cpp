@@ -26,10 +26,9 @@
 #include "stringutils.h"
 #include <sstream>
 
-string StringUtils::IntToStr(int num)
+wxString StringUtils::IntToStr(int num)
 {
-  ostringstream stream;
-  stream<< num << flush;
-  string str(stream.str());
-  return str; 
-} 
+  wxString stream;
+  stream << num;
+  return stream;
+}
