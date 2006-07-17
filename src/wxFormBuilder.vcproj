@@ -42,7 +42,7 @@
 				AdditionalOptions="/vmm&#x0D;&#x0A;"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\additions\include&quot;;&quot;$(WXWIN)\include&quot;;..\libs\wxscintilla;..\src;..\libs\boost_1_31_0_smart_ptr;..\libs\tinyxml;..\libs\wxscintilla\scintilla\src;..\libs\wxscintilla\scintilla\include"
-				PreprocessorDefinitions="WIN32;STRICT;__WXDEBUG__;__WXMSW__;__WX__;WXUSINGDLL;_DEBUG;_WINDOWS;USING_SOURCE_SCI;SCI_LEXER;LINK_LEXERS;TIXML_USE_TICPP;LIB_USINGDLL;wxUSE_UNICODE"
+				PreprocessorDefinitions="WIN32;STRICT;__WXDEBUG__;__WXMSW__;__WX__;WXUSINGDLL;_DEBUG;_WINDOWS;TIXML_USE_TICPP;wxUSE_UNICODE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -73,7 +73,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26ud.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26umd_propgrid.lib wxmsw26umd_flatnotebook.lib $(WXWIN)\additions\lib\vc_libdll\wxmsw26ud_scintilla.lib"
+				AdditionalDependencies="wxmsw26ud.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26umd_propgrid.lib wxmsw26umd_flatnotebook.lib wxmsw26umd_scintilla.lib"
 				OutputFile="$(OutDir)\$(ProjectName)d.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_dll;$(WXWIN)\additions\lib\vc_dll"
@@ -141,7 +141,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\additions\include&quot;;&quot;$(WXWIN)\include&quot;;..\libs\wxscintilla;..\src;..\libs\boost_1_31_0_smart_ptr;..\libs\tinyxml;..\libs\wxscintilla\scintilla\src;..\libs\wxscintilla\scintilla\include;..\libs\wxFlatNotebook"
-				PreprocessorDefinitions="WIN32;STRICT;WXUSINGDLL;__WX__;__WXMSW__;NDEBUG;_WINDOWS;_CRT_NONSTDC_NO_DEPRECATE;USING_SOURCE_SCI;SCI_LEXER;LINK_LEXERS;TIXML_USE_TICPP;LIB_USINGDLL;wxUSE_UNICODE"
+				PreprocessorDefinitions="WIN32;STRICT;WXUSINGDLL;__WX__;__WXMSW__;NDEBUG;_WINDOWS;_CRT_NONSTDC_NO_DEPRECATE;TIXML_USE_TICPP;wxUSE_UNICODE"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
@@ -170,7 +170,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
-				AdditionalDependencies="wxmsw26u.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26um_propgrid.lib wxmsw26um_flatnotebook.lib $(WXWIN)\additions\lib\vc_libdll\wxmsw26u_scintilla.lib"
+				AdditionalDependencies="wxmsw26u.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26um_propgrid.lib wxmsw26um_flatnotebook.lib wxmsw26um_scintilla.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_dll;$(WXWIN)\additions\lib\vc_dll"
 				GenerateManifest="true"

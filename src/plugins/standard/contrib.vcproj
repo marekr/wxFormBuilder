@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\additions\include&quot;;&quot;$(WXWIN)\include&quot;;..\..\..\src;..\..\..\libs\tinyxml;..\..\..\libs\plot"
-				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;_DEBUG;__WXDEBUG;_WINDOWS;DEVELOPMENT;TIXML_USE_TICPP;LIB_USINGDLL"
+				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;_DEBUG;__WXDEBUG;_WINDOWS;DEVELOPMENT;TIXML_USE_TICPP"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="wxmsw26ud.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26umd_propgrid.lib wxmsw26umd_flatnotebook.lib $(WXWIN)\additions\lib\vc_libdll\wxmsw26ud_plot.lib $(WXWIN)\additions\lib\vc_libdll\wxmsw26ud_awx.lib"
+				AdditionalDependencies="wxmsw26ud.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26umd_propgrid.lib wxmsw26umd_flatnotebook.lib wxmsw26umd_plot.lib wxmsw26umd_awx.lib wxmsw26umd_scintilla.lib"
 				OutputFile="$(OutDir)\lib$(ProjectName).dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_dll;$(WXWIN)\additions\lib\vc_dll"
@@ -136,7 +136,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\additions\include&quot;;&quot;$(WXWIN)\include&quot;;..\..\..\src;..\..\..\libs\plot;..\..\..\libs\tinyxml"
-				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;NDEBUG;_WINDOWS;TIXML_USE_TICPP;LIB_USINGDLL"
+				PreprocessorDefinitions="WIN32;BUILD_DLL;WXUSINGDLL;STRICT;__WXMSW__;NDEBUG;_WINDOWS;TIXML_USE_TICPP"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
@@ -162,7 +162,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26u.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26um_propgrid.lib wxmsw26um_flatnotebook.lib $(WXWIN)\additions\lib\vc_libdll\wxmsw26u_plot.lib $(WXWIN)\additions\lib\vc_libdll\wxmsw26u_awx.lib"
+				AdditionalDependencies="wxmsw26u.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxmsw26um_propgrid.lib wxmsw26um_flatnotebook.lib wxmsw26um_plot.lib wxmsw26um_awx.lib wxmsw26um_scintilla.lib"
 				OutputFile="$(OutDir)\lib$(ProjectName).dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_dll;$(WXWIN)\additions\lib\vc_dll"
