@@ -1,6 +1,15 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
 
+07-14-2006  Version 2.00.59
++ Added wxScintilla control to contrib.
+^ Installer Maintenance release.
+
+07-14-2006  Version 2.00.58
+* Fixed Unicode xrc output bug.
++ Replaced common icons with new look.
++ Project Conversion supported.
+
 07-06-2006  Version 2.00.57
 * Fixed wxMenuBar 'style' property.
 + Added the move right/left to the right-click menu.
