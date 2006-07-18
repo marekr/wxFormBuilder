@@ -23,7 +23,7 @@
 		<template name="library">propgrid</template>
 		<template name="settings">
 		    #ifnotnull $extra_style
-		    @{ $name->SetExtraStyle( $extra_style ) @}
+		    @{ $name->SetExtraStyle( $extra_style ); @}
 		</template>
 	</templates>
 
@@ -38,7 +38,7 @@
 		</template>
 		<template name="settings">
 		    #ifnotnull $extra_style
-		    @{ $name->SetExtraStyle( $extra_style ) @}
+		    @{ $name->SetExtraStyle( $extra_style ); @}
 		</template>
 		<template name="library">propgrid</template>
 	</templates>
