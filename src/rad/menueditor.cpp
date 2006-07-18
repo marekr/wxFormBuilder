@@ -59,13 +59,19 @@ MenuEditor::MenuEditor(wxWindow *parent, int id) : wxDialog(parent,id,wxT("Menu 
   mainSizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *sizerTop;
   sizerTop = new wxBoxSizer(wxHORIZONTAL);
-  m_menuList = new wxListCtrl(this,ID_DEFAULT,wxDefaultPosition,wxDefaultSize,wxLC_REPORT | wxLC_SINGLE_SEL);
-  m_menuList->InsertColumn(0, wxT("Label"), wxLIST_FORMAT_LEFT, 200);
-  m_menuList->InsertColumn(1, wxT("Shortcut"), wxLIST_FORMAT_LEFT, 50);
-  m_menuList->InsertColumn(2, wxT("Id"), wxLIST_FORMAT_LEFT, 50);
+  m_menuList = new wxListCtrl(this,ID_DEFAULT,wxDefaultPosition,wxDefaultSize,wxLC_REPORT | wxLC_SINGLE_SEL | wxSTATIC_BORDER);
+  m_menuList->InsertColumn(0, wxT("Label"), wxLIST_FORMAT_LEFT, 150);
+  m_menuList->InsertColumn(1, wxT("Shortcut"), wxLIST_FORMAT_LEFT, 80);
+  m_menuList->InsertColumn(2, wxT("Id"), wxLIST_FORMAT_LEFT, 80);
   m_menuList->InsertColumn(3, wxT("Name"), wxLIST_FORMAT_LEFT, 50);
-  m_menuList->InsertColumn(4, wxT("Help String"), wxLIST_FORMAT_LEFT, 200);
-  m_menuList->InsertColumn(5, wxT("Kind"), wxLIST_FORMAT_LEFT, 70);
+  m_menuList->InsertColumn(4, wxT("Help String"), wxLIST_FORMAT_LEFT, 150);
+  m_menuList->InsertColumn(5, wxT("Kind"), wxLIST_FORMAT_LEFT, 120);
+  int width = 0;
+  for ( int i = 0; i < m_menuList->GetColumnCount(); ++i )
+  {
+  	width += m_menuList->GetColumnWidth( i );
+  }
+  m_menuList->SetMinSize( wxSize( width, -1 ) );
   sizerTop->Add(m_menuList, 1, wxALL|wxEXPAND, 5);
   wxStaticBoxSizer *sizer1;
   sizer1 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wxT("Menu item")), wxVERTICAL);
@@ -146,20 +152,17 @@ MenuEditor::MenuEditor(wxWindow *parent, int id) : wxDialog(parent,id,wxT("Menu 
   wxButton *m_bRight;
   m_bRight = new wxButton(this,ID_MENURIGHT,wxT(">"),wxDefaultPosition,wxDefaultSize,0);
   sizerMoveButtons->Add(m_bRight, 0, wxALL, 5);
-  mainSizer->Add(sizerMoveButtons, 0, wxEXPAND, 5);
-  wxBoxSizer *sizerOkCancel;
-  sizerOkCancel = new wxBoxSizer(wxHORIZONTAL);
-  wxButton *m_bOk;
-  m_bOk = new wxButton(this,wxID_OK,wxT("OK"),wxDefaultPosition,wxDefaultSize,0);
-  sizerOkCancel->Add(m_bOk, 0, wxALL, 5);
-  wxButton *m_bCancel;
-  m_bCancel = new wxButton(this,wxID_CANCEL,wxT("Cancel"),wxDefaultPosition,wxDefaultSize,0);
-  sizerOkCancel->Add(m_bCancel, 0, wxALL, 5);
-  mainSizer->Add(sizerOkCancel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  wxStdDialogButtonSizer* sizerOkCancel = new wxStdDialogButtonSizer();
+  sizerOkCancel->AddButton( new wxButton( this, wxID_OK ) );
+  sizerOkCancel->AddButton( new wxButton( this, wxID_CANCEL ) );
+  sizerOkCancel->Realize();
+  sizerMoveButtons->Add(sizerOkCancel, 1, wxALL, 5);
+  mainSizer->Add(sizerMoveButtons, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
   this->SetSizer(mainSizer);
+  mainSizer->SetSizeHints( this );
   this->SetAutoLayout(true);
   this->Layout();
-  SetClientSize(560, 368);
+  //SetClientSize(560, 368);
   CenterOnScreen();
 }
 
