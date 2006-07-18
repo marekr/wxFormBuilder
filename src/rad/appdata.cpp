@@ -767,7 +767,7 @@ void ApplicationData::SaveProject(const wxString &filename)
 {
 	TiXmlDocument *doc = m_project->Serialize();
 	m_modFlag = false;
-	doc->SaveFile(filename.mb_str());
+	doc->SaveFile(filename.mb_str( wxConvUTF8 ));
 	m_projectFile = filename.c_str();
 	GlobalData()->SetProjectPath(::wxPathOnly(filename));
 	delete doc;
@@ -782,7 +782,7 @@ bool ApplicationData::LoadProject(const wxString &file)
 	bool result = false;
 
 	TiXmlDocument doc = TiXmlDocument();
-	if ( doc.LoadFile( file.mb_str() ) )
+	if ( doc.LoadFile( file.mb_str( wxConvUTF8 ) ) )
 	{
 		TiXmlNode* root = doc.RootElement();
 		if ( NULL == root )
@@ -852,7 +852,7 @@ bool ApplicationData::LoadProject(const wxString &file)
 										wxT("NOTE: This will modify your project file on disk!"), _("Old Version"), wxYES_NO ) )
 			{
 				ConvertProject( file, fbpVerMajor, fbpVerMinor );
-				if ( doc.LoadFile( file.mb_str() ) )
+				if ( doc.LoadFile( file.mb_str( wxConvUTF8 ) ) )
 				{
 					root = doc.RootElement();
 				}

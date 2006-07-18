@@ -143,13 +143,13 @@ ObjectToXrcFilter::ObjectToXrcFilter(IObject *obj, const wxString &classname,
   m_obj = obj;
   m_xrcObj = new TiXmlElement("object");
 
-  m_xrcObj->SetAttribute("class",classname.mb_str());
+  m_xrcObj->SetAttribute("class",classname.mb_str( wxConvUTF8 ));
 
   if (objname != wxT(""))
-    m_xrcObj->SetAttribute("name",objname.mb_str());
+    m_xrcObj->SetAttribute("name",objname.mb_str( wxConvUTF8 ));
 
   if (base != wxT(""))
-    m_xrcObj->SetAttribute("base",base.mb_str());
+    m_xrcObj->SetAttribute("base",base.mb_str( wxConvUTF8 ));
 }
 
 ObjectToXrcFilter::~ObjectToXrcFilter()
@@ -161,7 +161,7 @@ void ObjectToXrcFilter::AddProperty(const wxString &objPropName,
                                     const wxString &xrcPropName,
                                     const int &propType)
 {
-	std::string name( xrcPropName.mb_str() );
+	std::string name( xrcPropName.mb_str( wxConvUTF8 ) );
   TiXmlElement *propElement = new TiXmlElement(name);
 
   switch (propType)
@@ -209,7 +209,7 @@ void ObjectToXrcFilter::AddProperty(const wxString &objPropName,
 void ObjectToXrcFilter::AddPropertyValue (const wxString &xrcPropName,
                                           const wxString &xrcPropValue)
 {
-  TiXmlElement *propElement = new TiXmlElement(xrcPropName.mb_str());
+  TiXmlElement *propElement = new TiXmlElement(xrcPropName.mb_str( wxConvUTF8 ));
   LinkText(xrcPropValue, propElement);
   m_xrcObj->LinkEndChild(propElement);
 }
@@ -222,14 +222,14 @@ TiXmlElement* ObjectToXrcFilter::GetXrcObject()
 void ObjectToXrcFilter::LinkText(const wxString &text,TiXmlElement *propElement, bool xrcFormat)
 {
   wxString value = (xrcFormat ? StringToXrcText(text) : text);
-  std::string val( value.mb_str() );
+  std::string val( value.mb_str( wxConvUTF8 ) );
   propElement->LinkEndChild(new TiXmlText(val));
 }
 
 void ObjectToXrcFilter::LinkInteger(const int &integer, TiXmlElement *propElement)
 {
   wxString text = wxString::Format(wxT("%d"),integer);
-  propElement->LinkEndChild(new TiXmlText(text.mb_str()));
+  propElement->LinkEndChild(new TiXmlText(text.mb_str( wxConvUTF8 )));
 }
 
 
@@ -240,7 +240,7 @@ void ObjectToXrcFilter::LinkColour(const wxColour &colour,
   wxString value = wxString::Format(wxT("#%02x%02x%02x"),
                      colour.Red(), colour.Green(), colour.Blue());
 
-  propElement->LinkEndChild(new TiXmlText(value.mb_str()));
+  propElement->LinkEndChild(new TiXmlText(value.mb_str( wxConvUTF8 )));
 }
 
 void ObjectToXrcFilter::LinkFont(const wxFont &font, TiXmlElement *propElement)
@@ -248,7 +248,7 @@ void ObjectToXrcFilter::LinkFont(const wxFont &font, TiXmlElement *propElement)
   wxString aux;
   TiXmlElement *element = new TiXmlElement("size");
   aux.Printf(wxT("%d"), font.GetPointSize());
-  element->LinkEndChild(new TiXmlText(aux.mb_str()));
+  element->LinkEndChild(new TiXmlText(aux.mb_str( wxConvUTF8 )));
   propElement->LinkEndChild(element);
 
   element = new TiXmlElement("family");
@@ -307,7 +307,7 @@ void ObjectToXrcFilter::LinkFont(const wxFont &font, TiXmlElement *propElement)
   propElement->LinkEndChild(element);
 
   element = new TiXmlElement("face");
-  element->LinkEndChild(new TiXmlText(font.GetFaceName().mb_str()));
+  element->LinkEndChild(new TiXmlText(font.GetFaceName().mb_str( wxConvUTF8 )));
   propElement->LinkEndChild(element);
 }
 
@@ -317,7 +317,7 @@ void ObjectToXrcFilter::LinkStringList(const wxArrayString &array, TiXmlElement 
     {
       wxString value = ( xrcFormat ? StringToXrcText(array[i]) : array[i]);
       TiXmlElement *element = new TiXmlElement("item");
-      element->LinkEndChild(new TiXmlText(value.mb_str()));
+      element->LinkEndChild(new TiXmlText(value.mb_str( wxConvUTF8 )));
       propElement->LinkEndChild(element);
     }
 }
@@ -375,7 +375,7 @@ XrcToXfbFilter::XrcToXfbFilter(TiXmlElement *obj, const wxString &classname)
   m_xrcObj = obj;
   m_xfbObj = new TiXmlElement("object");
 
-  m_xfbObj->SetAttribute("class",classname.mb_str());
+  m_xfbObj->SetAttribute("class",classname.mb_str( wxConvUTF8 ));
 
   if (obj->Attribute("name"))
   {
@@ -392,7 +392,7 @@ XrcToXfbFilter::~XrcToXfbFilter()
 
 TiXmlElement* XrcToXfbFilter::GetXrcProperty(const wxString &name)
 {
-  return m_xrcObj->FirstChildElement(name.mb_str());
+  return m_xrcObj->FirstChildElement(name.mb_str( wxConvUTF8 ));
 }
 
 void XrcToXfbFilter::AddProperty(const wxString &xrcPropName,
@@ -400,7 +400,7 @@ void XrcToXfbFilter::AddProperty(const wxString &xrcPropName,
                                  const int &propType)
 {
   TiXmlElement *propElement = new TiXmlElement("property");
-  propElement->SetAttribute("name",xfbPropName.mb_str());
+  propElement->SetAttribute("name",xfbPropName.mb_str( wxConvUTF8 ));
 
   switch (propType)
   {
@@ -447,9 +447,9 @@ void XrcToXfbFilter::AddPropertyValue (const wxString &xfbPropName,
                                        const wxString &xfbPropValue)
 {
   TiXmlElement *propElement = new TiXmlElement("property");
-  propElement->SetAttribute("name",xfbPropName.mb_str());
+  propElement->SetAttribute("name",xfbPropName.mb_str( wxConvUTF8 ));
 
-  TiXmlText *propValue = new TiXmlText(xfbPropValue.mb_str());
+  TiXmlText *propValue = new TiXmlText(xfbPropValue.mb_str( wxConvUTF8 ));
 
   propElement->LinkEndChild(propValue);
   m_xfbObj->LinkEndChild(propElement);
@@ -465,7 +465,7 @@ TiXmlElement* XrcToXfbFilter::GetXfbObject()
 void XrcToXfbFilter::ImportTextProperty(const wxString &xrcPropName,
                                         TiXmlElement *property, bool parseXrcText)
 {
-  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str());
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
   if (xrcProperty)
   {
     TiXmlNode *textElement = xrcProperty->FirstChild();
@@ -477,7 +477,7 @@ void XrcToXfbFilter::ImportTextProperty(const wxString &xrcPropName,
       if (parseXrcText)
         value = XrcTextToString(value);
 
-      TiXmlText *xmlText = new TiXmlText(value.mb_str());
+      TiXmlText *xmlText = new TiXmlText(value.mb_str( wxConvUTF8 ));
       property->LinkEndChild(xmlText);
     }
   }
@@ -486,7 +486,7 @@ void XrcToXfbFilter::ImportTextProperty(const wxString &xrcPropName,
 void XrcToXfbFilter::ImportIntegerProperty(const wxString &xrcPropName,
                                         TiXmlElement *property)
 {
-  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str());
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
   if (xrcProperty)
   {
     TiXmlNode *textElement = xrcProperty->FirstChild();
@@ -502,7 +502,7 @@ void XrcToXfbFilter::ImportIntegerProperty(const wxString &xrcPropName,
 void XrcToXfbFilter::ImportBitlistProperty(const wxString &xrcPropName,
                                         TiXmlElement *property)
 {
-  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str());
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
   if (xrcProperty)
   {
     TiXmlNode *textElement = xrcProperty->FirstChild();
@@ -510,7 +510,7 @@ void XrcToXfbFilter::ImportBitlistProperty(const wxString &xrcPropName,
     {
       wxString bitlist = wxString(textElement->ToText()->Value(),wxConvUTF8);
       bitlist = ReplaceSynonymous(bitlist);
-      property->LinkEndChild(new TiXmlText(bitlist.mb_str()));
+      property->LinkEndChild(new TiXmlText(bitlist.mb_str( wxConvUTF8 )));
     }
   }
 }
@@ -518,7 +518,7 @@ void XrcToXfbFilter::ImportBitlistProperty(const wxString &xrcPropName,
 void XrcToXfbFilter::ImportFontProperty(const wxString &xrcPropName,
                                         TiXmlElement *property)
 {
-  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str());
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
   if (!xrcProperty)
     return;
 
@@ -629,7 +629,7 @@ void XrcToXfbFilter::ImportFontProperty(const wxString &xrcPropName,
   wxString font_str =
     wxString::Format(wxT("%s,%d,%d,%d"),font.GetFaceName().c_str(), font.GetStyle(),
                                        font.GetWeight(), font.GetPointSize());
-  property->LinkEndChild(new TiXmlText(font_str.mb_str()));
+  property->LinkEndChild(new TiXmlText(font_str.mb_str( wxConvUTF8 )));
   }
 
 }
@@ -637,7 +637,7 @@ void XrcToXfbFilter::ImportFontProperty(const wxString &xrcPropName,
 void XrcToXfbFilter::ImportColourProperty(const wxString &xrcPropName,
                                         TiXmlElement *property)
 {
-  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str());
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
   if (!xrcProperty)
     return;
 
@@ -669,7 +669,7 @@ void XrcToXfbFilter::ImportColourProperty(const wxString &xrcPropName,
 void XrcToXfbFilter::ImportStringListProperty(const wxString &xrcPropName,
   TiXmlElement *property , bool parseXrcText)
 {
-  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str());
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
   if (!xrcProperty)
     return;
 
@@ -694,7 +694,7 @@ void XrcToXfbFilter::ImportStringListProperty(const wxString &xrcPropName,
   }
 
   res.Trim();
-  property->LinkEndChild(new TiXmlText(res.mb_str()));
+  property->LinkEndChild(new TiXmlText(res.mb_str( wxConvUTF8 )));
 }
 
 void XrcToXfbFilter::AddWindowProperties()
