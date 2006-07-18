@@ -17,9 +17,9 @@
 
 #include "wxfbTest_GUI.h"
 
-#include "../bin/resources/icons/bitmap_button.xpm"
-#include "../bin/resources/icons/button.xpm"
-#include "../bin/resources/icons/calendar.xpm"
+#include "..\\bin\\resources\\icons\\bitmap_button.xpm"
+#include "..\\bin\\resources\\icons\\button.xpm"
+#include "..\\bin\\resources\\icons\\calendar.xpm"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -63,7 +63,7 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	m_textCtrl1 = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_textCtrl1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_staticText1 = new wxStaticText( this, ID_DEFAULT, wxT("Unicode Test: Максим Емельянов"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1 = new wxStaticText( this, ID_DEFAULT, wxT("Unicode Test: ÐœÐ°ÐºÑÐ¸Ð¼ Ð•Ð¼ÐµÐ»ÑŒÑÐ½Ð¾Ð²"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_checkBox1 = new wxCheckBox( this, ID_DEFAULT, wxT("Check Me!"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -98,7 +98,7 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	wxGridSizer* gSizer1;
 	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
 	
-	m_bitmap1 = new wxStaticBitmap( this, ID_DEFAULT, wxBitmap( wxT("../bin/resources/splash.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxSize( 100,20 ), 0 );
+	m_bitmap1 = new wxStaticBitmap( this, ID_DEFAULT, wxBitmap( wxT("..\\bin\\resources\\splash.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxSize( 100,20 ), 0 );
 	gSizer1->Add( m_bitmap1, 0, wxALL|wxEXPAND, 5 );
 	
 	m_staticline1 = new wxStaticLine( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
