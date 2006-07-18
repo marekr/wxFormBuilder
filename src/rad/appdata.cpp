@@ -795,7 +795,7 @@ bool ApplicationData::LoadProject(const wxString &file)
 		int fbpVerMajor = 0;
 		int fbpVerMinor = 0;
 
-		if ( root->Value() != "object" )
+		if ( root->Value() != string("object") )
 		{
 			TiXmlElement* fileVersion = root->FirstChildElement("FileVersion");
 			if ( NULL != fileVersion )
@@ -900,7 +900,7 @@ void ApplicationData::ConvertProject( const wxString& path, int fileMajor, int f
 		ticpp::Document doc( _STDSTR( path ) );
 		doc.LoadFile();
 		ticpp::Element* root = doc.FirstChildElement();
-		if ( root->Value() == "object" )
+		if ( root->Value() == string("object") )
 		{
 			ConvertObject( root );
 
