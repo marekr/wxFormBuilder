@@ -255,12 +255,12 @@ void VObjEvtHandler::OnLeftClick(wxMouseEvent &event)
 	{
 		if (m_data->GetSelectedObject() != obj)
 			m_data->SelectObject(obj);
-		else
-			event.Skip();
+		//else
+		//	event.Skip();
 	}
 
 
-	//event.Skip();
+	event.Skip();
 	m_window->ClientToScreen(&event.m_x, &event.m_y);
 	m_window->GetParent()->ScreenToClient(&event.m_x, &event.m_y);
 	::wxPostEvent(m_window->GetParent(), event);
