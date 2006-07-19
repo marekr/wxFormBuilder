@@ -74,7 +74,7 @@ void Property::SetValue(const wxColour &colour)
 }
 void Property::SetValue(const wxString &str, bool format)
 {
-	wxString value = str.c_str();
+	wxString value = str; //str.c_str();
 
 	m_value = (format ? TypeConv::TextToString(value) : value );
 }

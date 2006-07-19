@@ -851,15 +851,17 @@ bool ApplicationData::LoadProject(const wxString &file)
 										wxT("Would you to attempt automatic conversion?\n\n")
 										wxT("NOTE: This will modify your project file on disk!"), _("Old Version"), wxYES_NO ) )
 			{
+			  // we make a backup of the project
+        ::wxCopyFile(file,file+wxT(".bak"));
+
 				ConvertProject( file, fbpVerMajor, fbpVerMinor );
-				if ( doc.LoadFile( file.mb_str( wxConvUTF8 ) ) )
-				{
-					root = doc.RootElement();
-				}
+				if ( doc.LoadFile( file.mb_str( wxConvUTF8 ) )  ||
+				     doc.LoadFile( file.mb_str( wxConvUTF8 ), TIXML_ENCODING_LEGACY) )
+          root = doc.RootElement();
+
 				else
-				{
-					return false;
-				}
+          return false;
+
 			}
 			else
 			{
@@ -894,7 +896,6 @@ bool ApplicationData::LoadProject(const wxString &file)
 
 void ApplicationData::ConvertProject( const wxString& path, int fileMajor, int fileMinor )
 {
-
 	try
 	{
 		ticpp::Document doc( _STDSTR( path ) );
