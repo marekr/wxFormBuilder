@@ -247,12 +247,12 @@ int ObjectTree::GetImageIndex (wxString name)
 void ObjectTree::UpdateItem(wxTreeItemId id, shared_ptr<ObjectBase> obj)
 {
 	// mostramos el nombre
-	wxString class_name( _WXSTR(obj->GetClassName()) );
+	wxString class_name( obj->GetClassName() );
 	shared_ptr<Property> prop = obj->GetProperty( wxT("name") );
 	wxString obj_name;
 	if (prop)
 	{
-		obj_name = wxString( _WXSTR(prop->GetValue()) );
+		obj_name =prop->GetValue();
 	}
 
 	wxString text = obj_name + wxT(" : ") + class_name;

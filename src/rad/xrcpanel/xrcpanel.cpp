@@ -84,7 +84,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
   shared_ptr<Property> pCodeGen = project->GetProperty( wxT("code_generation") );
   if (pCodeGen)
   {
-    if (!TypeConv::FlagSet (wxT("XRC"),_WXSTR(pCodeGen->GetValue())))
+    if (!TypeConv::FlagSet (wxT("XRC"),pCodeGen->GetValue()))
       return;
   }
 
@@ -123,7 +123,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
 	shared_ptr<Property> ppath = project->GetProperty( wxT("path") );
 	if (ppath)
 	{
-		pathEntry = _WXSTR(ppath->GetValue());
+		pathEntry = ppath->GetValue();
 		if ( pathEntry.empty() && !panelOnly )
 		{
 			wxLogWarning(wxT("You must set the \"path\" property of the project to a valid path for output files") );
@@ -149,7 +149,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
 
     shared_ptr<Property> pfile = project->GetProperty( wxT("file") );
     if (pfile)
-      file = _WXSTR(pfile->GetValue());
+      file = pfile->GetValue();
 
     if (file == wxT(""))
       file = wxT("wxfb_code");

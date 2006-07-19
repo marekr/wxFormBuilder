@@ -117,12 +117,12 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	wxString file, pathEntry;
 	wxFileName path;
 	bool useRelativePath = false;
-	unsigned int firstID;
+	unsigned int firstID = 1000;
 
 	shared_ptr<Property> pCodeGen = project->GetProperty(wxT("code_generation"));
 	if (pCodeGen)
 	{
-		if (!TypeConv::FlagSet  (wxT("C++"),_WXSTR(pCodeGen->GetValue())))
+		if (!TypeConv::FlagSet  (wxT("C++"),pCodeGen->GetValue()))
 			return;
 	}
 
@@ -134,7 +134,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	// Get the file name
 	shared_ptr<Property> pfile = project->GetProperty(wxT("file"));
 	if (pfile)
-		file = _WXSTR(pfile->GetValue());
+		file = pfile->GetValue();
 
 	if (file == wxT(""))
 		file = wxT("noname");
@@ -149,7 +149,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	shared_ptr<Property> ppath = project->GetProperty(wxT("path"));
 	if (ppath)
 	{
-		pathEntry = _WXSTR(ppath->GetValue());
+		pathEntry = ppath->GetValue();
 		if ( pathEntry.empty() && !panelOnly )
 		{
 			wxLogWarning(wxT("You must set the \"path\" property of the project to a valid path for output files") );
@@ -178,7 +178,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 		CppCodeGenerator codegen;
 		//codegen.SetBasePath(ppath->GetValue());
 		//codegen.SetRelativePath(useRelativePath);
-		codegen.UseRelativePath(useRelativePath, path.GetPath().c_str());
+		codegen.UseRelativePath(useRelativePath, path.GetPath() );
 
 		if (pFirstID)
 			codegen.SetFirstID( firstID );
@@ -203,7 +203,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 	// Generate code in the file
 	{
 		CppCodeGenerator codegen;
-		codegen.UseRelativePath(useRelativePath, path.GetPath().c_str());
+		codegen.UseRelativePath(useRelativePath, path.GetPath());
 
 		if (pFirstID)
 			codegen.SetFirstID( firstID );
@@ -314,7 +314,7 @@ TCCodeWriter::TCCodeWriter(wxScintilla *tc )
 void TCCodeWriter::DoWrite(wxString code)
 {
 	if (m_tc)
-		m_tc->AddText( _WXSTR(code) );
+		m_tc->AddText( code );
 }
 
 void TCCodeWriter::Clear()

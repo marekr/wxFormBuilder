@@ -152,13 +152,13 @@ void VisualEditor::Create()
 		shared_ptr<Property> pminsize(m_form->GetProperty( wxT("minimum_size") ) );
 		if(pminsize)
 		{
-			wxSize minsize(TypeConv::StringToSize(_WXSTR(pminsize->GetValue())));
+			wxSize minsize(TypeConv::StringToSize(pminsize->GetValue()));
 			m_back->SetMinSize( minsize );
 		}
 		shared_ptr<Property> psize(m_form->GetProperty( wxT("size")));
 		if (psize)
 		{
-			wxSize wsize(TypeConv::StringToSize(_WXSTR(psize->GetValue())));
+			wxSize wsize(TypeConv::StringToSize(psize->GetValue()));
 			wxSize minsize = m_back->GetMinSize();
 			int height = wsize.GetHeight();
 			height = ( height >= minsize.GetHeight() ) ? height : minsize.GetHeight();
@@ -185,7 +185,7 @@ void VisualEditor::Create()
 		shared_ptr<Property> background( m_form->GetProperty( wxT("bg") ) );
 		if ( background && !background->GetValue().empty() )
 		{
-			m_back->SetBackgroundColour( TypeConv::StringToColour( _WXSTR(background->GetValue()) ) );
+			m_back->SetBackgroundColour( TypeConv::StringToColour( background->GetValue() ) );
 		}
 		else
 		{
@@ -239,13 +239,13 @@ void VisualEditor::Create()
 		shared_ptr<Property> enabled( m_form->GetProperty( wxT("enabled") ) );
 		if ( enabled )
 		{
-			m_back->Enable( TypeConv::StringToInt( _WXSTR( enabled->GetValue() ) ) != 0 );
+			m_back->Enable( TypeConv::StringToInt( enabled->GetValue() ) != 0 );
 		}
 
 		shared_ptr<Property> hidden( m_form->GetProperty( wxT("hidden") ) );
 		if ( hidden )
 		{
-			m_back->Show( TypeConv::StringToInt( _WXSTR( hidden->GetValue() ) ) == 0 );
+			m_back->Show( TypeConv::StringToInt( hidden->GetValue() ) == 0 );
 		}
 	}
 	else
@@ -282,7 +282,7 @@ PVisualObject VisualEditor::Generate(shared_ptr<ObjectBase> obj, wxWindow *wxpar
 	IComponent *comp = obj->GetObjectInfo()->GetComponent();
 	if ( NULL == comp )
 	{
-		wxLogFatalError( wxT("Component for %s not found!"), _WXSTR(obj->GetObjectInfo()->GetClassName()).c_str() );
+		wxLogFatalError( wxT("Component for %s not found!"), obj->GetObjectInfo()->GetClassName().c_str() );
 	}
 
 	// registramos el objeto para poder obtener la referencia a VisualObject a

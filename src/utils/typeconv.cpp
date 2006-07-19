@@ -45,16 +45,11 @@ wxString TypeConv::_StringToWxString(const string &str)
     return _StringToWxString(str.c_str());
 }
 
-wxString TypeConv::_StringToWxString( const wxString& str )
-{
-    return str.c_str();
-}
-
 wxString TypeConv::_StringToWxString(const char *str)
 {
     wxString newstr( str, wxConvUTF8 );
 
-    unsigned int str_length = strlen(str);
+    /*unsigned int str_length = strlen(str);
 
     if (newstr.Length() != str_length)
     {
@@ -88,7 +83,7 @@ wxString TypeConv::_StringToWxString(const char *str)
             }
             newstr = newstr + s;
         }
-    }
+    }*/
 
     return newstr;
 }
@@ -200,7 +195,7 @@ int TypeConv::GetMacroValue(const wxString &str)
     int value = 0;
 
     PMacroDictionary dic = MacroDictionary::GetInstance();
-    dic->SearchMacro( str.c_str(), &value );
+	dic->SearchMacro( str, &value );
 
     return value;
 }
@@ -653,8 +648,8 @@ wxString TypeConv::ReplaceSynonymous(const wxString &bitlist)
         if (result != wxT(""))
             result = result + wxChar('|');
 
-        if (MacroDictionary::GetInstance()->SearchSynonymous( token.c_str(), translation))
-            result += translation.c_str();
+		if (MacroDictionary::GetInstance()->SearchSynonymous( token, translation))
+			result += translation;
         else
             result += token;
 

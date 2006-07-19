@@ -324,10 +324,10 @@ void ReparentObjectCmd::DoRestore()
 ApplicationData::ApplicationData(const wxString &rootdir)
 {
 	m_rootDir = rootdir;
-	AppBitmaps::LoadBitmaps( _WXSTR(m_rootDir + wxT("/xml/icons.xml") ), _WXSTR(m_rootDir + wxT("/resources/icons/") ) );
-	m_objDb = PObjectDatabase(new ObjectDatabase());
-	m_objDb->SetXmlPath(_STDSTR( (m_rootDir + wxT("/xml/")).c_str() ) ) ;
-	m_objDb->SetIconPath( _STDSTR( (m_rootDir + wxT("/resources/icons/")).c_str() ) );
+	AppBitmaps::LoadBitmaps( m_rootDir + wxT("/xml/icons.xml"), m_rootDir + wxT("/resources/icons/") );
+	m_objDb = PObjectDatabase( new ObjectDatabase() );
+	m_objDb->SetXmlPath(_STDSTR( m_rootDir + wxT("/xml/") ) ) ;
+	m_objDb->SetIconPath( _STDSTR( m_rootDir + wxT("/resources/icons/") ) );
 	m_objDb->LoadObjectTypes();
 	m_objDb->LoadFile();
 }
@@ -526,7 +526,7 @@ void ApplicationData::CreateObject(wxString name)
 		while (parent && !created)
 		{
 			// además, el objeto se insertará a continuación del objeto seleccionado
-			obj = m_objDb->CreateObject( _STDSTR(name.c_str()),parent);
+			obj = m_objDb->CreateObject( _STDSTR(name),parent);
 
 			if (obj)
 			{
@@ -646,7 +646,7 @@ void ApplicationData::PasteObject(shared_ptr<ObjectBase> parent)
 		shared_ptr<ObjectBase> old_parent = parent;
 
 		shared_ptr<ObjectBase> obj =
-			m_objDb->CreateObject(_STDSTR(m_clipboard->GetObjectInfo()->GetClassName().c_str() ), parent);
+			m_objDb->CreateObject(_STDSTR(m_clipboard->GetObjectInfo()->GetClassName() ), parent);
 
 		int pos = -1;
 
@@ -665,7 +665,7 @@ void ApplicationData::PasteObject(shared_ptr<ObjectBase> parent)
 
 			if (parent)
 			{
-				obj = m_objDb->CreateObject( _STDSTR( m_clipboard->GetObjectInfo()->GetClassName().c_str() ), parent);
+				obj = m_objDb->CreateObject( _STDSTR( m_clipboard->GetObjectInfo()->GetClassName() ), parent);
 
 				if (obj)
 					pos = CalcPositionOfInsertion(selected,parent);
@@ -754,9 +754,9 @@ void ApplicationData::ModifyProperty(shared_ptr<Property> prop, wxString str)
 {
 	shared_ptr<ObjectBase> object = prop->GetObject();
 
-	if ( str.c_str() != prop->GetValue())
+	if ( str != prop->GetValue())
 	{
-		PCommand command(new ModifyPropertyCmd(prop,str.c_str()));
+		PCommand command( new ModifyPropertyCmd( prop, str ) );
 		Execute(command); //m_cmdProc.Execute(command);
 
 		DataObservable::NotifyPropertyModified(prop);
@@ -768,7 +768,7 @@ void ApplicationData::SaveProject(const wxString &filename)
 	TiXmlDocument *doc = m_project->Serialize();
 	m_modFlag = false;
 	doc->SaveFile(filename.mb_str( wxConvUTF8 ));
-	m_projectFile = filename.c_str();
+	m_projectFile = filename;
 	GlobalData()->SetProjectPath(::wxPathOnly(filename));
 	delete doc;
 
@@ -1303,7 +1303,7 @@ void ApplicationData::ToggleStretchLayout(shared_ptr<ObjectBase> obj)
 
 	wxString value = ( propOption->GetValue() == wxT("1") ? wxT("0") : wxT("1") );
 
-	ModifyProperty(propOption, _WXSTR(value));
+	ModifyProperty(propOption, value);
 }
 
 void ApplicationData::CheckProjectTree(shared_ptr<ObjectBase> obj)

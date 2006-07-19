@@ -197,7 +197,7 @@ el máximo definido. El objeto no se crea si supera el máximo permitido.
 shared_ptr<ObjectBase> ObjectDatabase::CreateObject( std::string classname, shared_ptr<ObjectBase> parent)
 {
 	shared_ptr<ObjectBase> object;
-	shared_ptr<ObjectInfo> objInfo = GetObjectInfo( _WXSTR(classname).c_str() );
+	shared_ptr<ObjectInfo> objInfo = GetObjectInfo( _WXSTR(classname) );
 
 	if (!objInfo)
 	{
@@ -394,7 +394,7 @@ shared_ptr<ObjectBase>  ObjectDatabase::CreateObject(TiXmlElement *xml_obj, shar
 		{
 			std::string prop_value;
 			std::string prop_name = xml_prop->Attribute(NAME_TAG);
-			shared_ptr<Property> prop = object->GetProperty( _WXSTR(prop_name).c_str() );
+			shared_ptr<Property> prop = object->GetProperty( _WXSTR(prop_name) );
 			if (prop) // ¿ existe la propiedad ?
 			{
 				// modificamos el valor
@@ -518,20 +518,20 @@ void ObjectDatabase::SetupPackage( std::string file)
 		{
 			// comprobamos si hay libraría que importar
 			if (root->Attribute("lib"))
-				ImportComponentLibrary( _WXSTR(root->Attribute("lib")).c_str() );
+				ImportComponentLibrary( _WXSTR(root->Attribute("lib")) );
 
 			TiXmlElement* elem_obj = root->FirstChildElement(OBJINFO_TAG);
 			while (elem_obj)
 			{
 				std::string class_name  = elem_obj->Attribute(CLASS_TAG);
-				shared_ptr<ObjectInfo> class_info = GetObjectInfo( _WXSTR(class_name).c_str() );
+				shared_ptr<ObjectInfo> class_info = GetObjectInfo( _WXSTR(class_name) );
 
 				TiXmlElement* elem_base = elem_obj->FirstChildElement("inherits");
 				while (elem_base)
 				{
 					std::string base_name = elem_base->Attribute(CLASS_TAG);
 					// Añadimos la referencia a su clase base
-					shared_ptr<ObjectInfo> base_info  = GetObjectInfo( _WXSTR(base_name).c_str() );
+					shared_ptr<ObjectInfo> base_info  = GetObjectInfo( _WXSTR(base_name) );
 					if (class_info && base_info)
 					{
 						size_t baseIndex = class_info->AddBaseClass(base_info);
@@ -541,7 +541,7 @@ void ObjectDatabase::SetupPackage( std::string file)
 						{
 							prop_name = inheritedProperty->Attribute(NAME_TAG);
 							value = inheritedProperty->GetText();
-							class_info->AddBaseClassDefaultPropertyValue( baseIndex, _WXSTR(prop_name).c_str(), _WXSTR(value).c_str() );
+							class_info->AddBaseClassDefaultPropertyValue( baseIndex, _WXSTR(prop_name), _WXSTR(value) );
 							inheritedProperty = inheritedProperty->NextSiblingElement("property");
 						}
 					}
@@ -612,14 +612,14 @@ void ObjectDatabase::LoadCodeGen( std::string file)
 							template_code = elem_code->Value();
 					}
 
-					code_info->AddTemplate( _WXSTR(template_name).c_str(), _WXSTR(template_code).c_str() );
+					code_info->AddTemplate( _WXSTR(template_name), _WXSTR(template_code) );
 					elem_template = elem_template->NextSiblingElement("template");
 				}
 
-				shared_ptr<ObjectInfo> obj_info = GetObjectInfo( _WXSTR(class_name).c_str() );
+				shared_ptr<ObjectInfo> obj_info = GetObjectInfo( _WXSTR(class_name) );
 				if (obj_info)
 				{
-					obj_info->AddCodeInfo( _WXSTR(language).c_str(), code_info);
+					obj_info->AddCodeInfo( _WXSTR(language), code_info);
 				}
 
 				elem_templates = elem_templates->NextSiblingElement("templates");
@@ -662,7 +662,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 				pkg_icon = wxBitmap( image.Scale( 16, 16 ) );
 			}
 
-			package = PObjectPackage (new ObjectPackage( _WXSTR(pkg_name).c_str(), _WXSTR(pkg_desc).c_str(), pkg_icon));
+			package = PObjectPackage (new ObjectPackage( _WXSTR(pkg_name), _WXSTR(pkg_desc), pkg_icon));
 
 
 			TiXmlElement* elem_obj = root->FirstChildElement(OBJINFO_TAG);
@@ -681,7 +681,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 				if (elem_obj->Attribute("smallIcon"))
 					smallIcon = elem_obj->Attribute("smallIcon");
 
-				shared_ptr<ObjectInfo> obj_info(new ObjectInfo(_WXSTR(class_name).c_str(), GetObjectType(_WXSTR(type).c_str())));
+				shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ) ) );
 				if ( !icon.empty() )
 				{
 					wxImage img( _WXSTR( m_iconPath + '/' + icon ), wxBITMAP_TYPE_ANY );
@@ -719,7 +719,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 					{
 						description = elem_prop->Attribute(DESCRIPTION_TAG);
 					}
-					PropertyType ptype = ParsePropertyType(_WXSTR(elem_prop->Attribute("type")).c_str());
+					PropertyType ptype = ParsePropertyType( _WXSTR( elem_prop->Attribute("type") ) );
 					std::string def_value;
 					shared_ptr<OptionList> opt_list;
 
@@ -739,10 +739,10 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 							{
 								macro_description = elem_opt->Attribute(DESCRIPTION_TAG);
 							}
-							opt_list->AddOption( _WXSTR(macro_name).c_str(), _WXSTR(macro_description).c_str() );
+							opt_list->AddOption( _WXSTR(macro_name), _WXSTR(macro_description) );
 							elem_opt = elem_opt->NextSiblingElement("option");
 
-							m_macroSet.insert(_WXSTR(macro_name).c_str());
+							m_macroSet.insert(_WXSTR(macro_name));
 							// vamos a comprobar si la macro está registrada en la aplicación
 							// de los contrario mostraremos un mensaje de advertencia.
 							/*{
@@ -764,7 +764,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 
 					// creamos la instancia del descriptor de propiedad
 					// Juan
-					shared_ptr<PropertyInfo> prop_info(new PropertyInfo(_WXSTR(pname).c_str(),ptype,_WXSTR(def_value).c_str(),_WXSTR(description).c_str(),hidden,opt_list));
+					shared_ptr<PropertyInfo> prop_info(new PropertyInfo(_WXSTR(pname),ptype,_WXSTR(def_value),_WXSTR(description),hidden,opt_list));
 
 					// añadimos el descriptor de propiedad
 					obj_info->AddPropertyInfo(prop_info);
@@ -801,7 +801,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 				*/
 
 				// añadimos el descriptor de objeto al registro
-				m_objs.insert( map< wxString, shared_ptr< ObjectInfo > >::value_type( _WXSTR(class_name).c_str(), obj_info ) );
+				m_objs.insert( map< wxString, shared_ptr< ObjectInfo > >::value_type( _WXSTR(class_name), obj_info ) );
 
 				// y al grupo
 				if ( ShowInPalette( obj_info->GetObjectTypeName() ) )
@@ -845,7 +845,7 @@ bool ObjectDatabase::ShowInPalette(wxString type)
 void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 {
 	typedef IComponentLibrary* (*PFGetComponentLibrary)();
-	wxString path = _WXSTR(m_xmlPath) + wxT('/') + _WXSTR(libfile);
+	wxString path = _WXSTR(m_xmlPath) + wxT('/') + libfile;
 
 	// intentamos cargar la DLL
 	wxDynamicLibrary *library = new wxDynamicLibrary(path);
@@ -870,7 +870,7 @@ void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 				IComponent *comp = comp_lib->GetComponent(i);
 
 				// buscamos la clase
-				shared_ptr<ObjectInfo> class_info = GetObjectInfo(class_name.c_str());
+				shared_ptr<ObjectInfo> class_info = GetObjectInfo( class_name );
 				if (class_info)
 					class_info->SetComponent(comp);
 				else
@@ -885,8 +885,8 @@ void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 				PMacroDictionary dic = MacroDictionary::GetInstance();
 				wxString name = comp_lib->GetMacroName(i);
 				int value = comp_lib->GetMacroValue(i);
-				dic->AddMacro(name.c_str(),value);
-				m_macroSet.erase(name.c_str());
+				dic->AddMacro( name, value );
+				m_macroSet.erase( name );
 			}
 
 			/*for (unsigned int i = 0; i < comp_lib->GetSynonymousCount(); i++)
@@ -974,8 +974,8 @@ bool ObjectDatabase::LoadObjectTypes()
 					item = true;
 
 				int id = (int)m_types.size();
-				PObjectType objType(new ObjectType(_WXSTR(name).c_str(),id,hidden,item));
-				m_types.insert(ObjectTypeMap::value_type(_WXSTR(name).c_str(),objType));
+				PObjectType objType( new ObjectType( _WXSTR(name), id, hidden, item ) );
+				m_types.insert(ObjectTypeMap::value_type( _WXSTR(name), objType ) );
 
 				elem = elem->NextSiblingElement("objtype");
 			}
@@ -988,7 +988,7 @@ bool ObjectDatabase::LoadObjectTypes()
 				std::string name = elem->Attribute("name");
 
 				// obtenemos el objType
-				PObjectType objType = GetObjectType(_WXSTR(name).c_str());
+				PObjectType objType = GetObjectType(_WXSTR(name));
 				//wxLogMessage(wxString::Format(wxT("ObjectType %s can be parent of..."),name.c_str()));
 				TiXmlElement *child = elem->FirstChildElement("childtype");
 				while (child)
@@ -1002,7 +1002,7 @@ bool ObjectDatabase::LoadObjectTypes()
 						nmax = TypeConv::StringToInt(_WXSTR(child->Attribute("nmax")));
 					//nmax = 1;
 
-					PObjectType childType = GetObjectType(_WXSTR(childname).c_str());
+					PObjectType childType = GetObjectType(_WXSTR(childname));
 					assert(childType);
 
 					objType->AddChildType(childType, nmax);

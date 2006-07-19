@@ -393,7 +393,7 @@ void MainFrame::SavePosition(const wxString &name)
 
 void MainFrame::OnSaveProject(wxCommandEvent &event)
 {
-	wxString filename = _WXSTR(GetData()->GetProjectFileName());
+	wxString filename = GetData()->GetProjectFileName();
 	if (filename == wxT(""))
 		OnSaveAsProject(event);
 	else
@@ -650,7 +650,7 @@ void MainFrame::UpdateFrame()
 	if (GetData()->IsModified())
 		title = title + wxChar('*');
 
-	wxString filename = _WXSTR(GetData()->GetProjectFileName());
+	wxString filename = GetData()->GetProjectFileName();
 
 	title = title + ( filename.IsEmpty() ?
 		wxT("[untitled]") :

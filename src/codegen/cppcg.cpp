@@ -51,8 +51,8 @@ void CppTemplateParser::UseRelativePath(bool relative, wxString basePath)
 
 	if (m_useRelativePath)
 	{
-		bool result = wxFileName::DirExists( basePath.c_str() );
-		m_basePath = (result ? basePath : wxT(""));
+		bool result = wxFileName::DirExists( basePath );
+		m_basePath = ( result ? basePath : wxT("") );
 	}
 }
 
@@ -133,7 +133,7 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 		{
 			if ( !value.empty() )
 			{
-				wxFont font = TypeConv::StringToFont( value.c_str() );
+				wxFont font = TypeConv::StringToFont( value );
 				result	= wxString::Format( wxT("wxFont( %i, %i, %i, %i, %s, wxT(\"%s\") )" ),
 											font.GetPointSize(),
 											font.GetFamily(),
@@ -160,7 +160,7 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 				}
 				else
 				{
-					wxColour colour = TypeConv::StringToColour( value.c_str() );
+					wxColour colour = TypeConv::StringToColour( value );
 					result = wxString::Format( wxT("wxColour( %i, %i, %i )"), colour.Red(), colour.Green(), colour.Blue() );
 				}
 			}
@@ -196,12 +196,12 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 
 			if ( source == wxT("Load From File") )
 			{
-				wxString absPath = TypeConv::MakeAbsolutePath( path.c_str(), GlobalData()->GetProjectPath() );
-				wxString file = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, m_basePath.c_str() ) : absPath ).c_str();
+				wxString absPath = TypeConv::MakeAbsolutePath( path, GlobalData()->GetProjectPath() );
+				wxString file = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, m_basePath ) : absPath );
 
 				wxString cppString = CppCodeGenerator::ConvertCppString( file );
 
-				wxFileName bmpFileName( path.c_str() );
+				wxFileName bmpFileName( path );
 				if ( bmpFileName.GetExt().Upper() == wxT("XPM") )
 				{
 					// If the bitmap is an XPM we will embed it in the code, otherwise it will be loaded from the file at run time.
@@ -226,15 +226,15 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 	case PT_STRINGLIST:
 		{
 			// Stringlists are generated like a sequence of wxString separated by ', '.
-			wxArrayString array = TypeConv::StringToArrayString( value.c_str() );
+			wxArrayString array = TypeConv::StringToArrayString( value );
 			if ( array.Count() > 0 )
 			{
-				result = ValueToCode( PT_WXSTRING_I18N, array[0].c_str() );
+				result = ValueToCode( PT_WXSTRING_I18N, array[0] );
 			}
 
 			for ( size_t i = 1; i < array.Count(); i++ )
 			{
-				result << result << wxT(", ") << ValueToCode( PT_WXSTRING_I18N, array[i].c_str() );
+				result << wxT(", ") << ValueToCode( PT_WXSTRING_I18N, array[i] );
 			}
 			break;
 		}
@@ -462,7 +462,7 @@ wxString CppCodeGenerator::GetCode(shared_ptr<ObjectBase> obj, wxString name)
 	if (!code_info)
 	{
 		wxString msg( wxString::Format( wxT("Missing \"%s\" template for \"%s\" class. Review your XML object description"),
-			_WXSTR( name ).c_str(), _WXSTR( obj->GetClassName() ).c_str()));
+			name.c_str(), obj->GetClassName().c_str() ) );
 		wxLogError(msg);
 		return wxT("");
 	}
@@ -1059,10 +1059,10 @@ void CppCodeGenerator::FindXpmProperties( shared_ptr<ObjectBase> obj, set<wxStri
 				path = path.substr( 0, semicolonindex );
 			}
 
-			wxFileName bmpFileName( path.c_str() );
+			wxFileName bmpFileName( path );
 			if ( bmpFileName.GetExt().Upper() == wxT("XPM") )
 			{
-				wxString absPath = TypeConv::MakeAbsolutePath( path.c_str(), GlobalData()->GetProjectPath() );
+				wxString absPath = TypeConv::MakeAbsolutePath( path, GlobalData()->GetProjectPath() );
 
 				// Se supone el path contiene la ruta completa del archivo y no
 				// una relativa.
@@ -1090,7 +1090,7 @@ void CppCodeGenerator::UseRelativePath(bool relative, wxString basePath)
 
 	if (m_useRelativePath)
 	{
-		result = wxFileName::DirExists( basePath.c_str() );
+		result = wxFileName::DirExists( basePath );
 		m_basePath = ( result ? basePath : wxT("") );
 	}
 }

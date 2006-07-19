@@ -69,7 +69,7 @@ TiXmlElement* XrcFilter::GetElement(const shared_ptr<ObjectBase> obj)
     // enlazamos los sub-elementos
 
     // FIXME! no todos los objetos xrc heredan de wxWindow...
-    std::string typeName = _STDSTR( obj->GetObjectTypeName().c_str() );
+    std::string typeName = _STDSTR( obj->GetObjectTypeName() );
     if ( typeName == "container" || typeName == "widget" || typeName == "expanded_widget" || typeName == "form" || typeName == "statusbar")
       LinkValues(element,GetXrcClassInfo("wxWindow"),obj);
 
@@ -96,8 +96,8 @@ void XrcFilter::LinkValues(TiXmlElement *element, TiXmlElement *xrcInfo,
     // los subelementos se corresponden con la propiedad cuyo nombre
     // viene dado en el atributo "property" o en su defecto por "name"
     shared_ptr<Property> prop = (attr->Attribute("property")  ?
-      obj->GetProperty(_WXSTR(attr->Attribute("property")).c_str()) :
-      obj->GetProperty(_WXSTR(attr->Attribute("name")).c_str()));
+      obj->GetProperty(_WXSTR(attr->Attribute("property"))) :
+      obj->GetProperty(_WXSTR(attr->Attribute("name"))) );
 
     if (prop && !prop->GetValue().empty() )
     {
@@ -137,7 +137,7 @@ bool XrcFilter::IsSupported(const std::string& className)
 
 std::string XrcFilter::GetXrcClassName(const shared_ptr<ObjectBase> obj)
 {
-  std::string className = _STDSTR(obj->GetObjectInfo()->GetClassName().c_str());
+  std::string className = _STDSTR(obj->GetObjectInfo()->GetClassName());
 
   if (className == "Panel" || className == "Dialog" || className == "Frame")
       className = "wx" + className;
@@ -149,7 +149,7 @@ std::string XrcFilter::GetXrcClassName(const shared_ptr<ObjectBase> obj)
 void XrcFilter::LinkValue(const shared_ptr<Property> prop, TiXmlElement *propElement)
 {
     wxColour colour;
-    std::string value = _STDSTR(prop->GetValue().c_str());
+    std::string value = _STDSTR(prop->GetValue());
     if (prop->GetType() == PT_WXCOLOUR)
     {
         colour = prop->GetValueAsColour();
@@ -398,7 +398,7 @@ void XrcFilter::ImportXrcElements(TiXmlElement *xrcObj, TiXmlElement *xrcInfo,
     std::string propName = ( element->Attribute("property") ?
                         element->Attribute("property") : element->Attribute("name"));
 
-    shared_ptr<Property> property = obj->GetProperty(_WXSTR(propName).c_str());
+    shared_ptr<Property> property = obj->GetProperty(_WXSTR(propName));
 
     if (property)
       ImportXrcProperty(xrcObj->FirstChildElement(element->Attribute("name")),property);
@@ -447,7 +447,7 @@ void XrcFilter::ImportXrcProperties(TiXmlElement *xrcObj, shared_ptr<ObjectBase>
     std::string propName = ( attr->Attribute("property") ?
                         attr->Attribute("property") : attr->Attribute("name"));
 
-    shared_ptr<Property> property = obj->GetProperty(_WXSTR(propName).c_str());
+    shared_ptr<Property> property = obj->GetProperty(_WXSTR(propName));
 
     // los atributos siempre son texto
     if (property && xrcObj->Attribute(attr->Attribute("name")))
@@ -589,7 +589,7 @@ shared_ptr<ObjectBase> XrcLoader::GetObject(TiXmlElement *xrcObj, shared_ptr<Obj
     className = "submenu";
 
   shared_ptr<ObjectBase> object;
-  shared_ptr<ObjectInfo> objInfo = m_objDb->GetObjectInfo(_WXSTR(className).c_str());
+  shared_ptr<ObjectInfo> objInfo = m_objDb->GetObjectInfo(_WXSTR(className));
   if (objInfo)
   {
     IComponent *comp = objInfo->GetComponent();
@@ -604,7 +604,7 @@ shared_ptr<ObjectBase> XrcLoader::GetObject(TiXmlElement *xrcObj, shared_ptr<Obj
         // previamente (ocurren en el caso de wxSplitterWindow). Por tanto,
         // hay que asegurarse de que el objeto apuntado por "object" no sea
         // el item.
-      	if (object && object->GetClassName() != _WXSTR(className).c_str() && object->GetChildCount()>0)
+      	if (object && object->GetClassName() != _WXSTR(className) && object->GetChildCount()>0)
       	  object = object->GetChild(0);
 
         if (object)

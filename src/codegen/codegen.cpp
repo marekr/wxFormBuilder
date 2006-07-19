@@ -58,25 +58,16 @@ bool CodeWriter::StringOk(wxString s)
 	}
 }
 
-void CodeWriter::FixWrite(wxString s)
+void CodeWriter::FixWrite( wxString s )
 {
-	wxString str = s.c_str();
-
-	wxStringTokenizer tkz( str, wxT("\n"), wxTOKEN_RET_EMPTY_ALL );
-	bool prev_is_null = false;
+	wxStringTokenizer tkz( s, wxT("\n"), wxTOKEN_RET_EMPTY_ALL );
 
 	while ( tkz.HasMoreTokens() )
 	{
 		wxString line = tkz.GetNextToken();
 		line.Trim( false );
 		line.Trim( true );
-
-		if ( !line.empty() || !prev_is_null )
-		{
-			WriteLn( line.c_str() );
-		}
-
-		//prev_is_null = line.empty();
+		WriteLn( line );
 	}
 }
 
@@ -242,7 +233,7 @@ bool TemplateParser::ParseProperty()
 	}
 	else
 	{
-		wxLogError( wxT("The property '%s' does not exist for objects of class '%s'"), _WXSTR(propname).c_str(), _WXSTR(m_obj->GetClassName()).c_str() );
+		wxLogError( wxT("The property '%s' does not exist for objects of class '%s'"), propname.c_str(), m_obj->GetClassName().c_str() );
 	}
 
 	//  Debug::Print("parsing property %s",propname.c_str());
@@ -392,7 +383,7 @@ bool TemplateParser::ParseForEach()
 		if (property->GetType() == PT_INTLIST)
 		{
 			// Para ello se utiliza la clase wxStringTokenizer de wxWidgets
-			wxStringTokenizer tkz( propvalue.c_str(), wxT(","));
+			wxStringTokenizer tkz( propvalue, wxT(","));
 			while (tkz.HasMoreTokens())
 			{
 				wxString token;
@@ -404,7 +395,7 @@ bool TemplateParser::ParseForEach()
 				{
 					wxString code;
 					shared_ptr<TemplateParser> parser = CreateParser(m_obj,inner_template);
-					parser->SetPredefined( wxString(token.c_str()) );
+					parser->SetPredefined( token );
 					code = parser->ParseTemplate();
 					m_out << wxT("\n") << code;
 				}
@@ -413,11 +404,11 @@ bool TemplateParser::ParseForEach()
 		else if (property->GetType() == PT_STRINGLIST)
 		{
 			wxArrayString array = property->GetValueAsArrayString();
-			for (unsigned int i=0 ; i<array.Count() ; i++)
+			for ( unsigned int i = 0 ; i < array.Count(); i++ )
 			{
 				wxString code;
 				shared_ptr<TemplateParser> parser = CreateParser(m_obj,inner_template);
-				parser->SetPredefined(ValueToCode(PT_WXSTRING_I18N,wxString(array[i].c_str())));
+				parser->SetPredefined( ValueToCode( PT_WXSTRING_I18N, array[i] ) );
 				code = parser->ParseTemplate();
 				m_out << wxT("\n") << code;
 			}

@@ -102,7 +102,7 @@ bool MyApp::OnInit()
 
 
 
-  DataObservable *data = new ApplicationData(wxString(path.c_str()));
+  DataObservable *data = new ApplicationData( path );
 
   MainFrame *frame = new MainFrame(data, NULL);
   frame->Show(TRUE);

@@ -66,27 +66,25 @@ void Property::SetDefaultValue()
 
 void Property::SetValue(const wxFont &font)
 {
-	m_value = TypeConv::FontToString(font).c_str();
+	m_value = TypeConv::FontToString( font );
 }
 void Property::SetValue(const wxColour &colour)
 {
-	m_value = TypeConv::ColourToString(colour).c_str();
+	m_value = TypeConv::ColourToString( colour );
 }
 void Property::SetValue(const wxString &str, bool format)
 {
-	wxString value = str; //str.c_str();
-
-	m_value = (format ? TypeConv::TextToString(value) : value );
+	m_value = (format ? TypeConv::TextToString(str) : str );
 }
 
 void Property::SetValue(const wxPoint &point)
 {
-	m_value = TypeConv::PointToString(point).c_str();
+	m_value = TypeConv::PointToString(point);
 }
 
 void Property::SetValue(const wxSize &size)
 {
-	m_value = TypeConv::SizeToString(size).c_str();
+	m_value = TypeConv::SizeToString(size);
 }
 
 void Property::SetValue(const int integer)
@@ -101,25 +99,25 @@ void Property::SetValue(const double val )
 
 wxFont Property::GetValueAsFont()
 {
-	return TypeConv::StringToFont(_WXSTR(m_value));
+	return TypeConv::StringToFont( m_value );
 }
 
 wxColour Property::GetValueAsColour()
 {
-	return TypeConv::StringToColour(_WXSTR(m_value));
+	return TypeConv::StringToColour(m_value);
 }
 wxPoint Property::GetValueAsPoint()
 {
-	return TypeConv::StringToPoint(_WXSTR(m_value));
+	return TypeConv::StringToPoint(m_value);
 }
 wxSize Property::GetValueAsSize()
 {
-	return TypeConv::StringToSize(_WXSTR(m_value));
+	return TypeConv::StringToSize(m_value);
 }
 
 wxBitmap Property::GetValueAsBitmap()
 {
-	return TypeConv::StringToBitmap( _WXSTR(m_value) );
+	return TypeConv::StringToBitmap( m_value );
 }
 
 int Property::GetValueAsInteger()
@@ -130,13 +128,13 @@ int Property::GetValueAsInteger()
 	{
 	case PT_OPTION:
 	case PT_MACRO:
-		result = TypeConv::GetMacroValue(_WXSTR(m_value));
+		result = TypeConv::GetMacroValue(m_value);
 		break;
 	case PT_BITLIST:
-		result = TypeConv::BitlistToInt(_WXSTR(m_value));
+		result = TypeConv::BitlistToInt(m_value);
 		break;
 	default:
-		result = TypeConv::StringToInt(_WXSTR(m_value));
+		result = TypeConv::StringToInt(m_value);
 		break;
 	}
 	return result;
@@ -144,18 +142,18 @@ int Property::GetValueAsInteger()
 
 wxString Property::GetValueAsString()
 {
-	return _WXSTR(m_value);
+	return m_value;
 }
 
 wxString Property::GetValueAsText()
 {
-	return _WXSTR(TypeConv::StringToText(m_value));
+	return TypeConv::StringToText(m_value);
 }
 
 
 wxArrayString Property::GetValueAsArrayString()
 {
-	return TypeConv::StringToArrayString(_WXSTR(m_value));
+	return TypeConv::StringToArrayString(m_value);
 }
 
 double Property::GetValueAsFloat()
@@ -436,13 +434,13 @@ int ObjectBase::Deep()
 TiXmlElement* ObjectBase::SerializeObject()
 {
 	TiXmlElement *element = new TiXmlElement("object");
-	element->SetAttribute("class", _STDSTR( GetClassName().c_str() ));
+	element->SetAttribute("class", _STDSTR( GetClassName() ));
 
 	for (unsigned int i=0; i< GetPropertyCount(); i++)
 	{
 		shared_ptr<Property> prop = GetProperty(i);
 		TiXmlElement *prop_element = new TiXmlElement("property");
-		prop_element->SetAttribute("name", _STDSTR(prop->GetName().c_str() ));
+		prop_element->SetAttribute("name", _STDSTR(prop->GetName() ));
 
 		TiXmlText* prop_value = new TiXmlText( _STDSTR(prop->GetValue()));
 		prop_element->LinkEndChild(prop_value);
@@ -509,7 +507,7 @@ bool ObjectBase::ChangeChildPosition(shared_ptr<ObjectBase> obj, unsigned int po
 
 bool ObjectBase::IsNull (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str() );
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsString() == wxT("");
 	else
@@ -518,7 +516,7 @@ bool ObjectBase::IsNull (const wxString& pname)
 
 int ObjectBase::GetPropertyAsInteger (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str() );
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsInteger();
 	else
@@ -527,7 +525,7 @@ int ObjectBase::GetPropertyAsInteger (const wxString& pname)
 
 wxFont   ObjectBase::GetPropertyAsFont    (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str() );
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsFont();
 	else
@@ -536,7 +534,7 @@ wxFont   ObjectBase::GetPropertyAsFont    (const wxString& pname)
 
 wxColour ObjectBase::GetPropertyAsColour  (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsColour();
 	else
@@ -545,7 +543,7 @@ wxColour ObjectBase::GetPropertyAsColour  (const wxString& pname)
 
 wxString ObjectBase::GetPropertyAsString  (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsString();
 	else
@@ -554,7 +552,7 @@ wxString ObjectBase::GetPropertyAsString  (const wxString& pname)
 
 wxPoint  ObjectBase::GetPropertyAsPoint   (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsPoint();
 	else
@@ -563,7 +561,7 @@ wxPoint  ObjectBase::GetPropertyAsPoint   (const wxString& pname)
 
 wxSize   ObjectBase::GetPropertyAsSize    (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsSize();
 	else
@@ -572,7 +570,7 @@ wxSize   ObjectBase::GetPropertyAsSize    (const wxString& pname)
 
 wxBitmap ObjectBase::GetPropertyAsBitmap  (const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsBitmap();
 	else
@@ -580,7 +578,7 @@ wxBitmap ObjectBase::GetPropertyAsBitmap  (const wxString& pname)
 }
 double ObjectBase::GetPropertyAsFloat( const wxString& pname )
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsFloat();
 	else
@@ -589,7 +587,7 @@ double ObjectBase::GetPropertyAsFloat( const wxString& pname )
 wxArrayInt ObjectBase::GetPropertyAsArrayInt(const wxString& pname)
 {
 	wxArrayInt array;
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 	{
 		IntList il;
@@ -603,7 +601,7 @@ wxArrayInt ObjectBase::GetPropertyAsArrayInt(const wxString& pname)
 
 wxArrayString ObjectBase::GetPropertyAsArrayString(const wxString& pname)
 {
-	shared_ptr<Property> property = GetProperty( pname.c_str());
+	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
 		return property->GetValueAsArrayString();
 	else

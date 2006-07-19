@@ -347,18 +347,18 @@ void ObjectInspector::Create(bool force)
 			map<wxString,shared_ptr< Property > > map, dummy;
 
 			// We create the categories with the properties of the object organized by "classes"
-			CreateCategory( _WXSTR(obj_desc->GetClassName()), sel_obj,obj_desc,map);
+			CreateCategory( obj_desc->GetClassName(), sel_obj,obj_desc,map);
 
 			for (unsigned int i=0; i<obj_desc->GetBaseClassCount() ; i++)
 			{
 				shared_ptr<ObjectInfo> info_base = obj_desc->GetBaseClass(i);
-				CreateCategory( _WXSTR(info_base->GetClassName()), sel_obj,info_base,map);
+				CreateCategory( info_base->GetClassName(), sel_obj,info_base,map);
 			}
 
 			shared_ptr<ObjectBase> parent = sel_obj->GetParent();
 			if (parent && parent->GetObjectInfo()->GetObjectType()->IsItem())
 			{
-				CreateCategory(_WXSTR(parent->GetObjectInfo()->GetClassName()), parent, parent->GetObjectInfo(),dummy);
+				CreateCategory(parent->GetObjectInfo()->GetClassName(), parent, parent->GetObjectInfo(),dummy);
 			}
 
 			// Select previously selected page, or first page
@@ -406,7 +406,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 {
 	wxPGProperty *result;
 	PropertyType type = prop->GetType();
-	wxString name = _WXSTR(prop->GetName());
+	wxString name = prop->GetName();
 	wxVariant vTrue = wxVariant( true, wxT("true") );
 
 	if (type == PT_TEXT || type == PT_MACRO)
@@ -421,7 +421,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 	}
 	else if (type == PT_BOOL)
 	{
-		result = wxBoolProperty(name, wxPG_LABEL, _WXSTR(prop->GetValue()) == wxT("1"));
+		result = wxBoolProperty(name, wxPG_LABEL, prop->GetValue() == wxT("1"));
 	}
 	else if (type == PT_BITLIST)
 	{
@@ -436,7 +436,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 		unsigned int i = 0;
 		for( it = options.begin(); it != options.end(); ++it )
 		{
-			constants.Add( _WXSTR(it->first), 1 << i++ );
+			constants.Add( it->first, 1 << i++ );
 		}
 
 		int val = StringToBits(prop->GetValueAsString(), constants);
@@ -449,17 +449,17 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 			for ( size_t i = 0; i < flagsProp->GetCount(); i++ )
 			{
 				wxPGProperty* prop = flagsProp->Item( i );
-				map< wxString, wxString >::const_iterator option = options.find( prop->GetLabel().c_str() );
+				map< wxString, wxString >::const_iterator option = options.find( prop->GetLabel() );
 				if ( option != options.end() )
 				{
-					m_pg->SetPropertyHelpString( prop, _WXSTR( option->second )  );
+					m_pg->SetPropertyHelpString( prop, option->second );
 				}
 			}
 		}
 	}
 	else if (type == PT_INTLIST)
 	{
-		result = wxStringProperty(name, wxPG_LABEL, _WXSTR( IntList( prop->GetValueAsString().c_str() ).ToString()));
+		result = wxStringProperty(name, wxPG_LABEL, IntList( prop->GetValueAsString() ).ToString());
 	}
 	else if (type == PT_OPTION)
 	{
@@ -474,7 +474,7 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 		unsigned int i = 0;
 		for( it = options.begin(); it != options.end(); ++it )
 		{
-			constants.Add( _WXSTR(it->first), i++ );
+			constants.Add( it->first, i++ );
 		}
 
 		result = wxEnumProperty(name, wxPG_LABEL, constants);
@@ -544,12 +544,12 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 
 void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase> obj, shared_ptr<ObjectInfo> obj_info, map< wxString, shared_ptr< Property > >& properties )
 {
-	int pageIndex = m_pg->GetPageByName( name.c_str() );
+	int pageIndex = m_pg->GetPageByName( name );
 	if ( wxNOT_FOUND == pageIndex )
 	{
 		m_pg->AddPage( name, obj_info->GetSmallIconFile() );
 	}
-	m_pg->SelectPage( name.c_str() );
+	m_pg->SelectPage( name );
 
 	m_pg->AppendCategory(name);
 	unsigned int prop_count = obj_info->GetPropertyCount();
@@ -565,14 +565,14 @@ void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase
 
 			assert(prop_desc && prop);
 
-			wxString prop_name( _WXSTR(prop_desc->GetName()) );
+			wxString prop_name( prop_desc->GetName() );
 			Debug::Print( wxT("[ObjectInspector::CreatePropertyPanel] Creating Property Editor") );
 
 			// we do not want to duplicate inherited properties
 			if (properties.find(prop_desc->GetName()) == properties.end())
 			{
 				wxPGId id = m_pg->Append(GetProperty(prop));
-				m_pg->SetPropertyHelpString( id, _WXSTR( prop_desc->GetDescription() ) );
+				m_pg->SetPropertyHelpString( id, prop_desc->GetDescription() );
 
 				properties.insert( map< wxString, shared_ptr< Property > >::value_type( prop_desc->GetName(), prop ) );
 				m_propmap.insert(ObjInspectorMap::value_type(id.GetPropertyPtr(), prop));
@@ -601,16 +601,10 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				break;
 			}
 			case PT_WXSTRING:
-			{
-				// las cadenas de texto del inspector son formateadas
-				wxString value = _WXSTR(TypeConv::TextToString( event.GetPropertyValueAsString().c_str() ));
-				GetData()->ModifyProperty( prop, value );
-				break;
-			}
 			case PT_WXSTRING_I18N:
 			{
 				// las cadenas de texto del inspector son formateadas
-				wxString value = _WXSTR(TypeConv::TextToString( event.GetPropertyValueAsString().c_str() ));
+				wxString value = TypeConv::TextToString( event.GetPropertyValueAsString() );
 				GetData()->ModifyProperty( prop, value );
 				break;
 			}
@@ -739,7 +733,7 @@ void ObjectInspector::ProjectRefresh()
 
 void ObjectInspector::PropertyModified(shared_ptr<Property> prop)
 {
-	wxPGId pgid = m_pg->GetPropertyByLabel(_WXSTR(prop->GetName()));
+	wxPGId pgid = m_pg->GetPropertyByLabel(prop->GetName());
 	if (!pgid.IsOk()) return; // Puede que no se esté mostrando ahora esa página
 	wxPGProperty *pgProp = pgid.GetPropertyPtr();
 

@@ -74,7 +74,7 @@ PVisualObject VisualObject::CreateVisualObject
 	else
 	{
 		vobj = PVisualObject(new VisualObject(obj));
-		wxLogError( wxT("Component for %s not found!"), _WXSTR(obj->GetClassName()).c_str() );
+		wxLogError( wxT("Component for %s not found!"),obj->GetClassName().c_str() );
 	}
 
 	return vobj;
@@ -114,7 +114,7 @@ VisualSizer::VisualSizer(shared_ptr<ObjectBase> obj,wxWindow *parent)
 	shared_ptr<Property> pminsize  = obj->GetProperty( wxT("minimum_size") );
 	if (pminsize)
 	{
-		wxSize minsize = StringToSize(_WXSTR(pminsize->GetValue()));
+		wxSize minsize = StringToSize(pminsize->GetValue());
 		m_sizer->SetMinSize( minsize );
 		m_sizer->Layout();
 	}
@@ -172,28 +172,28 @@ void VisualWindow::SetupWindow()
 	wxFont font;
 	wxColour fg_colour;
 	wxColour bg_colour;
-	long extra_style;
+	long extra_style = 0;
 
 	if (ppos)
-		pos = StringToPoint(_WXSTR(ppos->GetValue()));
+		pos = StringToPoint(ppos->GetValue());
 
 	if (psize)
-		size = StringToSize(_WXSTR(psize->GetValue()));
+		size = StringToSize(psize->GetValue());
 
 	if (pminsize)
-		minsize = StringToSize(_WXSTR(pminsize->GetValue()));
+		minsize = StringToSize(pminsize->GetValue());
 
 	if (pfont)
-		font = StringToFont(_WXSTR(pfont->GetValue()));
+		font = StringToFont(pfont->GetValue());
 
 	if (pfg_colour)
-		fg_colour = StringToColour(_WXSTR(pfg_colour->GetValue()));
+		fg_colour = StringToColour(pfg_colour->GetValue());
 
 	if (pbg_colour)
-		bg_colour = StringToColour(_WXSTR(pbg_colour->GetValue()));
+		bg_colour = StringToColour(pbg_colour->GetValue());
 
 	if (pextra_style)
-		extra_style = StringToInt( _WXSTR(pextra_style->GetValue()));
+		extra_style = StringToInt( pextra_style->GetValue());
 
 	if (GetWindow())
 	{
@@ -378,4 +378,5 @@ void VObjEvtHandler::OnMarginClick ( wxScintillaEvent& event )
 			}
 		}
 	}
+	event.Skip();
 }

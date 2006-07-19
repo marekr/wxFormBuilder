@@ -103,9 +103,8 @@ void IntList::DeleteList()
 
 void IntList::SetList(wxString str)
 {
-  wxString wxstr( _WXSTR(str) );
   DeleteList();
-  wxStringTokenizer tkz(wxstr, wxT(","));
+  wxStringTokenizer tkz(str, wxT(","));
   while (tkz.HasMoreTokens())
   {
     long value;

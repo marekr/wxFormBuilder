@@ -84,11 +84,9 @@
   <templates class="wxRadioBox">
     <template name="declaration">wxRadioBox* $name;</template>
     <template name="construction">
-      { #nl
-        wxString __choices[] = { $choices }; #nl
-        int __nchoices = sizeof( __choices ) / sizeof( wxString ); #nl
-        $name = new wxRadioBox( #wxparent $name, $id, $label, $pos, $size, __nchoices, __choices, $majorDimension, $style #ifnotnull $window_style @{ |$window_style @} ); #nl
-      }
+        wxString $name #append Choices[] = { $choices }; #nl
+        int $name #append NChoices = sizeof( $name #append Choices ) / sizeof( wxString ); #nl
+        $name = new wxRadioBox( #wxparent $name, $id, $label, $pos, $size, $name #append NChoices, $name #append Choices, $majorDimension, $style #ifnotnull $window_style @{ |$window_style @} );
     </template>
   </templates>
 
@@ -194,11 +192,9 @@
   <templates class="wxChoice">
     <template name="declaration">wxChoice* $name;</template>
     <template name="construction">
-      { #nl
-        wxString __choices[] = { $choices }; #nl
-        int __nchoices = sizeof( __choices ) / sizeof( wxString ); #nl
-        $name = new wxChoice( #wxparent $name, $id, $pos, $size, __nchoices, __choices, $window_style ); #nl
-      } #nl
+        wxString $name #append Choices[] = { $choices }; #nl
+        int $name #append NChoices = sizeof( $name #append Choices ) / sizeof( wxString ); #nl
+        $name = new wxChoice( #wxparent $name, $id, $pos, $size, $name #append NChoices, $name #append Choices, $window_style );
     </template>
     <template name="include">@#include &lt;wx/choice.h&gt;</template>
   </templates>
