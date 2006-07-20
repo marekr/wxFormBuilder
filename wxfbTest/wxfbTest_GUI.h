@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jul 17 2006)
+// C++ code generated with wxFormBuilder (version Jul 20 2006)
 // http://wxformbuilder.sourceforge.net/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -71,7 +71,9 @@ class MainPanel : public wxPanel
 		wxRadioBox* m_radioBox1;
 		wxGrid* m_grid1;
 		wxStaticBitmap* m_bitmap1;
+		wxStaticText* m_staticText;
 		wxStaticLine* m_staticline1;
+		wxButton* m_button;
 		wxListCtrl* m_listCtrl;
 		wxChoice* m_choice1;
 		wxSlider* m_slider1;

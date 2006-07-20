@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jul 17 2006)
+// C++ code generated with wxFormBuilder (version Jul 20 2006)
 // http://wxformbuilder.sourceforge.net/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -61,9 +61,9 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	bSizer2->Add( m_bpButton1, 0, wxALL, 5 );
 	
 	m_textCtrl1 = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( m_textCtrl1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer2->Add( m_textCtrl1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_staticText1 = new wxStaticText( this, ID_DEFAULT, wxT("Unicode Test: ÐœÐ°ÐºÑÐ¸Ð¼ Ð•Ð¼ÐµÐ»ÑŒÑÐ½Ð¾Ð²"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1 = new wxStaticText( this, ID_DEFAULT, wxT("Unicode Test: Максим Емельянов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_checkBox1 = new wxCheckBox( this, ID_DEFAULT, wxT("Check Me!"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -75,23 +75,21 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, -1, wxT("label") ), wxHORIZONTAL );
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, -1, wxT("Static Box Sizer") ), wxHORIZONTAL );
 	
 	m_listBox1 = new wxListBox( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	m_listBox1->Append( wxT("Test1") );
 	m_listBox1->Append( wxT("Test2") );
-	sbSizer1->Add( m_listBox1, 0, wxALL, 5 );
+	sbSizer1->Add( m_listBox1, 0, wxALL|wxEXPAND, 5 );
 	
-	{
-	wxString __choices[] = { wxT("Test1")wxT("Test1"), wxT("Test2") };
-	int __nchoices = sizeof( __choices ) / sizeof( wxString );
-	m_radioBox1 = new wxRadioBox( this, ID_DEFAULT, wxT("wxRadioBox"), wxDefaultPosition, wxDefaultSize, __nchoices, __choices, 1, wxRA_SPECIFY_COLS );
-	}
-	sbSizer1->Add( m_radioBox1, 0, wxALL, 5 );
+	wxString m_radioBox1Choices[] = { wxT("Test1"), wxT("Test2") };
+	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
+	m_radioBox1 = new wxRadioBox( this, ID_DEFAULT, wxT("wxRadioBox"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
+	sbSizer1->Add( m_radioBox1, 0, wxALL|wxEXPAND, 5 );
 	
 	m_grid1 = new wxGrid( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, 0 );
 	m_grid1->CreateGrid( 5, 5 );
-	sbSizer1->Add( m_grid1, 0, wxALL, 5 );
+	sbSizer1->Add( m_grid1, 1, wxALL, 5 );
 	
 	bSizer1->Add( sbSizer1, 0, wxALL|wxEXPAND, 5 );
 	
@@ -99,20 +97,28 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
 	
 	m_bitmap1 = new wxStaticBitmap( this, ID_DEFAULT, wxBitmap( wxT("..\\bin\\resources\\splash.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxSize( 100,20 ), 0 );
-	gSizer1->Add( m_bitmap1, 0, wxALL|wxEXPAND, 5 );
+	gSizer1->Add( m_bitmap1, 1, wxALL|wxEXPAND, 5 );
+	
+	wxBoxSizer* bSizer;
+	bSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticText = new wxStaticText( this, ID_DEFAULT, wxT("Static Line"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( m_staticText, 0, wxALL, 5 );
 	
 	m_staticline1 = new wxStaticLine( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-	gSizer1->Add( m_staticline1, 0, wxALL|wxEXPAND, 5 );
+	bSizer->Add( m_staticline1, 0, wxALL|wxEXPAND, 5 );
 	
-	m_listCtrl = new wxListCtrl( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, wxLC_ICON|wxLC_REPORT );
+	m_button = new wxButton( this, ID_DEFAULT, wxT("Expanding Button"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( m_button, 1, wxALL|wxEXPAND, 5 );
+	
+	gSizer1->Add( bSizer, 1, wxEXPAND, 5 );
+	
+	m_listCtrl = new wxListCtrl( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, wxLC_REPORT );
 	gSizer1->Add( m_listCtrl, 0, wxALL|wxEXPAND, 5 );
 	
-	{
-	wxString __choices[] = { wxT("Test1")wxT("Test1"), wxT("Test2") };
-	int __nchoices = sizeof( __choices ) / sizeof( wxString );
-	m_choice1 = new wxChoice( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, __nchoices, __choices, 0 );
-	}
-	
+	wxString m_choice1Choices[] = { wxT("Test1"), wxT("Test2") };
+	int m_choice1NChoices = sizeof( m_choice1Choices ) / sizeof( wxString );
+	m_choice1 = new wxChoice( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, m_choice1NChoices, m_choice1Choices, 0 );
 	gSizer1->Add( m_choice1, 0, wxALL|wxEXPAND, 5 );
 	
 	m_slider1 = new wxSlider( this, ID_DEFAULT, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
@@ -121,7 +127,7 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	m_gauge1 = new wxGauge( this, ID_DEFAULT, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
 	gSizer1->Add( m_gauge1, 0, wxALL|wxEXPAND, 5 );
 	
-	bSizer1->Add( gSizer1, 0, wxEXPAND, 5 );
+	bSizer1->Add( gSizer1, 1, wxEXPAND, 5 );
 	
 	this->SetSizer( bSizer1 );
 	this->Layout();
