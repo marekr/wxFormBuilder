@@ -49,9 +49,9 @@ wxString TypeConv::_StringToWxString(const char *str)
 {
     wxString newstr( str, wxConvUTF8 );
 
-    /*unsigned int str_length = strlen(str);
+    unsigned int str_length = strlen(str);
 
-    if (newstr.Length() != str_length)
+    if (newstr.Length() == 0  && str_length > 0)
     {
         // There is a problem, maybe text is not in UTF8
         // we will try to fix some diacritic chars
@@ -83,7 +83,7 @@ wxString TypeConv::_StringToWxString(const char *str)
             }
             newstr = newstr + s;
         }
-    }*/
+    }
 
     return newstr;
 }
