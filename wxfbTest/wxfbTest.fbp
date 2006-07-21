@@ -2,7 +2,7 @@
 <wxFormBuilder_Project>
     <FileVersion major="1" minor="3" />
     <object class="Project">
-        <property name="code_generation">C++</property>
+        <property name="code_generation">C++|XRC</property>
         <property name="file">wxfbTest_GUI</property>
         <property name="first_id">1000</property>
         <property name="internationalize">0</property>

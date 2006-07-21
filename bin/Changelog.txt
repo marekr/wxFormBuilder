@@ -1,6 +1,11 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
 
+07-21-2006  Version 2.00.60
+* Fixed Unicode support.
+* Fixed style not working in a frame and dialog.
+^ Code generation for wxRadioBox and wxChoice improved.
+
 07-14-2006  Version 2.00.59
 + Added wxScintilla control to contrib.
 ^ Installer Maintenance release.
