@@ -30,7 +30,7 @@
 #include <wx/tokenzr.h>
 
 #ifdef __WX24__
-	#define wxFIXED_MINSIZE wxADJUST_MINSIZE  
+	#define wxFIXED_MINSIZE wxADJUST_MINSIZE
 #endif
 
 class SpacerComponent : public ComponentBase
@@ -83,7 +83,7 @@ public:
 			wxString::Format(_("%d,%d"),obj->GetPropertyAsInteger(_("width")),
 			obj->GetPropertyAsInteger(_("height"))));
 
-		xrc.AddProperty(_("proportion"), _("proportion"), XRC_TYPE_INTEGER);
+		xrc.AddProperty(_("proportion"), _("option"), XRC_TYPE_INTEGER);
 		xrc.AddProperty(_("flag"),   _("flag"),   XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("border"), _("border"), XRC_TYPE_INTEGER);
 		return xrc.GetXrcObject();
@@ -96,7 +96,7 @@ public:
 		// la propiedad "size" hay que descomponerla en weight y height
 		AddSizeProperty(filter, xrcObj);
 
-		filter.AddProperty(_("proportion"), _("proportion"), XRC_TYPE_INTEGER);
+		filter.AddProperty(_("option"), _("proportion"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("flag"),   _("flag"),   XRC_TYPE_BITLIST);
 		filter.AddProperty(_("border"), _("border"), XRC_TYPE_INTEGER);
 		return filter.GetXfbObject();
@@ -131,7 +131,7 @@ public:
 	TiXmlElement* ExportToXrc(IObject *obj)
 	{
 		ObjectToXrcFilter xrc(obj, _("sizeritem"));
-		xrc.AddProperty(_("proportion"), _("proportion"), XRC_TYPE_INTEGER);
+		xrc.AddProperty(_("proportion"), _("option"), XRC_TYPE_INTEGER);
 		xrc.AddProperty(_("flag"),   _("flag"),   XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("border"), _("border"), XRC_TYPE_INTEGER);
 		return xrc.GetXrcObject();
@@ -140,7 +140,7 @@ public:
 	TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj)
 	{
 		XrcToXfbFilter filter(xrcObj, _("sizeritem"));
-		filter.AddProperty(_("proportion"), _("proportion"), XRC_TYPE_INTEGER);
+		filter.AddProperty(_("option"), _("proportion"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("flag"),   _("flag"),   XRC_TYPE_BITLIST);
 		filter.AddProperty(_("border"), _("border"), XRC_TYPE_INTEGER);
 		return filter.GetXfbObject();
@@ -223,7 +223,7 @@ public:
 	{
 		ObjectToXrcFilter xrc(obj, _("wxGridSizer"));
 		xrc.AddProperty(_("rows"), _("rows"), XRC_TYPE_INTEGER);
-		xrc.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);    
+		xrc.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);
 		xrc.AddProperty(_("vgap"), _("vgap"), XRC_TYPE_INTEGER);
 		xrc.AddProperty(_("hgap"), _("hgap"), XRC_TYPE_INTEGER);
 		return xrc.GetXrcObject();
@@ -233,7 +233,7 @@ public:
 	{
 		XrcToXfbFilter filter(xrcObj, _("wxGridSizer"));
 		filter.AddProperty(_("rows"), _("rows"), XRC_TYPE_INTEGER);
-		filter.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);    
+		filter.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("vgap"), _("vgap"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("hgap"), _("hgap"), XRC_TYPE_INTEGER);
 		return filter.GetXfbObject();
@@ -260,7 +260,7 @@ public:
 			sizer->AddGrowableCol(gcols[i]);
 
 		for (i=0; i < grows.GetCount() ; i++)
-			sizer->AddGrowableRow(grows[i]);  
+			sizer->AddGrowableRow(grows[i]);
 
 		sizer->SetFlexibleDirection( obj->GetPropertyAsInteger(_("flexible_direction")) );
 		sizer->SetNonFlexibleGrowMode( (wxFlexSizerGrowMode )obj->GetPropertyAsInteger(_("non_flexible_grow_mode")) );
@@ -272,7 +272,7 @@ public:
 	{
 		ObjectToXrcFilter xrc(obj, _("wxFlexGridSizer"));
 		xrc.AddProperty(_("rows"), _("rows"), XRC_TYPE_INTEGER);
-		xrc.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);    
+		xrc.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);
 		xrc.AddProperty(_("vgap"), _("vgap"), XRC_TYPE_INTEGER);
 		xrc.AddProperty(_("hgap"), _("hgap"), XRC_TYPE_INTEGER);
 
@@ -285,7 +285,7 @@ public:
 	{
 		XrcToXfbFilter filter(xrcObj, _("wxFlexGridSizer"));
 		filter.AddProperty(_("rows"), _("rows"), XRC_TYPE_INTEGER);
-		filter.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);    
+		filter.AddProperty(_("cols"), _("cols"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("vgap"), _("vgap"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("hgap"), _("hgap"), XRC_TYPE_INTEGER);
 		filter.AddProperty(_("growablecols"),_("growablecols"),XRC_TYPE_TEXT);
@@ -352,7 +352,7 @@ SIZER_COMPONENT("wxStdDialogButtonSizer",StdDialogButtonSizerComponent)
 
 // wxBoxSizer
 MACRO(wxHORIZONTAL)
-MACRO(wxVERTICAL) 
+MACRO(wxVERTICAL)
 
 // wxFlexGridSizer
 MACRO(wxBOTH)

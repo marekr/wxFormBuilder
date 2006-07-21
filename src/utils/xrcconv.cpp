@@ -324,8 +324,14 @@ void ObjectToXrcFilter::LinkStringList(const wxArrayString &array, TiXmlElement 
 
 void ObjectToXrcFilter::AddWindowProperties()
 {
-  if (!m_obj->IsNull(_("window_style")))
-    AddProperty(_("style"), _("style"), XRC_TYPE_SIZE);
+  wxString style;
+  if (!m_obj->IsNull(_("style")))
+    style = m_obj->GetPropertyAsString(_T("style"));
+  if (!m_obj->IsNull(_("window_style"))){
+    if (!style.IsEmpty()) style += _T('|');
+    style += m_obj->GetPropertyAsString(_T("window_style"));
+  }
+  if (!style.IsEmpty()) AddPropertyValue(_T("style"), style);
 
   if (!m_obj->IsNull(_("pos")))
     AddProperty(_("pos"), _("pos"), XRC_TYPE_SIZE);
@@ -705,5 +711,5 @@ void XrcToXfbFilter::AddWindowProperties()
   AddProperty(_("bg"), _("bg"), XRC_TYPE_COLOUR);
   AddProperty(_("fg"), _("fg"), XRC_TYPE_COLOUR);
   AddProperty(_("font"), _("font"), XRC_TYPE_FONT);
-  AddProperty(_("style"), _("style"), XRC_TYPE_FONT);
+  AddProperty(_("style"), _("style"), XRC_TYPE_BITLIST);
 };
