@@ -4,10 +4,10 @@
 ; Date:     02/07/2006
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#define MyAppVer "2.0.57"
+#define MyAppVer "2.0.60"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
-#define MyAppURL "http://wxformbuilder.sourceforge.net/index_en.html"
+#define MyAppURL "http://wxformbuilder.org"
 #define MyAppExeName "wxFormBuilder.exe"
 #define wxFormBuilderMinVer "2.0.56"
 
@@ -19,7 +19,7 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
-DisableDirPage=true
+DisableDirPage=false
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=false
 OutputBaseFilename={#MyAppName}_v{#MyAppVer}
@@ -39,6 +39,7 @@ ChangesAssociations=true
 VersionInfoVersion={#MyAppVer}
 VersionInfoDescription={#MyAppName}
 InfoAfterFile=files\Changelog.txt
+LicenseFile=files\licence.txt
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
@@ -135,21 +136,29 @@ begin
 		result:= true;
 	end else begin
 		//MsgBox('wxFormBuilder minimum version: ' + '{#wxFormBuilderMinVer}' #13 'wxFormBuilder current version: ' + wxFormBuilderVersion, mbInformation, MB_OK);
-		if CompareStr( '{#wxFormBuilderMinVer}', wxFormBuilderVersion ) <= 0 then begin
+		if CompareText( wxFormBuilderVersion, '{#wxFormBuilderMinVer}' ) <= 0 then begin
 			if FileExists(sUninstallEXE) then begin
-				//if MsgBox('Version ' + wxFormBuilderVersion + ' of {#MyAppName} was detected.' #13 'It is recommended that you uninstall the old version first before continuing.' + #13 + #13 + 'Would you like to uninstall it now?', mbInformation, MB_YESNO) = IDYES then begin
-					Exec(sUninstallEXE,
-							'/SILENT',
-							GetPathInstalled('{#MyAppName}'),
-							SW_SHOWNORMAL,
-							ewWaitUntilTerminated,
-							ResultCode);
+				if WizardSilent() then begin
+					// Just uninstall without asking because we are in silent mode.
+					Exec(sUninstallEXE,	'/SILENT', GetPathInstalled('{#MyAppName}'),
+							SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
 
 					// Make sure that Setup is visible and the foreground window
 					BringToFrontAndRestore;
 					result := true;
-				//end else
-					//result := true;
+				end else begin
+					// Ask if they really want to uninstall because we are in the default installer.
+					if MsgBox('Version ' + wxFormBuilderVersion + ' of {#MyAppName} was detected.' #13 'It is recommended that you uninstall the old version first before continuing.' + #13 + #13 + 'Would you like to uninstall it now?', mbInformation, MB_YESNO) = IDYES then begin
+						Exec(sUninstallEXE,	'/SILENT', GetPathInstalled('{#MyAppName}'),
+							SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
+
+						// Make sure that Setup is visible and the foreground window
+						BringToFrontAndRestore;
+						result := true;
+					end else begin
+						result := true;
+					end;
+				end;
 			end;
 		end else begin
 			result := true;
