@@ -39,52 +39,12 @@ using namespace TypeConv;
 
 wxString TypeConv::_StringToWxString(const string &str)
 {
-    //wxString newstr( str.c_str(), wxConvUTF8 );
-    //return newstr;
-
     return _StringToWxString(str.c_str());
 }
 
 wxString TypeConv::_StringToWxString(const char *str)
 {
     wxString newstr( str, wxConvUTF8 );
-
-    unsigned int str_length = strlen(str);
-
-    if (newstr.Length() == 0  && str_length > 0)
-    {
-        // There is a problem, maybe text is not in UTF8
-        // we will try to fix some diacritic chars
-        //
-        // Anyone knows a better solution?
-
-        newstr.Empty();
-
-        for (unsigned int i=0; i<str_length; i++)
-        {
-            char ansi_c = str[i];
-            wxString s;
-
-            switch (ansi_c)
-            {
-              case 0xE1: s = wxT("á"); break;
-              case 0xE9: s = wxT("é"); break;
-              case 0xED: s = wxT("í"); break;
-              case 0xF3: s = wxT("ó"); break;
-              case 0xFA: s = wxT("ú"); break;
-
-              case 0xC1: s = wxT("Á"); break;
-              case 0xC9: s = wxT("É"); break;
-              case 0xCD: s = wxT("Í"); break;
-              case 0xD3: s = wxT("Ó"); break;
-              case 0xDA: s = wxT("Ú"); break;
-
-              default:   s = wxChar(ansi_c);
-            }
-            newstr = newstr + s;
-        }
-    }
-
     return newstr;
 }
 

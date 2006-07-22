@@ -121,8 +121,9 @@ class ApplicationData : public DataObservable
 	@param path The path to the project file
 	@param fileMajor The major revision of the file
 	@param fileMinor The minor revision of the file
+	@return true if successful, false otherwise
 	*/
-	void ConvertProject( const wxString& path, int fileMajor, int fileMinor );
+	bool ConvertProject( const wxString& path, int fileMajor, int fileMinor );
 
 	/**
 	Recursive function used to convert the object tree in the project file to the latest version.

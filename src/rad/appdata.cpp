@@ -33,6 +33,7 @@
 #include <ticpp.h>
 #include <set>
 #include <wx/tokenzr.h>
+#include <wx/ffile.h>
 
 using namespace TypeConv;
 
@@ -851,17 +852,19 @@ bool ApplicationData::LoadProject(const wxString &file)
 										wxT("Would you to attempt automatic conversion?\n\n")
 										wxT("NOTE: This will modify your project file on disk!"), _("Old Version"), wxYES_NO ) )
 			{
-			  // we make a backup of the project
-        ::wxCopyFile(file,file+wxT(".bak"));
+				// we make a backup of the project
+				::wxCopyFile( file, file + wxT(".bak") );
 
-				ConvertProject( file, fbpVerMajor, fbpVerMinor );
-				if ( doc.LoadFile( file.mb_str( wxConvUTF8 ) )  ||
-				     doc.LoadFile( file.mb_str( wxConvUTF8 ), TIXML_ENCODING_LEGACY) )
-          root = doc.RootElement();
+				if ( !ConvertProject( file, fbpVerMajor, fbpVerMinor ) )
+				{
+					wxLogError( wxT("Unable to convert project") );
+					return false;
+				}
 
+				if ( doc.LoadFile( file.mb_str( wxConvUTF8 ) ) )
+					root = doc.RootElement();
 				else
-          return false;
-
+					return false;
 			}
 			else
 			{
@@ -894,10 +897,55 @@ bool ApplicationData::LoadProject(const wxString &file)
 	return result;
 }
 
-void ApplicationData::ConvertProject( const wxString& path, int fileMajor, int fileMinor )
+bool ApplicationData::ConvertProject( const wxString& path, int fileMajor, int fileMinor )
 {
 	try
 	{
+		// Version prior to 1 were not UTF-8
+		if ( fileMajor < 1 )
+		{
+			wxFFile oldEncoding( path.c_str(), wxT("r") );
+			wxString contents;
+			wxCSConv encodingConv( wxFONTENCODING_ISO8859_1 );
+			if ( !oldEncoding.ReadAll( &contents, encodingConv ) )
+			{
+				wxLogError( wxT("Unable to read file in its original encoding.") );
+				return false;
+			}
+
+			if ( contents.empty() )
+			{
+				wxLogError( wxT("Misinterpreted file's original encoding") );
+				return false;
+			}
+
+			// Prepend the declaration, so TinyXML correctly determines the new encoding
+			contents.Prepend( wxT("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>") );
+			if ( !oldEncoding.Close() )
+			{
+				wxLogError( wxT("Unable to close original file.") );
+				return false;
+			}
+
+			if ( !::wxRemoveFile( path ) )
+			{
+				wxLogError( wxT("Unable to delete original file.") );
+				return false;
+			}
+
+			wxFFile newEncoding( path.c_str(), wxT("w") );
+			if ( !newEncoding.Write( contents, wxConvUTF8 ) )
+			{
+				wxLogError( wxT("Unable to write file in its new encoding.") );
+				return false;
+			}
+
+			if ( !newEncoding.Close() )
+			{
+				wxLogError( wxT("Unable to close file after converting the encoding.") );
+			}
+		}
+
 		ticpp::Document doc( _STDSTR( path ) );
 		doc.LoadFile();
 		ticpp::Element* root = doc.FirstChildElement();
@@ -938,7 +986,9 @@ void ApplicationData::ConvertProject( const wxString& path, int fileMajor, int f
 	catch( ticpp::Exception& ex )
 	{
 		wxLogError( _WXSTR( ex.m_details ) );
+		return false;
 	}
+	return true;
 }
 
 void ApplicationData::ConvertObject( ticpp::Element* parent )
