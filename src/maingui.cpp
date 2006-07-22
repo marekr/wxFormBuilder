@@ -42,6 +42,7 @@
 #include <wx/sysopt.h>
 
 #include "rad/global.h"
+#include <memory>
 
 
 class MyApp : public wxApp
@@ -77,21 +78,17 @@ bool MyApp::OnInit()
 
 #ifndef _DEBUG
   wxBitmap bitmap;
-  wxSplashScreen* splash;
+  std::auto_ptr< wxSplashScreen > splash;
   if (bitmap.LoadFile(path + wxFILE_SEP_PATH + wxT("resources") + wxFILE_SEP_PATH + wxT("splash.png"), wxBITMAP_TYPE_PNG))
   {
-      splash = new wxSplashScreen(bitmap, wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+	splash = std::auto_ptr< wxSplashScreen >( new wxSplashScreen(bitmap, wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
           3000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-          wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+          wxSIMPLE_BORDER|wxSTAY_ON_TOP) );
   }
 #endif
 
   wxApp::SetVendorName( wxT(" wxFormBuilder") );
   wxApp::SetAppName( wxT(" wxFormBuilder") );
-
-  #ifndef __WXMSW__
-  //wxSleep(2);
-  #endif
 
   wxYield();
 
@@ -128,10 +125,6 @@ bool MyApp::OnInit()
 
 
   data->NewProject();
-#ifndef _DEBUG
-  delete splash;
-#endif
-
   return TRUE;
 }
 

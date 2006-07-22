@@ -28,12 +28,8 @@
 
 #include "wx/wx.h"
 #include "model/objectbase.h"
-#include <wx/notebook.h>
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
-#include <wx/listbook.h>
-#include <wx/choicebk.h>
 #include "rad/appobserver.h"
-#include <wx/wxscintilla.h>
+
 
 class VisualObject;
 class VisualWindow;
@@ -118,6 +114,12 @@ class VisualWindow : public VisualObject
   void SetupWindow();
 
 };
+
+class wxNotebookEvent;
+class wxFlatNotebookEvent;
+class wxListbookEvent;
+class wxChoicebookEvent;
+class wxScintillaEvent;
 
 /**
  * Procesa los eventos asociados a un objeto.

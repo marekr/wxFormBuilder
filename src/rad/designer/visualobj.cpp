@@ -30,6 +30,12 @@
 #include "utils/debug.h"
 #include "rad/genericpanel.h"
 
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/notebook.h>
+#include <wx/listbook.h>
+#include <wx/choicebk.h>
+#include <wx/wxscintilla.h>
+
 using namespace TypeConv;
 
 PVisualObject VisualObject::CreateVisualObject
