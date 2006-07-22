@@ -315,10 +315,38 @@ class ScrollBarComponent : public ComponentBase
 public:
 	wxObject* Create(IObject *obj, wxObject *parent)
 	{
-		return new wxScrollBar((wxWindow *)parent,-1,
+		wxScrollBar *sb = new wxScrollBar((wxWindow *)parent,-1,
 			obj->GetPropertyAsPoint(_("pos")),
 			obj->GetPropertyAsSize(_("size")),
 			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
+
+        sb->SetScrollbar(obj->GetPropertyAsInteger(_T("value")),
+            obj->GetPropertyAsInteger(_T("thumbsize")),
+            obj->GetPropertyAsInteger(_T("range")),
+            obj->GetPropertyAsInteger(_T("pagesize")));
+        return sb;
+	}
+
+	TiXmlElement* ExportToXrc(IObject *obj)
+	{
+		ObjectToXrcFilter xrc(obj, _("wxScrollBar"), obj->GetPropertyAsString(_("name")));
+		xrc.AddWindowProperties();
+		xrc.AddProperty(_("value"), _("value"), XRC_TYPE_INTEGER);
+		xrc.AddProperty(_("thumbsize"), _("thumbsize"), XRC_TYPE_INTEGER);
+		xrc.AddProperty(_("range"), _("range"), XRC_TYPE_INTEGER);
+		xrc.AddProperty(_("pagesize"), _("pagesize"), XRC_TYPE_INTEGER);
+		return xrc.GetXrcObject();
+	}
+
+	TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj)
+	{
+		XrcToXfbFilter filter(xrcObj, _("wxScrollBar"));
+		filter.AddWindowProperties();
+		filter.AddProperty(_("value"), _("value"), XRC_TYPE_INTEGER);
+		filter.AddProperty(_("thumbsize"), _("thumbsize"), XRC_TYPE_INTEGER);
+		filter.AddProperty(_("range"), _("range"), XRC_TYPE_INTEGER);
+		filter.AddProperty(_("pagesize"), _("pagesize"), XRC_TYPE_INTEGER);
+		return filter.GetXfbObject();
 	}
 };
 
@@ -484,7 +512,7 @@ public:
 	{
 		ObjectToXrcFilter xrc(obj, _("wxCheckList"), obj->GetPropertyAsString(_("name")));
 		xrc.AddWindowProperties();
-		xrc.AddProperty(_("style"),_("style"), XRC_TYPE_BITLIST);
+		//xrc.AddProperty(_("style"),_("style"), XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("choices"), _("choices"), XRC_TYPE_STRINGLIST);
 		return xrc.GetXrcObject();
 	}
@@ -493,7 +521,7 @@ public:
 	{
 		XrcToXfbFilter filter(xrcObj, _("wxCheckList"));
 		filter.AddWindowProperties();
-		filter.AddProperty(_("style"),_("style"), XRC_TYPE_BITLIST);
+		//filter.AddProperty(_("style"),_("style"), XRC_TYPE_BITLIST);
 		filter.AddProperty(_("choices"), _("choices"), XRC_TYPE_STRINGLIST);
 		return filter.GetXfbObject();
 	}
@@ -503,18 +531,32 @@ class ScrolledWindowComponent : public ComponentBase
 {
 public:
 
-  wxObject* Create(IObject *obj, wxObject *parent)
-  {
-    wxScrolledWindow *sw = new wxScrolledWindow((wxWindow *)parent, -1,
-      obj->GetPropertyAsPoint(_("pos")),
-      obj->GetPropertyAsSize(_("size")),
-      obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
+    wxObject* Create(IObject *obj, wxObject *parent)
+    {
+        wxScrolledWindow *sw = new wxScrolledWindow((wxWindow *)parent, -1,
+            obj->GetPropertyAsPoint(_("pos")),
+            obj->GetPropertyAsSize(_("size")),
+            obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
 
-    sw->SetScrollRate(
-      obj->GetPropertyAsInteger(_("scroll_rate_x")),
-      obj->GetPropertyAsInteger(_("scroll_rate_y")));
-    return sw;
-  }
+        sw->SetScrollRate(
+            obj->GetPropertyAsInteger(_("scroll_rate_x")),
+            obj->GetPropertyAsInteger(_("scroll_rate_y")));
+        return sw;
+    }
+
+    TiXmlElement* ExportToXrc(IObject *obj)
+    {
+        ObjectToXrcFilter xrc(obj, _("wxScrolledWindow"), obj->GetPropertyAsString(_("name")));
+        xrc.AddWindowProperties();
+        return xrc.GetXrcObject();
+    }
+
+    TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj)
+    {
+        XrcToXfbFilter filter(xrcObj, _("wxScrolledWindow"));
+        filter.AddWindowProperties();
+        return filter.GetXfbObject();
+    }
 };
 
 
