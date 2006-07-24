@@ -1,6 +1,10 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
 
+07-24-2006  Version 2.00.61
+^ Installer to dynamically download wxAdditions.
+^ wxPropgrid v1.2
+
 07-21-2006  Version 2.00.60
 * Fixed Unicode support.
 * Fixed style not working in a frame and dialog.

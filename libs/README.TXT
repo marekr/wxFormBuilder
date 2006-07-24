@@ -13,45 +13,27 @@ Includes:
      
      You can find the complete boost library on 
      
-  2. Tinyxml 2.3.2
+  2. Tinyxml++ 2.4.2
   
      There is no modifications with the original Tinyxml, I only add a makefile named
      Makefile.tinyxml for build with the config used on wxFormBuilder. For building type:
      
-     make -f Makefile.tinyxml
-     
-Notes:
-
-  - You need to compile the contrib wxStyledTextControl (stc) of wxWidgets package.
-  - For linux building, be sure of library paths are correctly on Makefile.
-  
-    I use this structure of directories:
-    
-    wxFormBuilder/
-      bin/    
-        xml/
-        xpm/
-        projects/
-
-     libs/
-       boost_1_31_0/
-       tinyxml/
+     Use the included Code::Blocks project (.cbp) if you want to build this library alone.
        
-     src/
-       ...	
+  
+  - For Win32/Linux, you have the Code::Blocks projects files.
   
   
+Notes:
+  - Code::Blocks is a free cross-platform IDE and it can be found here:
+    http://codeblocks.org
+
+  - I suggest you use the Code::Blocks workspace because it will place everything where
+    it belongs. No need to worry about the files being located in the proper location.
+	
+  - Makefiles will be coming in the future.
+
+Enjoy,
   
-  - For Win32, you have the Dev-C++ projects files, also verify library directories.
-  
-  
-  
-  Enjoy,
-  
-    José Antonio Hurtado.
-    
-    mail: joseantonio.hurtado@hispalinux.es
-     
-     
-     
-     
+  José Antonio Hurtado.  
+  mail: joseantonio.hurtado@gmail.com
