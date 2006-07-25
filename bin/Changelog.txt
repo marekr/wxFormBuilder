@@ -1,5 +1,10 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+07-25-2006  Version 2.00.63
+^ Fixed a spelling mistake in the installer.
+
+07-25-2006  Version 2.00.62
+^ Added a description in the installer about wxAdditions.
 
 07-24-2006  Version 2.00.61
 ^ Installer to dynamically download wxAdditions.
