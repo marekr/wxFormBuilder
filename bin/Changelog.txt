@@ -1,5 +1,8 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+07-27-2006  Version 2.00.65
+^ Made it so the unique names are created with numbers instead of '_'.
+
 07-26-2006  Version 2.00.64
 ^ Made the wxAdditions installer do better checks to determine if the user
   has wxWidgets installed before deciding where the default directory will be.

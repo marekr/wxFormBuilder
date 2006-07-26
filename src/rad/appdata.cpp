@@ -379,7 +379,8 @@ void ApplicationData::ResolveNameConflict(shared_ptr<ObjectBase> obj)
 	if (!nameProp)
 		return;
 
-	wxString name = nameProp->GetValue();
+	// Save the original name for use later.
+	wxString originalName = nameProp->GetValue();
 
 	// el nombre no puede estar repetido dentro del mismo form
 	shared_ptr<ObjectBase> top = obj->FindNearAncestor( wxT("form") );
@@ -391,14 +392,19 @@ void ApplicationData::ResolveNameConflict(shared_ptr<ObjectBase> obj)
 	BuildNameSet(obj, top, name_set);
 
 	// comprobamos si hay conflicto
-	set<wxString>::iterator it = name_set.find(name);
-	while (it != name_set.end())
+	set<wxString>::iterator it = name_set.find( originalName );
+
+	int i = 0;
+	wxString name = originalName; // The name that gets incremented.
+
+	while ( it != name_set.end() )
 	{
-		name = name + wxT("_");
-		it = name_set.find(name);
+		i++;
+		name = wxString::Format( wxT("%s%i"), originalName.c_str(), i );
+		it = name_set.find( name );
 	}
 
-	nameProp->SetValue(name);
+	nameProp->SetValue( name );
 }
 
 void ApplicationData::ResolveSubtreeNameConflicts(shared_ptr<ObjectBase> obj, shared_ptr<ObjectBase> topObj)
