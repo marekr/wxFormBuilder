@@ -4,7 +4,9 @@
 ; Date:     02/07/2006
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#define MyAppVer "2.0.63"
+#define UNICODE 1
+
+#define MyAppVer "2.0.64"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
@@ -13,7 +15,7 @@
 #define Additions "wxAdditions_setup.exe"
 
 [_ISToolDownload]
-Source: http://wxformbuilder.org/downloads/wxAdditions_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
+Source: http://wxformbuilder.sourceforge.net/wxAdditions_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
 
 [Setup]
 AppName={#MyAppName}
@@ -26,7 +28,11 @@ DefaultDirName={pf}\{#MyAppName}
 DisableDirPage=false
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=false
+#if UNICODE
 OutputBaseFilename={#MyAppName}_v{#MyAppVer}
+#else
+OutputBaseFilename={#MyAppName}_v{#MyAppVer}-9xME
+#endif
 Compression=lzma/ultra
 SolidCompression=true
 InternalCompressLevel=ultra
@@ -44,16 +50,23 @@ VersionInfoVersion={#MyAppVer}
 VersionInfoDescription={#MyAppName}
 InfoAfterFile=files\Changelog.txt
 LicenseFile=files\licence.txt
+#if UNICODE
+MinVersion=0,4.0.1381sp6
+#endif
+
 
 [Messages]
 BeveledLabel={#MyAppName} v{#MyAppVer}
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-;Name: wxadditions; Description: wxAdditions: Needed for building your application if you used any of the widgets from the 'Contrib' tab. (13.5MB Extra); Flags: unchecked; GroupDescription: Download and install (Requires internet connection)
 
 [Files]
+#if UNICODE
 Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+#else
+Source: files9x\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+#endif
 Source: source\*; DestDir: {app}\source; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main\srccode
 Source: support\contrib.bmp; Flags: dontcopy
 
@@ -259,7 +272,7 @@ begin
     'wxScintilla, wxPropGrid, wxFlatNotebook, wxPlot, and AWX. ' +
     'To facilitate the use of these widgets in applications, the source and ' +
     'binaries (compiled with MinGW and VC7.1) are provided in the package ' +
-    'wxAdditions (http://wiki.wxformbuilder.org).';
+    'wxAdditions (http://wiki.wxformbuilder.org/Main/WxAdditions).';
   Label2Caption := 'Using wxAdditions is especially recommended to get full functionality from' + #13#10 +
     'wxFormBuilder.';
   Label3Caption := 'Select whether you would like to download and install wxAdditions, then click Next.';
