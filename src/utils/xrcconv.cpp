@@ -30,6 +30,7 @@
 
 #include <string>
 #include <sstream>
+#include <set>
 using namespace std;
 
 static wxString StringToXrcText(const wxString &str)
@@ -461,6 +462,62 @@ void XrcToXfbFilter::AddPropertyValue (const wxString &xfbPropName,
   m_xfbObj->LinkEndChild(propElement);
 }
 
+void XrcToXfbFilter::AddStyleProperty()
+{
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement("style");
+  if (xrcProperty)
+  {
+    TiXmlNode *textElement = xrcProperty->FirstChild();
+    if (textElement && textElement->ToText())
+    {
+      wxString bitlist = wxString(textElement->ToText()->Value(),wxConvUTF8);
+      bitlist = ReplaceSynonymous(bitlist);
+
+      // FIXME: We should avoid hardcoding these things
+      std::set< wxString > windowStyles;
+      windowStyles.insert( wxT("wxSIMPLE_BORDER") );
+      windowStyles.insert( wxT("wxDOUBLE_BORDER") );
+      windowStyles.insert( wxT("wxSUNKEN_BORDER") );
+      windowStyles.insert( wxT("wxRAISED_BORDER") );
+      windowStyles.insert( wxT("wxSTATIC_BORDER") );
+      windowStyles.insert( wxT("wxNO_BORDER") );
+      windowStyles.insert( wxT("wxTRANSPARENT_WINDOW") );
+      windowStyles.insert( wxT("wxTAB_TRAVERSAL") );
+      windowStyles.insert( wxT("wxWANTS_CHARS") );
+      windowStyles.insert( wxT("wxVSCROLL") );
+      windowStyles.insert( wxT("wxHSCROLL") );
+      windowStyles.insert( wxT("wxALWAYS_SHOW_SB") );
+      windowStyles.insert( wxT("wxCLIP_CHILDREN") );
+      windowStyles.insert( wxT("wxFULL_REPAINT_ON_RESIZE") );
+
+      wxString style, windowStyle;
+      wxStringTokenizer tkz(bitlist, wxT(" |"));
+      while (tkz.HasMoreTokens())
+      {
+        wxString token;
+        token = tkz.GetNextToken();
+        token.Trim(true);
+        token.Trim(false);
+
+        if (windowStyles.find(token) == windowStyles.end())
+        {
+          if (!style.IsEmpty()) style += _T("|");
+          style += token;
+        }
+        else
+        {
+          if (!windowStyle.IsEmpty()) windowStyle += _T("|");
+          windowStyle += token;
+        }
+
+      }
+
+      AddPropertyValue(_T("style"), style);
+      AddPropertyValue(_T("window_style"), windowStyle);
+    }
+  }
+}
+
 TiXmlElement* XrcToXfbFilter::GetXfbObject()
 {
   return (m_xfbObj->Clone())->ToElement();
@@ -711,5 +768,6 @@ void XrcToXfbFilter::AddWindowProperties()
   AddProperty(_("bg"), _("bg"), XRC_TYPE_COLOUR);
   AddProperty(_("fg"), _("fg"), XRC_TYPE_COLOUR);
   AddProperty(_("font"), _("font"), XRC_TYPE_FONT);
-  AddProperty(_("style"), _("style"), XRC_TYPE_BITLIST);
+  //AddProperty(_("style"), _("style"), XRC_TYPE_BITLIST);
+  AddStyleProperty();
 };

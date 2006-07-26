@@ -65,22 +65,22 @@ class ObjectToXrcFilter
                     const wxString &base = wxT(""));
 
   ~ObjectToXrcFilter();
-  
+
   void AddProperty (const wxString &objPropName,
                     const wxString &xrcPropName,
                     const int &propType);
 
   void AddPropertyValue (const wxString &xrcPropName,
                          const wxString &xrcPropValue);
-                  
+
   void AddWindowProperties();
-                      
+
   TiXmlElement* GetXrcObject();
-  
+
  private:
   TiXmlElement *m_xrcObj;
   IObject *m_obj;
-  
+
   void LinkText(const wxString &text, TiXmlElement *propElement, bool xrcFormat = false);
   void LinkColour(const wxColour &colour, TiXmlElement *propElement);
   void LinkFont(const wxFont &font, TiXmlElement *propElement);
@@ -98,7 +98,7 @@ class ObjectToXrcFilter
 class XrcToXfbFilter
 {
  public:
- 
+
   XrcToXfbFilter(TiXmlElement *obj,
                  const wxString &classname);
 
@@ -106,7 +106,7 @@ class XrcToXfbFilter
                  const wxString &classname,
                  const wxString &objname);
   ~XrcToXfbFilter();
-  
+
   void AddProperty (const wxString &xrcPropName,
                     const wxString &xfbPropName, const int &propType);
 
@@ -114,20 +114,22 @@ class XrcToXfbFilter
                          const wxString &xfbPropValue);
 
   void AddWindowProperties();
-  
+
   TiXmlElement* GetXfbObject();
 
  private:
   TiXmlElement *m_xfbObj;
   TiXmlElement *m_xrcObj;
-  
+
   void ImportTextProperty(const wxString &xrcPropName, TiXmlElement *property, bool parseXrcText = false);
   void ImportIntegerProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportBitlistProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportColourProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportFontProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportStringListProperty(const wxString &xrcPropName, TiXmlElement *property, bool parseXrcText = false);
-  
+
+  void AddStyleProperty();
+
   TiXmlElement *GetXrcProperty(const wxString &name);
 };
 
