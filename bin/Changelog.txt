@@ -1,5 +1,8 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+07-27-2006  Version 2.00.66
+^ Fix XRC styles importation.
+
 07-27-2006  Version 2.00.65
 ^ Made it so the unique names are created with numbers instead of '_'.
 
