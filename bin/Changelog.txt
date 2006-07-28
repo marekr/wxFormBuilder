@@ -1,6 +1,6 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
-07-??-2006  Version 2.00.67
+07-28-2006  Version 2.00.67
 ^ Updated icons to look a bit more modern.
 
 07-27-2006  Version 2.00.66

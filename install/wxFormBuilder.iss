@@ -6,7 +6,7 @@
 
 #define UNICODE 1
 
-#define MyAppVer "2.0.66"
+#define MyAppVer "2.0.67"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
@@ -49,7 +49,7 @@ ChangesAssociations=true
 VersionInfoVersion={#MyAppVer}
 VersionInfoDescription={#MyAppName}
 InfoAfterFile=files\Changelog.txt
-LicenseFile=files\licence.txt
+LicenseFile=files\license.txt
 #if UNICODE
 MinVersion=0,4.0.1381sp6
 #endif
