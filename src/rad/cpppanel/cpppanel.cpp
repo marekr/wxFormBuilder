@@ -210,8 +210,16 @@ void CppPanel::CodeGeneration( bool panelOnly )
 
 		if ( path.DirExists() )
 		{
-			shared_ptr<CodeWriter> h_cw(new FileCodeWriter(path.GetPath() + wxFILE_SEP_PATH + file + wxT(".h")));
-			shared_ptr<CodeWriter> cpp_cw(new FileCodeWriter(path.GetPath() + wxFILE_SEP_PATH + file + wxT(".cpp")));
+				// Determin if Microsoft BOM should be used
+			bool useMicrosoftBOM = false;
+			shared_ptr< Property > pUseMicrosoftBOM = project->GetProperty( wxT( "use_microsoft_bom" ) );
+			if ( pUseMicrosoftBOM )
+			{
+				useMicrosoftBOM = ( pUseMicrosoftBOM->GetValueAsInteger() != 0 );
+			}
+
+			shared_ptr<CodeWriter> h_cw( new FileCodeWriter( path.GetPath() + wxFILE_SEP_PATH + file + wxT(".h"), useMicrosoftBOM) );
+			shared_ptr<CodeWriter> cpp_cw( new FileCodeWriter( path.GetPath() + wxFILE_SEP_PATH + file + wxT(".cpp"), useMicrosoftBOM) );
 
 			codegen.SetHeaderWriter(h_cw);
 			codegen.SetSourceWriter(cpp_cw);
@@ -324,10 +332,12 @@ void TCCodeWriter::Clear()
 }
 
 
-FileCodeWriter::FileCodeWriter(const wxString &file)
-: m_filename(file)
+FileCodeWriter::FileCodeWriter( const wxString &file, bool useMicrosoftBOM )
+:
+m_filename(file),
+m_useMicrosoftBOM(useMicrosoftBOM)
 {
-	m_file.Create(file,true);
+	Clear();
 }
 
 void FileCodeWriter::DoWrite(wxString code)
@@ -344,4 +354,10 @@ void FileCodeWriter::DoWrite(wxString code)
 void FileCodeWriter::Clear()
 {
 	m_file.Create(m_filename,true);
+
+	if ( m_useMicrosoftBOM )
+	{
+		char microsoftBOM[3] = { 0xEF, 0xBB, 0xBF };
+		m_file.Write( microsoftBOM, 3 );
+	}
 }

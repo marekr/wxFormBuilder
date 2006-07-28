@@ -60,12 +60,13 @@ class FileCodeWriter : public CodeWriter
  private:
   wxFile m_file;
   wxString m_filename;
+  bool m_useMicrosoftBOM;
 
  protected:
   void DoWrite(wxString code);
 
  public:
-  FileCodeWriter(const wxString &file);
+  FileCodeWriter( const wxString &file, bool useMicrosoftBOM = false );
   void Clear();
 };
 
