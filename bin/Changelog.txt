@@ -1,5 +1,8 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+08-01-2006  Version 2.00.68
+* Updated the executable in the installer. Opps ;-).
+
 08-01-2006  Version 2.00.67
 ^ Updated icons to look a bit more modern.
 + Option to make Microsoft BOM for UTF-8 files added to project settings.
