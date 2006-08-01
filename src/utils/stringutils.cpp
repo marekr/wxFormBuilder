@@ -28,7 +28,10 @@
 
 wxString StringUtils::IntToStr(int num)
 {
-  wxString stream;
-  stream << num;
-  return stream;
+  //wxString stream;
+  //stream << num;
+  //return stream;
+  wxString result;
+  result.Printf(wxT("%d"),num);
+  return result;
 }

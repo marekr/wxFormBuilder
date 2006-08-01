@@ -122,10 +122,15 @@ wxString IntList::ToString()
 {
   wxString result;
 
-  for (unsigned int i=0; i< m_ints.size() ; i++)
+  if (m_ints.size() > 0)
   {
-    result = result + StringUtils::IntToStr(m_ints[i]);
+    result = StringUtils::IntToStr(m_ints[0]);
+
+    for (unsigned int i=1; i< m_ints.size() ; i++)
+      result = result + wxT(",") + StringUtils::IntToStr(m_ints[i]);
   }
+
+
 
   return result;
 }
