@@ -1,7 +1,10 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; File:     wxFormBuilder.iss
-; Author:   Ryan Mulder
-; Date:     02/07/2006
+; File:        wxFormBuilder.iss
+; Author:      Ryan Pusztai & Ryan Mulder
+; Date:        02/07/2006
+; Copyright:   (c) 2006 Ryan Pusztai <rpusztai@gmail.com>
+;              (c) 2006 Ryan Mulder <rjmyst3@gmail.com>
+; License:     wxWindows license
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #define UNICODE 1
