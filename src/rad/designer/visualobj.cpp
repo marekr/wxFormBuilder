@@ -311,39 +311,23 @@ void VObjEvtHandler::OnSetCursor(wxSetCursorEvent &event)
 
 void VObjEvtHandler::OnNotebookPageChanged(wxNotebookEvent &event)
 {
-	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == wxT("notebook") )
-	{
-		OnBookPageChanged( obj, event.GetSelection() );
-	}
+	OnBookPageChanged( shared_ptr<ObjectBase>(m_object), event.GetSelection() );
 	event.Skip();
 }
 void VObjEvtHandler::OnFlatNotebookPageChanged(wxFlatNotebookEvent &event)
 {
-	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == wxT("flatnotebook") )
-	{
-		OnBookPageChanged( obj, event.GetSelection() );
-	}
+	OnBookPageChanged( shared_ptr<ObjectBase>(m_object), event.GetSelection() );
 	event.Skip();
 }
 void VObjEvtHandler::OnListbookPageChanged(wxListbookEvent &event)
 {
-	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == wxT("listbook") )
-	{
-		OnBookPageChanged( obj, event.GetSelection() );
-	}
+	OnBookPageChanged( shared_ptr<ObjectBase>(m_object), event.GetSelection() );
 	event.Skip();
 }
 
 void VObjEvtHandler::OnChoicebookPageChanged( wxChoicebookEvent& event )
 {
-	shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
-	if (obj->GetObjectTypeName() == wxT("chiocebook") )
-	{
-		OnBookPageChanged( obj, event.GetSelection() );
-	}
+	OnBookPageChanged( shared_ptr<ObjectBase>(m_object), event.GetSelection() );
 	event.Skip();
 }
 
@@ -358,12 +342,16 @@ void VObjEvtHandler::OnBookPageChanged( shared_ptr<ObjectBase> obj, int selPage 
 			if (propSelect)
 			{
 				// we can't use DataObservable::ModifyProperty because
-				// it will regenerate de gui, so these modifications won't be
+				// it will regenerate the gui, so these modifications won't be
 				// undoable
 				if ((int)i == selPage && !propSelect->GetValueAsInteger())
+				{
 					propSelect->SetValue( wxT("1") );
+				}
 				else if ((int)i != selPage && propSelect->GetValueAsInteger())
+				{
 					propSelect->SetValue( wxT("0") );
+				}
 			}
 		}
 	}

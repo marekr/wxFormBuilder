@@ -357,7 +357,7 @@ void FileCodeWriter::Clear()
 
 	if ( m_useMicrosoftBOM )
 	{
-		char microsoftBOM[3] = { 0xEF, 0xBB, 0xBF };
+		unsigned char microsoftBOM[3] = { 0xEF, 0xBB, 0xBF };
 		m_file.Write( microsoftBOM, 3 );
 	}
 }

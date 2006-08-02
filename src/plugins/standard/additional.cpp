@@ -611,6 +611,8 @@ public:
 		wxNotebook *nb = (wxNotebook *)parent->Window();
 		wxWindow *page = first_child->Window();
 
+		wxEvtHandler* visObjEvtHandler = nb->PopEventHandler();
+
 		// Save selection
 		int selection = nb->GetSelection();
 		nb->AddPage( page, obj->GetPropertyAsString( _("label") ) );
@@ -638,6 +640,8 @@ public:
 			nb->SetSelection(selection);
 		else
 			nb->SetSelection(nb->GetPageCount()-1);
+
+		nb->PushEventHandler( visObjEvtHandler );
 	}
 
 	TiXmlElement* ExportToXrc(IObject *obj)
@@ -729,8 +733,11 @@ public:
 		wxListbook *lb = (wxListbook *)parent->Window();
 		wxWindow *page = first_child->Window();
 
+		wxEvtHandler* visObjEvtHandler = lb->PopEventHandler();
+
 		// save selection
 		int selection = lb->GetSelection();
+		wxString selectProperty = obj->GetPropertyAsString(_("select"));
 		lb->AddPage( page, obj->GetPropertyAsString( _("label") ) );
 
 		// Apply image to page
@@ -751,10 +758,13 @@ public:
 				}
 			}
 		}
-		if (obj->GetPropertyAsString(_("select"))==wxT("0") && selection >= 0)
+		
+		if (selectProperty==wxT("0") && selection >= 0)
 			lb->SetSelection(selection);
 		else
 			lb->SetSelection(lb->GetPageCount()-1);
+
+		lb->PushEventHandler( visObjEvtHandler );
 	}
 
 	TiXmlElement* ExportToXrc(IObject *obj)
@@ -814,6 +824,8 @@ public:
 		wxChoicebook *cb = (wxChoicebook*)parent->Window();
 		wxWindow *page = first_child->Window();
 
+		wxEvtHandler* visObjEvtHandler = cb->PopEventHandler();
+
 		int selection = cb->GetSelection();
 		cb->AddPage(page,obj->GetPropertyAsString(_("label")));
 
@@ -821,6 +833,8 @@ public:
 			cb->SetSelection(selection);
 		else
 			cb->SetSelection(cb->GetPageCount()-1);
+
+		cb->PushEventHandler( visObjEvtHandler );
 	}
 
 	TiXmlElement* ExportToXrc(IObject *obj)

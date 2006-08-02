@@ -361,6 +361,8 @@ public:
 		wxFlatNotebook *nb = (wxFlatNotebook *)parent->Window();
 		wxWindow *page = first_child->Window();
 
+		wxEvtHandler* visObjEvtHandler = nb->PopEventHandler();
+
 		int selection = nb->GetSelection();
 
 		// Apply image to page
@@ -395,6 +397,8 @@ public:
 			nb->SetSelection(selection);
 		else
 			nb->SetSelection(nb->GetPageCount()-1);
+
+		nb->PushEventHandler( visObjEvtHandler );
 	}
 
 	/*TiXmlElement* ExportToXrc(IObject *obj)
