@@ -1,5 +1,9 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+08-03-2006  Version 2.00.69
+* Fixed bug where the first page of listbook, choicebook, and flatnotebook
+  was always selected on refresh.
+
 08-01-2006  Version 2.00.68
 * Updated the executable in the installer. Opps ;-).
 
