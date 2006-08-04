@@ -279,7 +279,7 @@ begin
   Label2Caption := 'Using wxAdditions is especially recommended to get full functionality from' + #13#10 +
     'wxFormBuilder.';
   Label3Caption := 'Select whether you would like to download and install wxAdditions, then click Next.';
-  CheckCaption := '&Download and install wxAdditions (13.5MB)';
+  CheckCaption := '&Download and install wxAdditions (14.1MB)';
 
   wxAdditionsPage := CreateCustomOptionPage(wpSelectProgramGroup, Caption, SubCaption1, ImageFileName, Label1Caption, Label2Caption, Label3Caption, CheckCaption, wxAdditionsCheckBox);
 end;
@@ -318,3 +318,4 @@ begin
 	end;
 end;
 // -- END -- Functions for custom page and downloading
+

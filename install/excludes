@@ -5,7 +5,7 @@
 \additional_Release\
 \additional_Debug\
 \contrib_Release\
-\contrib_Release\
+\contrib_Debug\
 \layout_Release\
 \layout_Debug\
 \standard_Release\
@@ -26,3 +26,4 @@
 .a
 .dll
 .exe
+.pch
