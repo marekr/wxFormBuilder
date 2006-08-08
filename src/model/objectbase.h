@@ -50,6 +50,26 @@ using namespace boost;
 
 class ObjectBase;
 class ObjectInfo;
+class Property;
+class PropertyInfo;
+class OptionList;
+class CodeInfo;
+
+
+typedef shared_ptr<OptionList> POptionList;
+typedef shared_ptr<ObjectBase> PObjectBase;
+typedef weak_ptr<ObjectBase> WPObjectBase;
+
+typedef shared_ptr<CodeInfo> PCodeInfo;
+typedef shared_ptr<ObjectInfo> PObjectInfo;
+typedef shared_ptr<Property> PProperty;
+typedef shared_ptr<PropertyInfo> PPropertyInfo;
+
+typedef vector< PObjectBase > ObjectVector;
+typedef map<string,PProperty> PropertyMap;
+typedef map<string, PPropertyInfo> PropertyInfoMap;
+typedef vector<PObjectInfo> ObjectInfoVector;
+typedef map<string, PObjectInfo> ObjectInfoMap;
 
 ///////////////////////////////////////////////////////////////////////////////
 

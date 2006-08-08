@@ -23,6 +23,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "objectbase.h"
 #include "database.h"
 #include "rad/bitmaps.h"
 #include "utils/stringutils.h"

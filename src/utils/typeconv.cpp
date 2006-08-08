@@ -29,9 +29,9 @@
 #include "utils/debug.h"
 #include "rad/bitmaps.h"
 #include <wx/filename.h>
-#include "rad/global.h"
 #include <string>
 #include <cstring>
+#include "rad/appdata.h"
 
 ////////////////////////////////////
 
@@ -250,7 +250,7 @@ wxString TypeConv::FontToString (const wxFont &font)
 
 wxBitmap TypeConv::StringToBitmap( const wxString& filename )
 {
-    wxString basePath = GlobalData()->GetProjectPath();
+    wxString basePath = AppData()->GetProjectPath();
 
     size_t semicolonIndex = filename.find_first_of( wxT(";") );
     wxString fullpath;

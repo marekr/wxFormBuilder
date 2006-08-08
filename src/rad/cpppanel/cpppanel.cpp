@@ -26,19 +26,21 @@
 #include "cpppanel.h"
 #include "rad/bitmaps.h"
 #include "utils/typeconv.h"
-#include "rad/global.h"
 
 #include <wx/filename.h>
 
 #include "rad/bitmaps.h"
+#include "rad/wxfbevent.h"
+#include <rad/appdata.h>
 
-BEGIN_EVENT_TABLE (CodeEditor,  wxPanel )
-	EVT_SCI_MARGINCLICK ( -1, CodeEditor::OnMarginClick )
+BEGIN_EVENT_TABLE ( CppPanel,  wxPanel )
+	EVT_FB_CODE_GENERATION( CppPanel::OnCodeGeneration )
 END_EVENT_TABLE()
 
 CppPanel::CppPanel(wxWindow *parent, int id)
 : wxPanel (parent,id)
 {
+	AppData()->AddHandler( this->GetEventHandler() );
 	wxBoxSizer *top_sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxNotebookChooser* notebook = new ChooseNotebook( this, -1 );
@@ -66,7 +68,12 @@ CppPanel::CppPanel(wxWindow *parent, int id)
 
 	m_hCW = PTCCodeWriter(new TCCodeWriter(m_hPanel->GetTextCtrl()));
 	m_cppCW = PTCCodeWriter(new TCCodeWriter(m_cppPanel->GetTextCtrl()));
-};
+}
+
+CppPanel::~CppPanel()
+{
+	AppData()->RemoveHandler( this->GetEventHandler() );
+}
 
 void CppPanel::InitStyledTextCtrl(wxScintilla *stc)
 {
@@ -110,9 +117,12 @@ void CppPanel::InitStyledTextCtrl(wxScintilla *stc)
 	stc->SetCaretWidth(2);
 }
 
-void CppPanel::CodeGeneration( bool panelOnly )
+void CppPanel::OnCodeGeneration( wxFBEvent& event )
 {
-	shared_ptr<ObjectBase> project = GetData()->GetProjectData();
+	// Using the previously unused Id field in the event to carry a boolean
+	bool panelOnly = ( event.GetId() != 0 );
+
+	shared_ptr<ObjectBase> project = AppData()->GetProjectData();
 
 	wxString file, pathEntry;
 	wxFileName path;
@@ -162,7 +172,7 @@ void CppPanel::CodeGeneration( bool panelOnly )
 		path = wxFileName( pathEntry );
 		if ( !path.IsAbsolute() )
 		{
-			wxString projectPath = GlobalData()->GetProjectPath();
+			wxString projectPath = AppData()->GetProjectPath();
 			if ( projectPath.empty() && !panelOnly )
 			{
 				wxLogWarning(wxT("You must save the project when using a relative path for output files") );
@@ -230,6 +240,10 @@ void CppPanel::CodeGeneration( bool panelOnly )
 			wxLogWarning(wxT("Invalid Path: %s\nYou must set the \"path\" property of the project to a valid path for output files"), path.GetPath().c_str() );
 	}
 }
+
+BEGIN_EVENT_TABLE (CodeEditor,  wxPanel )
+	EVT_SCI_MARGINCLICK( -1, CodeEditor::OnMarginClick )
+END_EVENT_TABLE()
 
 CodeEditor::CodeEditor(wxWindow *parent, int id)
 : wxPanel(parent,id)

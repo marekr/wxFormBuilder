@@ -36,6 +36,8 @@
 #include <wx/choicebk.h>
 #include <wx/wxscintilla.h>
 
+#include <rad/appdata.h>
+
 using namespace TypeConv;
 
 PVisualObject VisualObject::CreateVisualObject
@@ -246,11 +248,10 @@ BEGIN_EVENT_TABLE( VObjEvtHandler,wxEvtHandler )
 	EVT_SCI_MARGINCLICK ( -1, VObjEvtHandler::OnMarginClick )
 END_EVENT_TABLE()
 
-VObjEvtHandler::VObjEvtHandler(wxWindow *win, shared_ptr<ObjectBase> obj, DataObservable *data)
+VObjEvtHandler::VObjEvtHandler(wxWindow *win, shared_ptr<ObjectBase> obj)
 {
 	m_window = win;
 	m_object = obj;
-	m_data = data;
 };
 
 void VObjEvtHandler::OnLeftClick(wxMouseEvent &event)
@@ -259,8 +260,8 @@ void VObjEvtHandler::OnLeftClick(wxMouseEvent &event)
 
 	if (obj)
 	{
-		if (m_data->GetSelectedObject() != obj)
-			m_data->SelectObject(obj);
+		if (AppData()->GetSelectedObject() != obj)
+			AppData()->SelectObject(obj);
 		//else
 		//	event.Skip();
 	}

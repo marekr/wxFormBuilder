@@ -28,8 +28,6 @@
 
 #include "wx/wx.h"
 #include "model/objectbase.h"
-#include "rad/appobserver.h"
-
 
 class VisualObject;
 class VisualWindow;
@@ -131,7 +129,6 @@ class VObjEvtHandler : public wxEvtHandler
  private:
    weak_ptr<ObjectBase> m_object;
    wxWindow *m_window;
-   DataObservable *m_data;
 
    VObjEvtHandler() {};
 
@@ -139,7 +136,7 @@ class VObjEvtHandler : public wxEvtHandler
   DECLARE_EVENT_TABLE()
 
  public:
-   VObjEvtHandler(wxWindow *win, shared_ptr<ObjectBase> obj, DataObservable *data);
+   VObjEvtHandler(wxWindow *win, shared_ptr<ObjectBase> obj);
    void OnLeftClick(wxMouseEvent &event);
    void OnPaint(wxPaintEvent &event);
    void OnSetCursor(wxSetCursorEvent &event);

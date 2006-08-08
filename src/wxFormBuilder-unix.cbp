@@ -81,6 +81,12 @@
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
+		<Unit filename="maingui.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
 		<Unit filename="model/database.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -312,6 +318,16 @@
 			<Option target="default" />
 		</Unit>
 		<Unit filename="rad/title.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad/wxfbevent.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="rad/wxfbevent.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

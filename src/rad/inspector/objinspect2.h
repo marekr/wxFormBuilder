@@ -27,14 +27,12 @@
 #define __OBJ_INSPECT__
 
 #include "wx/wx.h"
-#include "wx/grid.h"
 #include "utils/notebookchooser.h"
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/propdev.h>
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/manager.h>
-
-#include "rad/appobserver.h"
+#include <model/objectbase.h>
 
 // -----------------------------------------------------------------------
 
@@ -56,10 +54,14 @@ WX_PG_DECLARE_PROPERTY( wxBitmapWithResourceProperty, const wxString&, wxEmptySt
 
 DECLARE_LOCAL_EVENT_TYPE( wxEVT_NEW_BITMAP_PROPERTY, -1 )
 
-class ObjectInspector : public wxPanel, public DataObserver
+class wxFBPropertyEvent;
+class wxFBObjectEvent;
+class wxFBEvent;
+
+class ObjectInspector : public wxPanel
 {
  private:
-  typedef map< wxPGProperty*, shared_ptr< Property > > ObjInspectorMap;
+  typedef std::map< wxPGProperty*, shared_ptr< Property > > ObjInspectorMap;
   ObjInspectorMap m_propmap;
 
   shared_ptr<ObjectBase> m_currentSel;
@@ -78,14 +80,11 @@ class ObjectInspector : public wxPanel, public DataObserver
 
  public:
   ObjectInspector(wxWindow *parent, int id);
+  ~ObjectInspector();
 
-  void ProjectLoaded();
-  void ProjectSaved();
-  void ObjectSelected(shared_ptr<ObjectBase> obj);
-  void ObjectCreated(shared_ptr<ObjectBase> obj);
-  void ObjectRemoved(shared_ptr<ObjectBase> obj);
-  void ProjectRefresh();
-  void PropertyModified(shared_ptr<Property> prop);
+  void OnObjectSelected( wxFBObjectEvent& event );
+  void OnProjectRefresh( wxFBEvent& event );
+  void OnPropertyModified( wxFBPropertyEvent& event );
 
   DECLARE_EVENT_TABLE()
 };

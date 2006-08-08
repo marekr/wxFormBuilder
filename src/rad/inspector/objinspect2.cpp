@@ -28,10 +28,9 @@
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 #include "wx/tokenzr.h"
-#include "rad/global.h"
 #include "rad/bitmaps.h"
-#include <sstream>
-#include <memory>
+#include "rad/wxfbevent.h"
+#include <rad/appdata.h>
 
 // -----------------------------------------------------------------------
 // wxSizeProperty
@@ -279,11 +278,17 @@ DEFINE_EVENT_TYPE( wxEVT_NEW_BITMAP_PROPERTY )
 BEGIN_EVENT_TABLE(ObjectInspector, wxPanel)
 	EVT_PG_CHANGED(-1, ObjectInspector::OnPropertyGridChange)
 	EVT_COMMAND( -1, wxEVT_NEW_BITMAP_PROPERTY, ObjectInspector::OnNewBitmapProperty )
+
+	EVT_FB_OBJECT_SELECTED( ObjectInspector::OnObjectSelected )
+	EVT_FB_PROJECT_REFRESH( ObjectInspector::OnProjectRefresh )
+	EVT_FB_PROPERTY_MODIFIED( ObjectInspector::OnPropertyModified )
+
 END_EVENT_TABLE()
 
 ObjectInspector::ObjectInspector(wxWindow *parent, int id)
 : wxPanel(parent,id)
 {
+	AppData()->AddHandler( this->GetEventHandler() );
 	m_currentSel = shared_ptr<ObjectBase>();
 	wxBoxSizer* topSizer = new wxBoxSizer(wxVERTICAL);
 	m_pg = new wxPropertyGridManager(this, -1, wxDefaultPosition, wxDefaultSize,
@@ -302,9 +307,14 @@ ObjectInspector::ObjectInspector(wxWindow *parent, int id)
 	SetSizer(topSizer);
 }
 
+ObjectInspector::~ObjectInspector()
+{
+	AppData()->RemoveHandler( this->GetEventHandler() );
+}
+
 void ObjectInspector::Create(bool force)
 {
-	shared_ptr<ObjectBase> sel_obj = GetData()->GetSelectedObject();
+	shared_ptr<ObjectBase> sel_obj = AppData()->GetSelectedObject();
 	if (sel_obj && (sel_obj != m_currentSel || force))
 	{
 		Freeze();
@@ -597,7 +607,7 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 			case PT_OPTION:
 			case PT_FLOAT:
 			{
-				GetData()->ModifyProperty( prop, event.GetPropertyValueAsString() );
+				AppData()->ModifyProperty( prop, event.GetPropertyValueAsString() );
 				break;
 			}
 			case PT_WXSTRING:
@@ -605,12 +615,12 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 			{
 				// las cadenas de texto del inspector son formateadas
 				wxString value = TypeConv::TextToString( event.GetPropertyValueAsString() );
-				GetData()->ModifyProperty( prop, value );
+				AppData()->ModifyProperty( prop, value );
 				break;
 			}
 			case PT_BOOL:
 			{
-				GetData()->ModifyProperty( prop, event.GetPropertyValueAsBool() ? wxT("1") : wxT("0") );
+				AppData()->ModifyProperty( prop, event.GetPropertyValueAsBool() ? wxT("1") : wxT("0") );
 				break;
 			}
 			case PT_BITLIST:
@@ -618,7 +628,7 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				wxString aux = event.GetPropertyValueAsString();
 				aux.Replace( wxT(" "), wxT("") );
 				aux.Replace( wxT(","), wxT("|") );
-				GetData()->ModifyProperty( prop, aux );
+				AppData()->ModifyProperty( prop, aux );
 				break;
 			}
 			case PT_WXPOINT: case PT_WXSIZE:
@@ -626,13 +636,13 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				wxString aux = event.GetPropertyValueAsString();
 				aux.Replace( wxT(" "), wxT("") );
 				aux.Replace( wxT(";"), wxT(",") );
-				GetData()->ModifyProperty( prop, aux );
+				AppData()->ModifyProperty( prop, aux );
 				break;
 			}
 			case PT_WXFONT:
 			{
 				wxFont* font = wxPGVariantToWxObjectPtr( event.GetPropertyPtr()->DoGetValue(), wxFont );
-				GetData()->ModifyProperty( prop, TypeConv::FontToString( *font ) );
+				AppData()->ModifyProperty( prop, TypeConv::FontToString( *font ) );
 				break;
 			}
 			case PT_WXCOLOUR:
@@ -640,18 +650,18 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				wxColourPropertyValue* colour = wxDynamicCast( event.GetPropertyValueAsWxObjectPtr(), wxColourPropertyValue );
 				if ( colour->m_type == wxPG_COLOUR_CUSTOM )
 				{
-					GetData()->ModifyProperty( prop, TypeConv::ColourToString( colour->m_colour ) );
+					AppData()->ModifyProperty( prop, TypeConv::ColourToString( colour->m_colour ) );
 				}
 				else
 				{
-					GetData()->ModifyProperty( prop, TypeConv::SystemColourToString( colour->m_type ) );
+					AppData()->ModifyProperty( prop, TypeConv::SystemColourToString( colour->m_type ) );
 				}
 				break;
 			}
 			case PT_STRINGLIST:
 			{
 				const wxArrayString &arraystr = event.GetPropertyValueAsArrayString();
-				GetData()->ModifyProperty(prop, TypeConv::ArrayStringToString(arraystr));
+				AppData()->ModifyProperty(prop, TypeConv::ArrayStringToString(arraystr));
 				break;
 			}
 			case PT_BITMAP:
@@ -664,7 +674,7 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				size_t semicolon_index = path.find_first_of( wxT(";") );
 				if ( semicolon_index != path.npos )
 				{
-					path = TypeConv::MakeRelativePath( path.substr( 0, semicolon_index ), GlobalData()->GetProjectPath() ) + path.substr( semicolon_index  );
+					path = TypeConv::MakeRelativePath( path.substr( 0, semicolon_index ), AppData()->GetProjectPath() ) + path.substr( semicolon_index  );
 				}
 
 				// Create event to spawn update of the bitmap property
@@ -682,13 +692,13 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				GetEventHandler()->AddPendingEvent( bitmapEvent );
 
 				// Respond to property modification
-				GetData()->ModifyProperty( prop, path );
+				AppData()->ModifyProperty( prop, path );
 				break;
 			}
 
 
 			default:
-				GetData()->ModifyProperty( prop, event.GetPropertyValueAsString() );
+				AppData()->ModifyProperty( prop, event.GetPropertyValueAsString() );
 		}
 	}
 }
@@ -704,35 +714,19 @@ void ObjectInspector::OnNewBitmapProperty( wxCommandEvent& event )
 	data->m_grid->Thaw();
 }
 ///////////////////////////////////////////////////////////////////////////////
-
-void ObjectInspector::ProjectLoaded()
-{
-}
-
-void ObjectInspector::ProjectSaved()
-{
-}
-
-void ObjectInspector::ObjectSelected(shared_ptr<ObjectBase> obj)
+void ObjectInspector::OnObjectSelected( wxFBObjectEvent& event )
 {
 	Create();
 }
 
-void ObjectInspector::ObjectCreated(shared_ptr<ObjectBase> obj)
-{
-}
-
-void ObjectInspector::ObjectRemoved(shared_ptr<ObjectBase> obj)
-{
-}
-
-void ObjectInspector::ProjectRefresh()
+void ObjectInspector::OnProjectRefresh( wxFBEvent& event )
 {
 	Create(true);
 }
 
-void ObjectInspector::PropertyModified(shared_ptr<Property> prop)
+void ObjectInspector::OnPropertyModified( wxFBPropertyEvent& event )
 {
+	shared_ptr<Property> prop = event.GetFBProperty();
 	wxPGId pgid = m_pg->GetPropertyByLabel(prop->GetName());
 	if (!pgid.IsOk()) return; // Puede que no se esté mostrando ahora esa página
 	wxPGProperty *pgProp = pgid.GetPropertyPtr();

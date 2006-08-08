@@ -28,11 +28,18 @@
 #include "codegen/xrccg.h"
 #include "utils/typeconv.h"
 #include <wx/filename.h>
-#include "rad/global.h"
+#include "rad/wxfbevent.h"
+#include <rad/appdata.h>
+
+
+BEGIN_EVENT_TABLE( XrcPanel,  wxPanel )
+	EVT_FB_CODE_GENERATION( XrcPanel::OnCodeGeneration )
+END_EVENT_TABLE()
 
 XrcPanel::XrcPanel(wxWindow *parent, int id)
   : wxPanel (parent,id)
 {
+  AppData()->AddHandler( this->GetEventHandler() );
   wxBoxSizer *top_sizer = new wxBoxSizer(wxVERTICAL);
 
   m_xrcPanel = new CodeEditor(this,-1);
@@ -47,6 +54,11 @@ XrcPanel::XrcPanel(wxWindow *parent, int id)
   top_sizer->Layout();
 
   m_cw = PTCCodeWriter(new TCCodeWriter(m_xrcPanel->GetTextCtrl()));
+}
+
+XrcPanel::~XrcPanel()
+{
+	AppData()->RemoveHandler( this->GetEventHandler() );
 }
 
 void XrcPanel::InitStyledTextCtrl(wxScintilla *stc)
@@ -77,9 +89,13 @@ void XrcPanel::InitStyledTextCtrl(wxScintilla *stc)
   stc->SetCaretWidth(2);
 }
 
-void XrcPanel::CodeGeneration( bool panelOnly )
+void XrcPanel::OnCodeGeneration( wxFBEvent& event )
 {
-  shared_ptr<ObjectBase> project = GetData()->GetProjectData();
+
+  // Using the previously unused Id field in the event to carry a boolean
+  bool panelOnly = ( event.GetId() != 0 );
+
+  shared_ptr<ObjectBase> project = AppData()->GetProjectData();
 
   shared_ptr<Property> pCodeGen = project->GetProperty( wxT("code_generation") );
   if (pCodeGen)
@@ -136,7 +152,7 @@ void XrcPanel::CodeGeneration( bool panelOnly )
 		path = wxFileName( pathEntry );
 		if ( !path.IsAbsolute() )
 		{
-			wxString projectPath = GlobalData()->GetProjectPath();
+			wxString projectPath = AppData()->GetProjectPath();
 			if ( projectPath.empty() && !panelOnly )
 			{
 				wxLogWarning(wxT("You must save the project when using a relative path for output files") );

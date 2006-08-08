@@ -26,10 +26,19 @@
 #ifndef __OBJ_DATABASE__
 #define __OBJ_DATABASE__
 
-#include "objectbase.h"
 #include "tinyxml.h"
 #include <wx/dynlib.h>
 #include <set>
+#include <boost/smart_ptr.hpp>
+#include <vector>
+#include <map>
+#include "model/types.h"
+
+using namespace std;
+using namespace boost;
+
+class ObjectInfo;
+class ObjectBase;
 
 class ObjectPackage;
 class ObjectDatabase;

@@ -26,19 +26,17 @@
 #ifndef __KEYS_HANDLER__
 #define __KEYS_HANDLER__
 
-#include "rad/appobserver.h"
 #include "wx/wx.h"
 
+// This class is not needed because shorcuts are made through acceletors
+// of the MainFrame menubar.
 class CustomKeysEvtHandler : public wxEvtHandler
 {
- private: 
-  DataObservable *m_data;
-  
+ private:
   CustomKeysEvtHandler() {}
-  
+
   DECLARE_EVENT_TABLE()
  public:
-  CustomKeysEvtHandler(DataObservable *data) { m_data = data; };
   void OnKeyPress(wxKeyEvent &event);
 };
 

@@ -30,15 +30,27 @@
 #include <wx/image.h>
 #include "rad/menueditor.h"
 #include "utils/typeconv.h"
+#include "rad/wxfbevent.h"
+#include <rad/appdata.h>
 
 BEGIN_EVENT_TABLE( ObjectTree, wxPanel )
 	EVT_TREE_SEL_CHANGED( -1, ObjectTree::OnSelChanged )
 	EVT_TREE_ITEM_RIGHT_CLICK( -1, ObjectTree::OnRightClick )
+
+	EVT_FB_PROJECT_LOADED( ObjectTree::OnProjectLoaded )
+	EVT_FB_PROJECT_SAVED( ObjectTree::OnProjectSaved )
+	EVT_FB_OBJECT_SELECTED( ObjectTree::OnObjectSelected )
+	EVT_FB_OBJECT_CREATED( ObjectTree::OnObjectCreated )
+	EVT_FB_OBJECT_REMOVED( ObjectTree::OnObjectRemoved )
+	EVT_FB_PROPERTY_MODIFIED( ObjectTree::OnPropertyModified )
+	EVT_FB_PROJECT_REFRESH( ObjectTree::OnProjectRefresh )
+
 END_EVENT_TABLE()
 
 ObjectTree::ObjectTree( wxWindow *parent, int id )
 : wxPanel( parent, id )
 {
+	AppData()->AddHandler( this->GetEventHandler() );
 	m_tcObjects = new wxTreeCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxTR_DEFAULT_STYLE|wxSIMPLE_BORDER);
 
 	wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
@@ -49,11 +61,16 @@ ObjectTree::ObjectTree( wxWindow *parent, int id )
     sizer_1->SetSizeHints(this);
 }
 
+ObjectTree::~ObjectTree()
+{
+	AppData()->RemoveHandler( this->GetEventHandler() );
+}
+
 void ObjectTree::RebuildTree()
 {
 	m_tcObjects->Freeze();
 
-	shared_ptr<ObjectBase> project = GetData()->GetProjectData();
+	shared_ptr<ObjectBase> project = AppData()->GetProjectData();
 
 	// guardamos el valor del atributo "IsExpanded"
 	// para regenerar correctamente el árbol
@@ -92,7 +109,7 @@ void ObjectTree::OnSelChanged(wxTreeEvent &event)
 	{
 		shared_ptr<ObjectBase> obj(((ObjectTreeItemData *)item_data)->GetObject());
 		assert(obj);
-		GetData()->SelectObject(obj);
+		AppData()->SelectObject(obj);
 	}
 }
 
@@ -104,67 +121,11 @@ void ObjectTree::OnRightClick(wxTreeEvent &event)
 	{
 		shared_ptr<ObjectBase> obj(((ObjectTreeItemData *)item_data)->GetObject());
 		assert(obj);
-		wxMenu * menu = new ItemPopupMenu(GetData(),obj);
+		wxMenu * menu = new ItemPopupMenu(obj);
 		wxPoint pos = event.GetPoint();
 		menu->UpdateUI(menu);
 		PopupMenu(menu,pos.x, pos.y);
 	}
-}
-
-void ObjectTree::ProjectLoaded()
-{
-	RebuildTree();
-}
-
-void ObjectTree::ProjectRefresh()
-{
-	RebuildTree();
-}
-
-void ObjectTree::ProjectSaved()
-{
-}
-
-void ObjectTree::ObjectSelected(shared_ptr<ObjectBase> obj)
-{
-	// buscamos el item asociado al objeto lo marcamos
-	// como seleccionado
-	ObjectItemMap::iterator it = m_map.find(obj);
-	if (it != m_map.end()) //&& m_tcObjects->GetSelection() != it->second)
-	{
-		m_tcObjects->SelectItem(it->second);
-		m_tcObjects->SetFocus();
-	}
-	else
-	{
-#ifdef __WXFB_DEBUG__
-		wxLogError(wxT("Algo pasa porque no se encuentra el item asociado al objeto"));
-#endif
-	}
-}
-
-void ObjectTree::ObjectCreated(shared_ptr<ObjectBase> obj)
-{
-	// seguro que se puede optimizar
-	RebuildTree();
-}
-
-void ObjectTree::ObjectRemoved(shared_ptr<ObjectBase> obj)
-{
-	// seguro que se puede optimizar
-	RebuildTree();
-}
-
-void ObjectTree::PropertyModified(shared_ptr<Property> prop)
-{
-	if (prop->GetName() == wxT("name") )
-	{
-		ObjectItemMap::iterator it = m_map.find(prop->GetObject());
-		if (it != m_map.end())
-		{
-			UpdateItem(it->second,it->first);
-		}
-	};
 }
 
 void ObjectTree::AddChildren(shared_ptr<ObjectBase> obj, wxTreeItemId &parent, bool is_root)
@@ -273,10 +234,10 @@ void ObjectTree::Create()
 		m_iconIdx.insert(IconIndexMap::value_type( wxT("_default_"),index++));
 	}
 
-	unsigned int pkg_count = GetData()->GetPackageCount();
+	unsigned int pkg_count = AppData()->GetPackageCount();
 	for (unsigned int i = 0; i< pkg_count;i++)
 	{
-		PObjectPackage pkg = GetData()->GetPackage(i);
+		PObjectPackage pkg = AppData()->GetPackage(i);
 
 		unsigned int j;
 		for (j=0;j<pkg->GetObjectCount();j++)
@@ -327,6 +288,66 @@ void ObjectTree::RestoreItemStatus(shared_ptr<ObjectBase> obj)
 		RestoreItemStatus(obj->GetChild(i));
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// wxFormBuilder Event Handlers
+/////////////////////////////////////////////////////////////////////////////
+void ObjectTree::OnProjectLoaded ( wxFBEvent &event )
+{
+	RebuildTree();
+}
+
+void ObjectTree::OnProjectSaved  ( wxFBEvent &event )
+{
+}
+
+void ObjectTree::OnObjectSelected( wxFBObjectEvent &event )
+{
+  PObjectBase obj = event.GetFBObject();
+	// buscamos el item asociado al objeto lo marcamos
+	// como seleccionado
+	ObjectItemMap::iterator it = m_map.find(obj);
+	if (it != m_map.end()) //&& m_tcObjects->GetSelection() != it->second)
+	{
+		m_tcObjects->SelectItem(it->second);
+		m_tcObjects->SetFocus();
+	}
+	else
+	{
+#ifdef __WXFB_DEBUG__
+		wxLogError(wxT("Algo pasa porque no se encuentra el item asociado al objeto"));
+#endif
+	}
+}
+
+void ObjectTree::OnObjectCreated ( wxFBObjectEvent &event )
+{
+	RebuildTree();
+}
+
+void ObjectTree::OnObjectRemoved ( wxFBObjectEvent &event )
+{
+	RebuildTree();
+}
+
+void ObjectTree::OnPropertyModified ( wxFBPropertyEvent &event )
+{
+  PProperty prop = event.GetFBProperty();
+
+	if (prop->GetName() == wxT("name") )
+	{
+		ObjectItemMap::iterator it = m_map.find(prop->GetObject());
+		if (it != m_map.end())
+		{
+			UpdateItem(it->second,it->first);
+		}
+	};
+}
+
+void ObjectTree::OnProjectRefresh ( wxFBEvent &event)
+{
+  RebuildTree();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 ObjectTreeItemData::ObjectTreeItemData(shared_ptr<ObjectBase> obj) : m_object(obj)
@@ -351,8 +372,8 @@ EVT_MENU(-1, ItemPopupMenu::OnMenuEvent)
 EVT_UPDATE_UI(-1, ItemPopupMenu::OnUpdateEvent)
 END_EVENT_TABLE()
 
-ItemPopupMenu::ItemPopupMenu(DataObservable *data, shared_ptr<ObjectBase> obj)
-: wxMenu(), m_data(data), m_object(obj)
+ItemPopupMenu::ItemPopupMenu(shared_ptr<ObjectBase> obj)
+: wxMenu(), m_object(obj)
 {
 	Append(MENU_CUT,        wxT("Cut\tCtrl+X"));
 	Append(MENU_COPY,       wxT("Copy\tCtrl+C"));
@@ -377,32 +398,32 @@ void ItemPopupMenu::OnMenuEvent (wxCommandEvent & event)
 	switch (id)
 	{
 	case MENU_CUT:
-		m_data->CutObject(m_object);
+		AppData()->CutObject(m_object);
 		break;
 	case MENU_PASTE:
-		m_data->PasteObject(m_object);
+		AppData()->PasteObject(m_object);
 		break;
 	case MENU_DELETE:
-		m_data->RemoveObject(m_object);
+		AppData()->RemoveObject(m_object);
 		break;
 	case MENU_MOVE_UP:
-		m_data->MovePosition(m_object,false);
+		AppData()->MovePosition(m_object,false);
 		break;
 	case MENU_MOVE_DOWN:
-		m_data->MovePosition(m_object,true);
+		AppData()->MovePosition(m_object,true);
 		break;
 	case MENU_MOVE_RIGHT:
-		m_data->MoveHierarchy(m_object,false);
+		AppData()->MoveHierarchy(m_object,false);
 		break;
 	case MENU_MOVE_LEFT:
-		m_data->MoveHierarchy(m_object,true);
+		AppData()->MoveHierarchy(m_object,true);
 		break;
 	case MENU_MOVE_NEW_BOXSIZER:
-		m_data->CreateBoxSizerWithObject(m_object);
+		AppData()->CreateBoxSizerWithObject(m_object);
 		break;
 	case MENU_EDIT_MENUS:
 		{
-			shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
+			shared_ptr<ObjectBase> obj = AppData()->GetSelectedObject();
 			if (obj && (obj->GetClassName() == wxT("wxMenuBar") || obj->GetClassName() == wxT("Frame") ) )
 			{
 				MenuEditor me(NULL);
@@ -423,7 +444,7 @@ void ItemPopupMenu::OnMenuEvent (wxCommandEvent & event)
 				{
 					if (obj->GetClassName() == wxT("wxMenuBar"))
 					{
-						shared_ptr<ObjectBase> menubar = me.GetMenubar(m_data->GetObjectDatabase());
+						shared_ptr<ObjectBase> menubar = me.GetMenubar(AppData()->GetObjectDatabase());
 						while (obj->GetChildCount() > 0)
 						{
 							shared_ptr<ObjectBase> child = obj->GetChild(0);
@@ -433,11 +454,11 @@ void ItemPopupMenu::OnMenuEvent (wxCommandEvent & event)
 						for (unsigned int i = 0; i < menubar->GetChildCount(); i++)
 						{
 							shared_ptr<ObjectBase> child = menubar->GetChild(i);
-							m_data->InsertObject(child,obj);
+							AppData()->InsertObject(child,obj);
 						}
 					}
 					else
-						m_data->InsertObject(me.GetMenubar(m_data->GetObjectDatabase()),m_data->GetSelectedForm());
+						AppData()->InsertObject(me.GetMenubar(AppData()->GetObjectDatabase()),AppData()->GetSelectedForm());
 				}
 			}
 		}
@@ -457,10 +478,10 @@ void ItemPopupMenu::OnUpdateEvent(wxUpdateUIEvent& e)
 		break;
 	case MENU_CUT:
 	case MENU_COPY:
-		e.Enable(m_data->CanCopyObject());
+		e.Enable(AppData()->CanCopyObject());
 		break;
 	case MENU_PASTE:
-		e.Enable(m_data->CanPasteObject());
+		e.Enable(AppData()->CanPasteObject());
 		break;
 
 	case MENU_MOVE_UP:

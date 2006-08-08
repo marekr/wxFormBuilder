@@ -26,15 +26,17 @@
 #ifndef __OBJECT_TREE__
 #define __OBJECT_TREE__
 
-#include "rad/appobserver.h"
 #include "model/objectbase.h"
-//#include <hash_map>
 #include <map>
 #include "rad/customkeys.h"
 
 #include <wx/treectrl.h>
 
-class ObjectTree : public wxPanel, public DataObserver
+class wxFBEvent;
+class wxFBPropertyEvent;
+class wxFBObjectEvent;
+
+class ObjectTree : public wxPanel
 {
 private:
    typedef map<shared_ptr<ObjectBase>, wxTreeItemId> ObjectItemMap;
@@ -65,18 +67,19 @@ private:
 
 public:
   ObjectTree(wxWindow *parent, int id);
+  ~ObjectTree();
   void Create();
 
   void OnSelChanged(wxTreeEvent &event);
   void OnRightClick(wxTreeEvent &event);
 
-  void ProjectLoaded();
-  void ProjectSaved();
-  void ObjectSelected(shared_ptr<ObjectBase> obj);
-  void ObjectCreated(shared_ptr<ObjectBase> obj);
-  void ObjectRemoved(shared_ptr<ObjectBase> obj);
-  void PropertyModified(shared_ptr<Property> prop);
-  void ProjectRefresh();
+  void OnProjectLoaded ( wxFBEvent &event );
+  void OnProjectSaved  ( wxFBEvent &event );
+  void OnObjectSelected( wxFBObjectEvent &event );
+  void OnObjectCreated ( wxFBObjectEvent &event );
+  void OnObjectRemoved ( wxFBObjectEvent &event );
+  void OnPropertyModified ( wxFBPropertyEvent &event );
+  void OnProjectRefresh ( wxFBEvent &event);
 
   void AddCustomKeysHandler(CustomKeysEvtHandler *h) { m_tcObjects->PushEventHandler(h); };
 };
@@ -104,14 +107,13 @@ class ObjectTreeItemData : public wxTreeItemData
 class ItemPopupMenu : public wxMenu
 {
  private:
-  DataObservable *m_data;
   shared_ptr<ObjectBase> m_object;
 
   DECLARE_EVENT_TABLE()
 
  public:
   void OnUpdateEvent(wxUpdateUIEvent& e);
-  ItemPopupMenu(DataObservable *data, shared_ptr<ObjectBase> obj);
+  ItemPopupMenu(shared_ptr<ObjectBase> obj);
   void OnMenuEvent (wxCommandEvent & event);
 };
 

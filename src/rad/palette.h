@@ -29,18 +29,19 @@
 #include <wx/wx.h>
 #include "utils/notebookchooser.h"
 #include <wx/spinbutt.h>
-#include "rad/appobserver.h"
 #include <vector>
+#include <model/objectbase.h>
+#include <model/database.h>
 
-typedef vector<wxToolBar*> ToolbarVector;
+typedef std::vector<wxToolBar*> ToolbarVector;
 
-class wxFbPalette : public wxPanel, public DataObserver
+class wxFbPalette : public wxPanel
 {
  private:
   ToolbarVector m_tv;
   wxNotebookChooser *m_notebook;
   static wxWindowID nextId;
-  vector<int> m_posVector;
+  std::vector<int> m_posVector;
   wxNotebookChooserImageList m_icons;
 
   void PopulateToolbar(PObjectPackage pkg, wxToolBar *toolbar);

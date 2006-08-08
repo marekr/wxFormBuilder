@@ -41,29 +41,16 @@
 #include <wx/image.h>
 #include <wx/sysopt.h>
 
-#include "rad/global.h"
 #include <memory>
-
-
-class MyApp : public wxApp
-{
-private:
-  wxLog * m_old_log;
-  wxLogWindow * m_log;
-
-public:
-
-  virtual bool OnInit();
-};
-
+#include "maingui.h"
 
 IMPLEMENT_APP(MyApp)
 
-
 bool MyApp::OnInit()
 {
-  GlobalDataInit();
   wxInitAllImageHandlers();
+
+  AppDataInit();
 
   // Obtenemos la ruta del ejecutable
   wxString exeFile(argv[0]);
@@ -71,7 +58,7 @@ bool MyApp::OnInit()
   wxString path = appFileName.GetPath();
 
   // Guardamos la ruta del ejecutable
-  GlobalData()->SetApplicationPath(path);
+  AppData()->SetApplicationPath(path);
 
   wxSystemOptions::SetOption(wxT("msw.remap"), 0);
   wxSystemOptions::SetOption(wxT("msw.staticbox.optimized-paint"), 0);
@@ -99,9 +86,9 @@ bool MyApp::OnInit()
 
 
 
-  DataObservable *data = new ApplicationData( path );
+  AppDataInit( path );
 
-  MainFrame *frame = new MainFrame(data, NULL);
+  MainFrame *frame = new MainFrame(NULL);
   frame->Show(TRUE);
   SetTopWindow(frame);
 
@@ -116,7 +103,7 @@ bool MyApp::OnInit()
     if (::wxFileExists(arg))
     {
       // No va bien (en mainframe aparece untitled)
-      if (data->LoadProject(arg))
+      if (AppData()->LoadProject(arg))
         frame->InsertRecentProject(arg);
 
       return TRUE;
@@ -124,8 +111,8 @@ bool MyApp::OnInit()
   }
 
 
-  data->NewProject();
+  AppData()->NewProject();
   return TRUE;
 }
 
-// OnQuit?? -> GlobalDataDestroy()
+// OnQuit?? -> AppDataDestroy()

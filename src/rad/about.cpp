@@ -27,7 +27,7 @@
 #include <wx/html/htmlwin.h>
 #include <wx/mimetype.h>
 #include <wx/filename.h>
-#include "rad/global.h"
+#include "rad/appdata.h"
 
 #define ID_DEFAULT -1 // Default
 #define ID_OK 1000
@@ -107,7 +107,7 @@ AboutDialog::AboutDialog(wxWindow *parent, int id) : wxDialog(parent,id,wxT("Abo
   mainSizer->Add(htmlWin, 1, wxEXPAND | wxALL, 5);
   mainSizer->Add(new wxButton(this, wxID_OK, wxT("OK")), 0, wxALIGN_CENTER | wxBOTTOM, 5);
 
-  htmlWin->LoadFile(wxFileName(GlobalData()->GetApplicationPath() + wxFILE_SEP_PATH + wxT("resources/about.html")));
+  htmlWin->LoadFile(wxFileName(AppData()->GetApplicationPath() + wxFILE_SEP_PATH + wxT("resources/about.html")));
 
   SetSizer(mainSizer);
   Layout();

@@ -29,7 +29,7 @@
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 #include "rad/title.h"
-#include <vector>
+#include <rad/appdata.h>
 
 #define ID_PALETTE_BUTTON 999
 #define ID_ABOUT 100
@@ -68,14 +68,14 @@ void wxFbPalette::Create()
 
   m_notebook = new ChooseNotebook( this, -1 );
 
-  unsigned int pkg_count = GetData()->GetPackageCount();
+  unsigned int pkg_count = AppData()->GetPackageCount();
 
   Debug::Print( wxT("[Palette] Pages %d"),pkg_count);
 
   // Populate icon vector
   for (unsigned int j = 0; j < pkg_count;j++)
   {
-	PObjectPackage pkg = GetData()->GetPackage(j);
+	PObjectPackage pkg = AppData()->GetPackage(j);
 	m_icons.Add( pkg->GetPackageIcon() );
   }
 
@@ -84,7 +84,7 @@ void wxFbPalette::Create()
 
   for (unsigned int i = 0; i < pkg_count;i++)
   {
-    PObjectPackage pkg = GetData()->GetPackage(i);
+    PObjectPackage pkg = AppData()->GetPackage(i);
     wxString pkg_name = pkg->GetPackageName();
 
     wxPanel *panel = new wxPanel(m_notebook,-1);
@@ -138,7 +138,7 @@ void wxFbPalette::Create()
 void wxFbPalette::OnSpinUp(wxSpinEvent& e)
 {
   int page = m_notebook->GetSelection();
-  PObjectPackage pkg = GetData()->GetPackage(page);
+  PObjectPackage pkg = AppData()->GetPackage(page);
 
   if ((int)pkg->GetObjectCount() - m_posVector[page] - 1 <= 0) return;
 
@@ -155,7 +155,7 @@ void wxFbPalette::OnSpinDown(wxSpinEvent& e)
 
   m_posVector[page]--;
   wxToolBar *toolbar = m_tv[page];
-  PObjectPackage pkg = GetData()->GetPackage(page);
+  PObjectPackage pkg = AppData()->GetPackage(page);
   wxString widget( pkg->GetObjectInfo( m_posVector[page] )->GetClassName() );
   wxBitmap icon = pkg->GetObjectInfo(m_posVector[page])->GetIconFile();
   toolbar->InsertTool(0, nextId++, icon, wxNullBitmap, false, NULL, widget, widget);
@@ -169,7 +169,7 @@ void wxFbPalette::OnButtonClick(wxCommandEvent &event)
     if (m_tv[i]->FindById(event.GetId()))
     {
       wxString name = m_tv[i]->GetToolShortHelp(event.GetId());
-      GetData()->CreateObject(name);
+      AppData()->CreateObject(name);
       return;
     }
   }

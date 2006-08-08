@@ -320,22 +320,6 @@
 			<Option target="Release (Unicode)" />
 			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad\appobserver.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Release (Unicode)" />
-			<Option target="Debug (Unicode)" />
-		</Unit>
-		<Unit filename="rad\appobserver.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Release (Unicode)" />
-			<Option target="Debug (Unicode)" />
-		</Unit>
 		<Unit filename="rad\bitmaps.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug" />
@@ -480,22 +464,6 @@
 			<Option target="Release (Unicode)" />
 			<Option target="Debug (Unicode)" />
 		</Unit>
-		<Unit filename="rad\global.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Release (Unicode)" />
-			<Option target="Debug (Unicode)" />
-		</Unit>
-		<Unit filename="rad\global.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Release (Unicode)" />
-			<Option target="Debug (Unicode)" />
-		</Unit>
 		<Unit filename="rad\inspector\objinspect2.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug" />
@@ -591,6 +559,22 @@
 			<Option target="Release" />
 			<Option target="Release (Unicode)" />
 			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="rad\wxfbevent.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+		</Unit>
+		<Unit filename="rad\wxfbevent.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
 		</Unit>
 		<Unit filename="rad\xrcpanel\xrcpanel.cpp">
 			<Option compilerVar="CPP" />

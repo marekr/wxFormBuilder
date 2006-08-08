@@ -29,20 +29,25 @@
 #include "wx/wx.h"
 #include "codegen/codegen.h"
 #include "rad/cpppanel/cpppanel.h"
-#include "rad/appobserver.h"
 #include "wx/file.h"
 
-class XrcPanel : public wxPanel, public DataObserver
+class wxFBEvent;
+
+class XrcPanel : public wxPanel
 {
  private:
   CodeEditor *m_xrcPanel;
   PTCCodeWriter m_cw;
-  
+
   void InitStyledTextCtrl(wxScintilla *stc);
+
  public:
-  XrcPanel(wxWindow *parent, int id);   
-  
-  void CodeGeneration( bool projectOnly = false );
+  XrcPanel(wxWindow *parent, int id);
+  ~XrcPanel();
+
+  void OnCodeGeneration( wxFBEvent& event );
+
+  DECLARE_EVENT_TABLE()
 };
 
 

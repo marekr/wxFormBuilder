@@ -26,7 +26,6 @@
 #ifndef __APP_DATA__
 #define __APP_DATA__
 
-#include "rad/appobserver.h"
 #include "model/database.h"
 #include "rad/cmdproc.h"
 #include <set>
@@ -37,9 +36,21 @@ namespace ticpp
 	class Element;
 }
 
-class ApplicationData : public DataObservable
+class Property;
+
+class wxFBEvent;
+
+#define AppData()         (ApplicationData::Get())
+#define AppDataInit(path) (ApplicationData::Get(path))
+#define AppDataDestroy()  (ApplicationData::Destroy())
+
+// Now this class is a singleton class.
+// We don't need DataObservable interface since Observers are wxEvtHandlers
+class ApplicationData// : public DataObservable
 {
  private:
+  static ApplicationData *s_instance;
+
 
   wxString m_rootDir;       // directorio raíz (mismo que el ejecutable)
   bool m_modFlag;           // flag de proyecto modificado
@@ -53,6 +64,26 @@ class ApplicationData : public DataObservable
   // Procesador de comandos Undo/Redo
   CommandProcessor m_cmdProc;
   wxString m_projectFile;
+  wxString m_projectPath;
+  wxString m_exePath;
+
+
+  typedef vector< wxEvtHandler* > HandlerVector;
+  HandlerVector m_handlers;
+
+   //friend class ItemPopupMenu;
+
+  void NotifyEvent( wxFBEvent& event );
+
+   // Notifican a cada observador el evento correspondiente
+  void NotifyProjectLoaded();
+  void NotifyProjectSaved();
+  void NotifyObjectSelected(shared_ptr<ObjectBase> obj);
+  void NotifyObjectCreated(shared_ptr<ObjectBase> obj);
+  void NotifyObjectRemoved(shared_ptr<ObjectBase> obj);
+  void NotifyPropertyModified(shared_ptr<Property> prop);
+  void NotifyProjectRefresh();
+  void NotifyCodeGeneration( bool panelOnly = false );
 
 
   /**
@@ -149,8 +180,20 @@ class ApplicationData : public DataObservable
 	void TransferOptionList( ticpp::Element* prop, std::set< wxString >* options, const std::string& newPropName );
 
 
- public:
+  // hiden constructor
   ApplicationData(const wxString &rootdir = wxT(".") );
+
+
+  //
+
+public:
+
+  static ApplicationData* Get(const wxString &rootdir = wxT(".") );
+  static void Destroy();
+
+  // Procedures for register/unregister wxEvtHandlers to be notified of wxFBEvents
+  void AddHandler( wxEvtHandler* handler );
+  void RemoveHandler( wxEvtHandler* handler );
 
   // Operaciones sobre los datos
   bool LoadProject(const wxString &filename);
@@ -202,6 +245,15 @@ class ApplicationData : public DataObservable
   shared_ptr<ObjectBase> GetClipboardObject()                { return m_clipboard; }
 
   wxString GetProjectFileName() { return m_projectFile; }
+
+  const int m_fbpVerMajor;
+  const int m_fbpVerMinor;
+
+  const wxString &GetProjectPath() { return m_projectPath; };
+  void SetProjectPath(const wxString &path) { m_projectPath = path; };
+
+  const wxString &GetApplicationPath() { return m_exePath; };
+  void SetApplicationPath(const wxString &path) { m_exePath = path; };
 };
 
 

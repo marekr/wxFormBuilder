@@ -28,8 +28,9 @@
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 #include "utils/stringutils.h"
-#include "rad/global.h"
+#include "rad/appdata.h"
 #include <sstream>
+
 int ObjectBase::s_instances = 0;
 
 /*wxString OptionList::GetOption(unsigned int idx)
@@ -467,8 +468,8 @@ TiXmlDocument* ObjectBase::Serialize()
 	TiXmlElement* root = new TiXmlElement( "wxFormBuilder_Project" );
 
 	TiXmlElement* fileVersion = new TiXmlElement( "FileVersion" );
-	fileVersion->SetAttribute( "major", GlobalData()->m_fbpVerMajor );
-	fileVersion->SetAttribute( "minor", GlobalData()->m_fbpVerMinor );
+	fileVersion->SetAttribute( "major", AppData()->m_fbpVerMajor );
+	fileVersion->SetAttribute( "minor", AppData()->m_fbpVerMinor );
 
 	root->LinkEndChild( fileVersion );
 

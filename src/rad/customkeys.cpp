@@ -27,6 +27,7 @@
 #include "utils/debug.h"
 #include "codegen/cppcg.h"
 
+#include <rad/appdata.h>
 
 BEGIN_EVENT_TABLE(CustomKeysEvtHandler,wxEvtHandler)
   EVT_CHAR(CustomKeysEvtHandler::OnKeyPress)
@@ -37,7 +38,7 @@ void CustomKeysEvtHandler::OnKeyPress(wxKeyEvent &event)
   Debug::Print( wxT("%d"),event.GetKeyCode());
 
   if (event.GetKeyCode() == WXK_DELETE)
-    m_data->RemoveObject(m_data->GetSelectedObject());
+    AppData()->RemoveObject(AppData()->GetSelectedObject());
   else if (event.GetKeyCode() == 'P')
   {
     /////
@@ -46,7 +47,7 @@ void CustomKeysEvtHandler::OnKeyPress(wxKeyEvent &event)
 
     Debug::Print( wxT("#### Prueba del parser ####") );
 
-    shared_ptr<ObjectBase> obj = m_data->GetSelectedObject();
+    shared_ptr<ObjectBase> obj = AppData()->GetSelectedObject();
     shared_ptr<CodeInfo> code_info = obj->GetObjectInfo()->GetCodeInfo( wxT("C++") );
 
     Debug::Print( wxT("#### Plantillas ####") );
@@ -65,7 +66,7 @@ void CustomKeysEvtHandler::OnKeyPress(wxKeyEvent &event)
   }
   else if (event.GetKeyCode() == 'C')
   {
-    m_data->GenerateCode();
+    AppData()->GenerateCode();
   }
   else
     event.Skip();

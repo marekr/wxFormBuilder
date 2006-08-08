@@ -24,11 +24,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "appdata.h"
+#include "model/objectbase.h"
 #include "utils/typeconv.h"
 #include "utils/debug.h"
 #include "codegen/codegen.h"
-#include "rad/global.h"
 #include "bitmaps.h"
+#include "rad/wxfbevent.h"
 
 #include <ticpp.h>
 #include <set>
@@ -322,7 +323,29 @@ void ReparentObjectCmd::DoRestore()
 // ApplicationData
 ///////////////////////////////////////////////////////////////////////////////
 
+ApplicationData* ApplicationData::s_instance = NULL;
+
+ApplicationData* ApplicationData::Get(const wxString &rootdir)
+{
+  if (!s_instance)
+    s_instance = new ApplicationData(rootdir);
+
+  return s_instance;
+}
+
+void ApplicationData::Destroy()
+{
+  if (!s_instance)
+    delete s_instance;
+
+  s_instance = NULL;
+}
+
+
 ApplicationData::ApplicationData(const wxString &rootdir)
+:
+m_fbpVerMajor( 1 ),
+m_fbpVerMinor( 3 )
 {
 	m_rootDir = rootdir;
 	AppBitmaps::LoadBitmaps( m_rootDir + wxT("/xml/icons.xml"), m_rootDir + wxT("/resources/icons/") );
@@ -502,8 +525,14 @@ shared_ptr< ObjectBase >  ApplicationData::SearchSizerInto(shared_ptr<ObjectBase
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
 void ApplicationData::SelectObject(shared_ptr<ObjectBase> obj)
 {
+	if ( obj == m_selObj )
+	{
+		return;
+	}
+
 	Debug::Print( wxT("Object Selected!") );
 	m_selObj = obj;
 	/*
@@ -514,7 +543,7 @@ void ApplicationData::SelectObject(shared_ptr<ObjectBase> obj)
 	else
 	m_selForm = shared_dynamic_cast<FormObject>(obj);*/
 
-	DataObservable::NotifyObjectSelected(obj);
+	NotifyObjectSelected(obj);
 }
 
 void ApplicationData::CreateObject(wxString name)
@@ -555,7 +584,7 @@ void ApplicationData::CreateObject(wxString name)
 		}
 	}
 
-	DataObservable::NotifyObjectCreated(obj);
+	NotifyObjectCreated(obj);
 
 	// Seleccionamos el objeto, si este es un item entonces se selecciona
 	// el objeto contenido. ¿Tiene sentido tener un item debajo de un item?
@@ -602,7 +631,7 @@ void ApplicationData::DoRemoveObject(shared_ptr<ObjectBase> obj, bool cutObject)
 			Execute(command); //m_cmdProc.Execute(command);
 		}
 
-		DataObservable::NotifyObjectRemoved(obj);
+		NotifyObjectRemoved(obj);
 
 		// "parent" será el nuevo objeto seleccionado tras eliminar obj.
 		SelectObject(parent);
@@ -711,7 +740,7 @@ void ApplicationData::PasteObject(shared_ptr<ObjectBase> parent)
 
 			ResolveSubtreeNameConflicts(obj);
 
-			DataObservable::NotifyProjectRefresh();
+			NotifyProjectRefresh();
 
 			// vamos a mantener seleccionado el nuevo objeto creado
 			// pero hay que tener en cuenta que es muy probable que el objeto creado
@@ -737,7 +766,7 @@ void ApplicationData::InsertObject(shared_ptr<ObjectBase> obj, shared_ptr<Object
 	//  {
 	PCommand command(new InsertObjectCmd(this,obj,parent));
 	Execute(command); //m_cmdProc.Execute(command);
-	DataObservable::NotifyProjectRefresh();
+	NotifyProjectRefresh();
 	//  }
 }
 
@@ -754,7 +783,7 @@ void ApplicationData::MergeProject(shared_ptr<ObjectBase> project)
 
 		InsertObject(child,m_project);
 	}
-	DataObservable::NotifyProjectRefresh();
+	NotifyProjectRefresh();
 }
 
 void ApplicationData::ModifyProperty(shared_ptr<Property> prop, wxString str)
@@ -766,7 +795,7 @@ void ApplicationData::ModifyProperty(shared_ptr<Property> prop, wxString str)
 		PCommand command( new ModifyPropertyCmd( prop, str ) );
 		Execute(command); //m_cmdProc.Execute(command);
 
-		DataObservable::NotifyPropertyModified(prop);
+		NotifyPropertyModified(prop);
 	}
 }
 
@@ -776,10 +805,10 @@ void ApplicationData::SaveProject(const wxString &filename)
 	m_modFlag = false;
 	doc->SaveFile(filename.mb_str( wxConvUTF8 ));
 	m_projectFile = filename;
-	GlobalData()->SetProjectPath(::wxPathOnly(filename));
+	SetProjectPath(::wxPathOnly(filename));
 	delete doc;
 
-	DataObservable::NotifyProjectSaved();
+	NotifyProjectSaved();
 }
 
 bool ApplicationData::LoadProject(const wxString &file)
@@ -824,21 +853,21 @@ bool ApplicationData::LoadProject(const wxString &file)
 		bool older = false;
 		bool newer = false;
 
-		if ( fbpVerMajor < GlobalData()->m_fbpVerMajor )
+		if ( fbpVerMajor < m_fbpVerMajor )
 		{
 			older = true;
 		}
-		else if ( fbpVerMajor > GlobalData()->m_fbpVerMajor )
+		else if ( fbpVerMajor > m_fbpVerMajor )
 		{
 			newer = true;
 		}
 		else
 		{
-			if ( fbpVerMinor < GlobalData()->m_fbpVerMinor )
+			if ( fbpVerMinor < m_fbpVerMinor )
 			{
 				older = true;
 			}
-			else if ( fbpVerMinor > GlobalData()->m_fbpVerMinor )
+			else if ( fbpVerMinor > m_fbpVerMinor )
 			{
 				newer = true;
 			}
@@ -894,9 +923,9 @@ bool ApplicationData::LoadProject(const wxString &file)
 			m_modFlag = false;
 			m_cmdProc.Reset();
 			m_projectFile = file;
-			GlobalData()->SetProjectPath(::wxPathOnly(file));
-			DataObservable::NotifyProjectLoaded();
-			DataObservable::NotifyProjectRefresh();
+			SetProjectPath(::wxPathOnly(file));
+			NotifyProjectLoaded();
+			NotifyProjectRefresh();
 		}
 	}
 
@@ -973,8 +1002,8 @@ bool ApplicationData::ConvertProject( const wxString& path, int fileMajor, int f
 			ticpp::Element* newRoot = new ticpp::Element( "wxFormBuilder_Project" );
 
 			ticpp::Element* fileVersion = new ticpp::Element( "FileVersion" );
-			fileVersion->SetAttribute( "major", GlobalData()->m_fbpVerMajor );
-			fileVersion->SetAttribute( "minor", GlobalData()->m_fbpVerMinor );
+			fileVersion->SetAttribute( "major", m_fbpVerMajor );
+			fileVersion->SetAttribute( "minor", m_fbpVerMinor );
 
 			newRoot->LinkEndChild( fileVersion );
 
@@ -1186,13 +1215,13 @@ void ApplicationData::NewProject()
 	m_modFlag = false;
 	m_cmdProc.Reset();
 	m_projectFile = wxT("");
-	GlobalData()->SetProjectPath(wxT(""));
-	DataObservable::NotifyProjectRefresh();
+	SetProjectPath(wxT(""));
+	NotifyProjectRefresh();
 }
 
 void ApplicationData::GenerateCode( bool panelOnly )
 {
-	DataObservable::NotifyCodeGeneration( panelOnly );
+	NotifyCodeGeneration( panelOnly );
 }
 
 void ApplicationData::MovePosition(shared_ptr<ObjectBase> obj, bool right, unsigned int num)
@@ -1223,7 +1252,7 @@ void ApplicationData::MovePosition(shared_ptr<ObjectBase> obj, bool right, unsig
 
 			PCommand command(new ShiftChildCmd(obj,pos));
 			Execute(command); //m_cmdProc.Execute(command);
-			DataObservable::NotifyProjectRefresh();
+			NotifyProjectRefresh();
 			SelectObject(noItemObj);
 
 		}
@@ -1252,7 +1281,7 @@ void ApplicationData::MoveHierarchy(shared_ptr<ObjectBase> obj, bool up)
 				{
 					PCommand cmdReparent(new ReparentObjectCmd(sizeritem,nextSizer));
 					Execute(cmdReparent);
-					DataObservable::NotifyProjectRefresh();
+					NotifyProjectRefresh();
 					SelectObject(obj);
 				}
 			}
@@ -1269,7 +1298,7 @@ void ApplicationData::MoveHierarchy(shared_ptr<ObjectBase> obj, bool up)
 					{
 						PCommand cmdReparent(new ReparentObjectCmd(sizeritem,nextSizer));
 						Execute(cmdReparent);
-						DataObservable::NotifyProjectRefresh();
+						NotifyProjectRefresh();
 						SelectObject(obj);
 					}
 				}
@@ -1282,17 +1311,17 @@ void ApplicationData::MoveHierarchy(shared_ptr<ObjectBase> obj, bool up)
 void ApplicationData::Undo()
 {
 	m_cmdProc.Undo();
-	DataObservable::NotifyProjectRefresh();
+	NotifyProjectRefresh();
 	CheckProjectTree(m_project);
-	DataObservable::NotifyObjectSelected(GetSelectedObject());
+	NotifyObjectSelected(GetSelectedObject());
 }
 
 void ApplicationData::Redo()
 {
 	m_cmdProc.Redo();
-	DataObservable::NotifyProjectRefresh();
+	NotifyProjectRefresh();
 	CheckProjectTree(m_project);
-	DataObservable::NotifyObjectSelected(GetSelectedObject());
+	NotifyObjectSelected(GetSelectedObject());
 }
 
 
@@ -1544,7 +1573,7 @@ void ApplicationData::CreateBoxSizerWithObject(shared_ptr<ObjectBase> obj)
 
 			PCommand cmdReparent(new ReparentObjectCmd(sizeritem,newSizer));
 			Execute(cmdReparent);
-			DataObservable::NotifyProjectRefresh();
+			NotifyProjectRefresh();
 		}
 	}
 }
@@ -1579,3 +1608,107 @@ void ApplicationData::Execute(PCommand cmd)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+void ApplicationData::AddHandler( wxEvtHandler* handler )
+{
+	m_handlers.push_back( handler );
+}
+
+void ApplicationData::RemoveHandler( wxEvtHandler* handler )
+{
+	for ( HandlerVector::iterator it = m_handlers.begin(); it != m_handlers.end(); ++it )
+	{
+		if ( *it == handler )
+		{
+			m_handlers.erase( it );
+			break;
+		}
+	}
+}
+
+void ApplicationData::NotifyEvent( wxFBEvent& event )
+{
+  static int count = 0;
+  static std::set< wxFBEvent* > eventQueue;
+
+  if (count == 0)
+  {
+	  count++;
+	  std::vector< wxEvtHandler* >::iterator handler;
+	  for ( handler = m_handlers.begin(); handler != m_handlers.end(); handler++ )
+	    (*handler)->ProcessEvent( event );
+
+	  count--;
+  }
+  else
+  {
+  	eventQueue.insert( &event );
+    wxLogMessage( wxT("Queued event: %s"), event.GetEventName().c_str() );
+  }
+
+  // Copy queue
+  std::set< wxFBEvent* > queueInProcess = eventQueue;
+  eventQueue.clear();
+
+  // Process queue
+  std::set< wxFBEvent* >::iterator queuedEvent;
+  for ( queuedEvent = queueInProcess.begin(); queuedEvent != queueInProcess.end(); ++queuedEvent )
+  {
+  	wxFBEvent* temp = *queuedEvent;
+	  NotifyEvent( *temp );
+  }
+}
+
+void ApplicationData::NotifyProjectLoaded()
+{
+  wxFBEvent event( wxEVT_FB_PROJECT_LOADED );
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyProjectSaved()
+{
+  wxFBEvent event( wxEVT_FB_PROJECT_SAVED );
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyObjectSelected(shared_ptr<ObjectBase> obj)
+{
+  wxFBObjectEvent event( wxEVT_FB_OBJECT_SELECTED, obj);
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyObjectCreated(shared_ptr<ObjectBase> obj)
+{
+  wxFBObjectEvent event( wxEVT_FB_OBJECT_CREATED, obj);
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyObjectRemoved(shared_ptr<ObjectBase> obj)
+{
+  wxFBObjectEvent event( wxEVT_FB_OBJECT_REMOVED, obj);
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyPropertyModified(shared_ptr<Property> prop)
+{
+  wxFBPropertyEvent event( wxEVT_FB_PROPERTY_MODIFIED, prop);
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyCodeGeneration( bool panelOnly )
+{
+  wxFBEvent event( wxEVT_FB_CODE_GENERATION );
+
+  // Using the previously unused Id field in the event to carry a boolean
+  event.SetId( ( panelOnly ? 1 : 0 ) );
+
+  NotifyEvent( event );
+}
+
+void ApplicationData::NotifyProjectRefresh()
+{
+  wxFBEvent event( wxEVT_FB_PROJECT_REFRESH, -1 );
+  NotifyEvent( event );
+}
+
+
+

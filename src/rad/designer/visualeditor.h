@@ -28,11 +28,9 @@
 
 
 #include "wx/wx.h"
-#include "rad/appobserver.h"
 #include "model/objectbase.h"
 #include "rad/designer/visualobj.h"
 #include "rad/designer/resizablepanel.h"
-
 #include <wx/sashwin.h>
 
 /**
@@ -76,7 +74,11 @@ class GridPanel : public ResizablePanel //wxSashWindow //wxPanel
 //   void OnMouseMove(wxMouseEvent &event);
 };
 
-class VisualEditor : public wxScrolledWindow, public DataObserver
+class wxFBEvent;
+class wxFBPropertyEvent;
+class wxFBObjectEvent;
+
+class VisualEditor : public wxScrolledWindow
 {
  private:
   typedef map<shared_ptr<ObjectBase>,PVisualObject> VisualObjectMap;
@@ -97,6 +99,7 @@ class VisualEditor : public wxScrolledWindow, public DataObserver
 
  public:
   VisualEditor(wxWindow *parent);
+  ~VisualEditor();
   void OnResizeBackPanel (wxCommandEvent &event); //(wxSashEvent &event)
   void OnPaintPanel (wxPaintEvent &event);
   void DeleteVisualObject(PVisualObject obj);
@@ -104,15 +107,14 @@ class VisualEditor : public wxScrolledWindow, public DataObserver
   void Setup();
   void UpdateVirtualSize();
 
-  ///////////////
-  void ProjectLoaded();
-  void ProjectSaved();
-  void ObjectSelected(shared_ptr<ObjectBase> obj);
-  void ObjectCreated(shared_ptr<ObjectBase> obj);
-  void ObjectRemoved(shared_ptr<ObjectBase> obj);
-  void PropertyModified(shared_ptr<Property> prop);
-  void ProjectRefresh();
-
+  // Events
+  void OnProjectLoaded ( wxFBEvent &event );
+  void OnProjectSaved  ( wxFBEvent &event );
+  void OnObjectSelected( wxFBObjectEvent &event );
+  void OnObjectCreated ( wxFBObjectEvent &event );
+  void OnObjectRemoved ( wxFBObjectEvent &event );
+  void OnPropertyModified ( wxFBPropertyEvent &event );
+  void OnProjectRefresh ( wxFBEvent &event);
 };
 
 

@@ -25,8 +25,9 @@
 
 #include "cppcg.h"
 #include "utils/typeconv.h"
+#include "rad/appdata.h"
+
 #include <wx/filename.h>
-#include "rad/global.h"
 
 CppTemplateParser::CppTemplateParser(shared_ptr<ObjectBase> obj, wxString _template)
 : TemplateParser(obj,_template)
@@ -196,7 +197,7 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 
 			if ( source == wxT("Load From File") )
 			{
-				wxString absPath = TypeConv::MakeAbsolutePath( path, GlobalData()->GetProjectPath() );
+				wxString absPath = TypeConv::MakeAbsolutePath( path, AppData()->GetProjectPath() );
 				wxString file = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, m_basePath ) : absPath );
 
 				wxString cppString = CppCodeGenerator::ConvertCppString( file );
@@ -1062,11 +1063,11 @@ void CppCodeGenerator::FindXpmProperties( shared_ptr<ObjectBase> obj, set<wxStri
 			wxFileName bmpFileName( path );
 			if ( bmpFileName.GetExt().Upper() == wxT("XPM") )
 			{
-				wxString absPath = TypeConv::MakeAbsolutePath( path, GlobalData()->GetProjectPath() );
+				wxString absPath = TypeConv::MakeAbsolutePath( path, AppData()->GetProjectPath() );
 
 				// Se supone el path contiene la ruta completa del archivo y no
 				// una relativa.
-				wxString relPath = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, GlobalData()->GetProjectPath() ) : absPath );
+				wxString relPath = ( m_useRelativePath ? TypeConv::MakeRelativePath( absPath, AppData()->GetProjectPath() ) : absPath );
 
 				wxString inc;
 				inc << wxT("#include \"") << ConvertCppString( relPath ) << wxT("\"");

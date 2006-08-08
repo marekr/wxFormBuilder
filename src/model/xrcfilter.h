@@ -34,24 +34,24 @@
  */
 class XrcFilter
 {
- private: 
+ private:
   /**
    * Documento XML que contiene la información de todos los componentes
    * contemplados en el formato XRC (xrc.xml)
    */
-  TiXmlDocument m_xrcDb;  
-  
+  TiXmlDocument m_xrcDb;
+
   /**
    * ObjectDatabase
    */
   PObjectDatabase m_objDb;
-  
+
   /**
    * Dado el nombre de una clase obtiene la información XRC para dicha clase,
    * o NULL si no está definida en el formato XRC.
    */
   TiXmlElement* GetXrcClassInfo(const std::string &classname);
-  
+
   /**
    * Enlaza todas las propiedades de un objeto en un nodo XML.
    */
@@ -61,13 +61,13 @@ class XrcFilter
    * "Cuelga" de propElement el valor de la propiedad prop.
    */
   void LinkValue(const shared_ptr<Property> prop, TiXmlElement *propElement);
-  
+
   /**
    * "Cuelga" de propElement la descripción de la fuente font en el formato
    * XRC
    */
-  void LinkFont(const wxFont &font, TiXmlElement *propElement);  
-  
+  void LinkFont(const wxFont &font, TiXmlElement *propElement);
+
   /**
    * Devuelve el nombre de la clase. Será el resultado de GetClassName()
    * salvo para Dialog, Frame y Panel, que devolverá wxDialog, wxFrame y
@@ -84,24 +84,24 @@ class XrcFilter
   void ImportColour(TiXmlElement *xrcProperty, shared_ptr<Property> property);
   void ImportFont(TiXmlElement *xrcProperty, shared_ptr<Property> property);
   void ImportXrcElements(TiXmlElement *xrcObj, TiXmlElement *xrcInfo, shared_ptr<ObjectBase> obj);
-                                  
+
   shared_ptr<ObjectBase> GetObject(TiXmlElement *xrcObj, shared_ptr<ObjectBase> parent,
                         bool is_form = false);
- public: 
-    
-   XrcFilter(); 
-   
+ public:
+
+   XrcFilter();
+
   /**
    * Para importar un XRC hay que configurar la base de datos de wxFB
    */
   void SetObjectDatabase(PObjectDatabase db) { m_objDb = db; }
-    
+
   /**
    * Obtiene el documento XML en formato XRC de un proyecto wxFB.
    */
   TiXmlDocument *GetXrcDocument (shared_ptr<ObjectBase> project);
 
-  
+
   /**
    * Dado un árbol XML en formato XRC, crea el arbol de objetos asociado.
    */
@@ -116,13 +116,13 @@ class XrcLoader
 {
  private:
   PObjectDatabase m_objDb;
-  
+
   shared_ptr<ObjectBase> GetObject(TiXmlElement *xrcObj, shared_ptr<ObjectBase> parent);
-  
+
  public:
-   
+
   void SetObjectDatabase(PObjectDatabase db) { m_objDb = db; }
-  
+
   /**
    * Dado un árbol XML en formato XRC, crea el arbol de objetos asociado.
    */

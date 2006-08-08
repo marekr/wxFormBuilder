@@ -31,7 +31,6 @@
 
 #include "codegen/codegen.h"
 #include "codegen/cppcg.h"
-#include "rad/appobserver.h"
 #include "wx/file.h"
 #include "utils/notebookchooser.h"
 
@@ -84,8 +83,9 @@ class CodeEditor : public wxPanel
   wxScintilla *GetTextCtrl() { return m_code; }
 };
 
+class wxFBEvent;
 
-class CppPanel : public wxPanel, public DataObserver
+class CppPanel : public wxPanel
 {
  private:
   CodeEditor *m_cppPanel;
@@ -95,10 +95,14 @@ class CppPanel : public wxPanel, public DataObserver
   wxNotebookChooserImageList m_icons;
 
   void InitStyledTextCtrl(wxScintilla *stc);
+
  public:
   CppPanel(wxWindow *parent, int id);
+  ~CppPanel();
 
-  void CodeGeneration(  bool panelOnly = false );
+  void OnCodeGeneration( wxFBEvent& event );
+
+  DECLARE_EVENT_TABLE()
 };
 
 
