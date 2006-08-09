@@ -258,10 +258,12 @@ public:
 
 	wxObject* Create(IObject *obj, wxObject *parent)
 	{
-		return new wxPanel((wxWindow *)parent,-1,
+		wxPanel* panel = new wxPanel((wxWindow *)parent,-1,
 			obj->GetPropertyAsPoint(_("pos")),
 			obj->GetPropertyAsSize(_("size")),
 			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
+		panel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+		return panel;
 	}
 
 	TiXmlElement* ExportToXrc(IObject *obj)
