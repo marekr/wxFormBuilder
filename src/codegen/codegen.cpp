@@ -498,7 +498,7 @@ bool TemplateParser::ParseIfNotNull()
 
 	wxString inner_template = ExtractInnerTemplate();
 
-	if ( !property->GetValue().empty() )
+	if ( !property->IsNull() )
 	{
 		// Generate the code from the block
 		shared_ptr< TemplateParser > parser = CreateParser( m_obj, inner_template );
@@ -521,7 +521,7 @@ bool TemplateParser::ParseIfNull()
 
 	wxString inner_template = ExtractInnerTemplate();
 
-	if ( property->GetValue().empty() )
+	if ( property->IsNull() )
 	{
 		// Generate the code from the block
 		shared_ptr< TemplateParser > parser = CreateParser( m_obj, inner_template );

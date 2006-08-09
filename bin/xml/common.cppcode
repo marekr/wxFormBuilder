@@ -133,9 +133,6 @@
   <templates class="wxMenuItem">
     <template name="construction">wxMenuItem* $name = new wxMenuItem( #parent $name, $id, wxString( $label ) #ifnotnull $shortcut @{ + wxT('\t') + $shortcut @}, $help, $kind );</template>
     <template name="settings">
-      #ifnotnull $bitmap
-      @{ $name->SetBitmap( $bitmap ); #nl @}
-
       #ifequal $enabled "0"
       @{$name->Enable( $enabled ); #nl @}
 
@@ -151,7 +148,20 @@
         @{ $name->Check( $checked ); #nl @}
       @}
     </template>
-    <template name="menuitem_add">#parent $name->Append( $name );</template>
+    <template name="menuitem_add">
+		#ifnotnull $bitmap
+		@{ 
+			$name->SetBitmaps( $bitmap #ifnotnull $unchecked_bitmap @{, $unchecked_bitmap @} ); #nl 
+		@}
+		#ifnull $bitmap
+		@{
+			#ifnotnull $unchecked_bitmap
+			@{
+				$name->SetBitmaps( wxNullBitmap, $unchecked_bitmap ); #nl
+			@}
+		@}
+		#parent $name->Append( $name );
+	</template>
     <template name="include">@#include &lt;wx/menu.h&gt;</template>
   </templates>
 

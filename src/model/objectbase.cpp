@@ -60,6 +60,29 @@ bool Property::IsDefaultValue()
 	return (m_info->GetDefaultValue() == m_value);
 }
 
+bool Property::IsNull()
+{
+	if ( PT_BITMAP == m_info->GetType() )
+	{
+		wxString path;
+		size_t semicolonIndex = m_value.find_first_of( wxT(";") );
+		if ( semicolonIndex != m_value.npos )
+		{
+			path = m_value.substr( 0, semicolonIndex );
+		}
+		else
+		{
+			path = m_value;
+		}
+
+		return path.empty();
+	}
+	else
+	{
+		return m_value.empty();
+	}
+}
+
 void Property::SetDefaultValue()
 {
 	m_value = m_info->GetDefaultValue();

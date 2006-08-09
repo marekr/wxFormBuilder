@@ -157,6 +157,7 @@ public:
 	PropertyType GetType()          { return m_info->GetType();  }
 
 	bool IsDefaultValue();
+	bool IsNull();
 	void SetDefaultValue();
 
 	////////////////////

@@ -647,8 +647,22 @@ wxMenu* GridPanel::GetMenuFromObject(shared_ptr<ObjectBase> menu)
 				label, menuItem->GetPropertyAsString(wxT("help")),
 				(menuItem->GetPropertyAsInteger(wxT("kind")) != 0));
 
-			if (!menuItem->GetProperty(wxT("bitmap"))->IsDefaultValue())
-				item->SetBitmap(menuItem->GetPropertyAsBitmap(wxT("bitmap")));
+			if (!menuItem->GetProperty(wxT("bitmap"))->IsNull())
+			{
+				wxBitmap unchecked = wxNullBitmap;
+				if ( !menuItem->GetProperty(wxT("unchecked_bitmap"))->IsNull() )
+				{
+					unchecked = menuItem->GetPropertyAsBitmap( wxT("unchecked_bitmap") );
+				}
+				item->SetBitmaps( menuItem->GetPropertyAsBitmap( wxT("bitmap") ), unchecked );
+			}
+			else
+			{
+				if ( !menuItem->GetProperty(wxT("unchecked_bitmap"))->IsNull() )
+				{
+					item->SetBitmaps( wxNullBitmap,  menuItem->GetPropertyAsBitmap( wxT("unchecked_bitmap") ) );
+				}
+			}
 
 			menuWidget->Append(item);
 
