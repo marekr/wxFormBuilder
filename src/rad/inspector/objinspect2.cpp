@@ -680,6 +680,7 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 				// Create event to spawn update of the bitmap property
 				wxCommandEvent bitmapEvent( wxEVT_NEW_BITMAP_PROPERTY, -1 );
 				bitmapEvent.SetEventObject( this );
+				bitmapEvent.SetString( event.GetPropertyName() );
 
 				// Fill event data with property grid pointer, Property pointer, and property value
 				NewBitmapEventDataHolder* dataHolder = new NewBitmapEventDataHolder();
@@ -708,7 +709,7 @@ void ObjectInspector::OnNewBitmapProperty( wxCommandEvent& event )
 	// Update property grid - change bitmap property
 	auto_ptr< NewBitmapEventDataHolder > data ( (NewBitmapEventDataHolder*)event.GetClientData() );
 	data->m_grid->Freeze();
-	wxPGId newId = data->m_grid->ReplaceProperty( wxT("bitmap"), wxBitmapWithResourceProperty( wxT("bitmap"), wxPG_LABEL, data->m_string ) );
+	wxPGId newId = data->m_grid->ReplaceProperty( event.GetString(), wxBitmapWithResourceProperty( event.GetString(), wxPG_LABEL, data->m_string ) );
 	m_propmap[ newId.GetPropertyPtr() ] = data->m_prop;
 	data->m_grid->Expand( newId );
 	data->m_grid->Thaw();
