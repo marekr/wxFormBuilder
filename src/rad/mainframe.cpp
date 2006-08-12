@@ -738,14 +738,26 @@ void MainFrame::InsertRecentProject(const wxString &file)
 
 void MainFrame::OnCopy(wxCommandEvent &event)
 {
-	AppData()->CopyObject(AppData()->GetSelectedObject());
-	UpdateFrame();
+    wxWindow *focusedWindow = wxWindow::FindFocus();
+    if (focusedWindow != NULL && focusedWindow->IsKindOf(CLASSINFO(wxScintilla)))
+        ((wxScintilla*)focusedWindow)->Copy();
+    else
+    {
+        AppData()->CopyObject(AppData()->GetSelectedObject());
+        UpdateFrame();
+    }
 }
 
 void MainFrame::OnCut (wxCommandEvent &event)
 {
-	AppData()->CutObject(AppData()->GetSelectedObject());
-	UpdateFrame();
+    wxWindow *focusedWindow = wxWindow::FindFocus();
+    if (focusedWindow != NULL && focusedWindow->IsKindOf(CLASSINFO(wxScintilla)))
+        ((wxScintilla*)focusedWindow)->Cut();
+    else
+    {
+        AppData()->CutObject(AppData()->GetSelectedObject());
+        UpdateFrame();
+    }
 }
 
 void MainFrame::OnDelete (wxCommandEvent &event)
@@ -756,8 +768,14 @@ void MainFrame::OnDelete (wxCommandEvent &event)
 
 void MainFrame::OnPaste (wxCommandEvent &event)
 {
-	AppData()->PasteObject(AppData()->GetSelectedObject());
-	UpdateFrame();
+    wxWindow *focusedWindow = wxWindow::FindFocus();
+    if (focusedWindow != NULL && focusedWindow->IsKindOf(CLASSINFO(wxScintilla)))
+        ((wxScintilla*)focusedWindow)->Paste();
+    else
+    {
+        AppData()->PasteObject(AppData()->GetSelectedObject());
+        UpdateFrame();
+    }
 }
 
 void MainFrame::OnToggleExpand (wxCommandEvent &event)

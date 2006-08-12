@@ -36,6 +36,10 @@
 
 // -----------------------------------------------------------------------
 
+WX_PG_DECLARE_CUSTOM_COLOUR_PROPERTY(fbColourProperty)
+
+// -----------------------------------------------------------------------
+
 WX_PG_DECLARE_VALUE_TYPE_VOIDP(wxPoint)
 
 WX_PG_DECLARE_PROPERTY(wxPointProperty,const wxPoint&,wxPoint(0,0))

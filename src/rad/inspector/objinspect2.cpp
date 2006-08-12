@@ -33,6 +33,104 @@
 #include <rad/appdata.h>
 
 // -----------------------------------------------------------------------
+// fbColourProperty
+// -----------------------------------------------------------------------
+
+// Colour labels. Last (before NULL, if any) must be Custom.
+static const wxChar* fbcolprop_labels[] = {
+    wxT("Default"),
+    wxT("AppWorkspace"),
+    wxT("ActiveBorder"),
+    wxT("ActiveCaption"),
+    wxT("ButtonFace"),
+    wxT("ButtonHighlight"),
+    wxT("ButtonShadow"),
+    wxT("ButtonText"),
+    wxT("CaptionText"),
+    wxT("ControlDark"),
+    wxT("ControlLight"),
+    wxT("Desktop"),
+    wxT("GrayText"),
+    wxT("Highlight"),
+    wxT("HighlightText"),
+    wxT("InactiveBorder"),
+    wxT("InactiveCaption"),
+    wxT("InactiveCaptionText"),
+    wxT("Menu"),
+    wxT("Scrollbar"),
+    wxT("Tooltip"),
+    wxT("TooltipText"),
+    wxT("Window"),
+    wxT("WindowFrame"),
+    wxT("WindowText"),
+    wxT("Custom"),
+    (const wxChar*) NULL
+};
+
+static long fbcolprop_colours[] = {
+    wxSYS_COLOUR_MAX,
+    wxSYS_COLOUR_APPWORKSPACE,
+    wxSYS_COLOUR_ACTIVEBORDER,
+    wxSYS_COLOUR_ACTIVECAPTION,
+    wxSYS_COLOUR_BTNFACE,
+    wxSYS_COLOUR_BTNHIGHLIGHT,
+    wxSYS_COLOUR_BTNSHADOW,
+    wxSYS_COLOUR_BTNTEXT ,
+    wxSYS_COLOUR_CAPTIONTEXT,
+    wxSYS_COLOUR_3DDKSHADOW,
+    wxSYS_COLOUR_3DLIGHT,
+    wxSYS_COLOUR_BACKGROUND,
+    wxSYS_COLOUR_GRAYTEXT,
+    wxSYS_COLOUR_HIGHLIGHT,
+    wxSYS_COLOUR_HIGHLIGHTTEXT,
+    wxSYS_COLOUR_INACTIVEBORDER,
+    wxSYS_COLOUR_INACTIVECAPTION,
+    wxSYS_COLOUR_INACTIVECAPTIONTEXT,
+    wxSYS_COLOUR_MENU,
+    wxSYS_COLOUR_SCROLLBAR,
+    wxSYS_COLOUR_INFOBK,
+    wxSYS_COLOUR_INFOTEXT,
+    wxSYS_COLOUR_WINDOW,
+    wxSYS_COLOUR_WINDOWFRAME,
+    wxSYS_COLOUR_WINDOWTEXT,
+    wxPG_COLOUR_CUSTOM
+};
+
+class fbColourPropertyClass : public wxSystemColourPropertyClass
+{
+    WX_PG_DECLARE_DERIVED_PROPERTY_CLASS()
+public:
+    fbColourPropertyClass( const wxString& label, const wxString& name,
+        const wxColourPropertyValue& value );
+    virtual ~fbColourPropertyClass ();
+    virtual long GetColour ( int index );
+};
+
+static wxPGChoices gs_fbColourProperty_choicesCache;
+
+WX_PG_IMPLEMENT_DERIVED_PROPERTY_CLASS(fbColourProperty, wxSystemColourProperty, const wxColourPropertyValue&)
+
+fbColourPropertyClass::fbColourPropertyClass( const wxString& label, const wxString& name,
+    const wxColourPropertyValue& value )
+    : wxPG_PROPCLASS(wxSystemColourProperty)( label, name, fbcolprop_labels,
+    fbcolprop_colours, &gs_fbColourProperty_choicesCache, value )
+{
+    wxPG_INIT_REQUIRED_TYPE(wxColourPropertyValue)
+    m_flags |= wxPG_PROP_TRANSLATE_CUSTOM;
+    DoSetValue ( &m_value );
+}
+
+fbColourPropertyClass::~fbColourPropertyClass () { }
+
+long fbColourPropertyClass::GetColour ( int index )
+{
+    if ( index == wxSYS_COLOUR_MAX )
+        return wxPG_COLOUR(255, 255, 255);
+    else
+        return wxSystemColourPropertyClass::GetColour( index );
+}
+
+// -----------------------------------------------------------------------
 // wxSizeProperty
 // -----------------------------------------------------------------------
 
@@ -505,11 +603,11 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 	else if (type == PT_WXCOLOUR)
 	{
 		wxString value = prop->GetValueAsString();
-		if ( value.empty() )
+		if ( value.empty() )  // Default Colour
 		{
 			wxColourPropertyValue def;
-			def.m_type = wxSYS_COLOUR_3DFACE;
-			result = wxSystemColourProperty( name, wxPG_LABEL, def );
+            def.m_type = wxSYS_COLOUR_MAX;
+            result = fbColourProperty( name, wxPG_LABEL, def );
 		}
 		else
 		{
@@ -518,11 +616,11 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 				// System Colour
 				wxColourPropertyValue def;
 				def.m_type = TypeConv::StringToSystemColour( value );
-				result = wxSystemColourProperty( name, wxPG_LABEL, def );
+				result = fbColourProperty( name, wxPG_LABEL, def );
 			}
 			else
 			{
-				result = wxSystemColourProperty( name, wxPG_LABEL, prop->GetValueAsColour() );
+				result = fbColourProperty( name, wxPG_LABEL, prop->GetValueAsColour() );
 			}
 		}
 	}
@@ -648,13 +746,16 @@ void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )
 			case PT_WXCOLOUR:
 			{
 				wxColourPropertyValue* colour = wxDynamicCast( event.GetPropertyValueAsWxObjectPtr(), wxColourPropertyValue );
-				if ( colour->m_type == wxPG_COLOUR_CUSTOM )
+				switch ( colour->m_type )
 				{
-					AppData()->ModifyProperty( prop, TypeConv::ColourToString( colour->m_colour ) );
-				}
-				else
-				{
-					AppData()->ModifyProperty( prop, TypeConv::SystemColourToString( colour->m_type ) );
+				    case wxSYS_COLOUR_MAX:
+                        AppData()->ModifyProperty( prop, _T("") );
+                        break;
+                    case wxPG_COLOUR_CUSTOM:
+                        AppData()->ModifyProperty( prop, TypeConv::ColourToString( colour->m_colour ) );
+                        break;
+                    default:
+                        AppData()->ModifyProperty( prop, TypeConv::SystemColourToString( colour->m_type ) );
 				}
 				break;
 			}

@@ -208,11 +208,11 @@ void VisualEditor::Create()
 		{
 			if (m_form->GetClassName() == wxT("Frame") )
 			{
-				m_back->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+				m_back->SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
 			}
 			else
 			{
-				m_back->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+				m_back->SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 			}
 		}
 
