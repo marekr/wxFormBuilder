@@ -112,6 +112,13 @@
     <inherits class="wxWindow" />
     <property name="name" type="text">m_checkBox</property>
     <property name="label" type="wxString_i18n">Check Me!</property>
+    <property name="style" type="bitlist">
+      <option name="wxCHK_2STATE"       help="Create a 2-state checkbox. This is the default."/>
+      <option name="wxCHK_3STATE"      help="Create a 3-state checkbox. Not implemented in wxMGL, wxOS2 and wxGTK built against GTK+ 1.2."/>
+      <option name="wxCHK_ALLOW_3RD_STATE_FOR_USER"     help="By default a user can't set a 3-state checkbox to the third state. It can only be done from code. Using this flags allows the user to set the checkbox to the third state by clicking."/>
+      <option name="wxALIGN_RIGHT" help="Makes the text appear on the left of the checkbox."/>
+    </property>
+    <property name="checked" type="bool">0</property>
   </objectinfo>
 
   <objectinfo class="wxComboBox" icon="combo_box.xpm" type="widget">

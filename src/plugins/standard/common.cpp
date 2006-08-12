@@ -350,11 +350,13 @@ class CheckBoxComponent : public ComponentBase
 public:
 	wxObject* Create(IObject *obj, wxObject *parent)
 	{
-		return new wxCheckBox((wxWindow *)parent,-1,
+		wxCheckBox *res = new wxCheckBox((wxWindow *)parent,-1,
 			obj->GetPropertyAsString(_("label")),
 			obj->GetPropertyAsPoint(_("pos")),
 			obj->GetPropertyAsSize(_("size")),
-			obj->GetPropertyAsInteger(_("window_style")));
+			obj->GetPropertyAsInteger(_("window_style")) | obj->GetPropertyAsInteger(_T("style")));
+        res->SetValue(obj->GetPropertyAsInteger(_T("checked")) != 0);
+        return res;
 	}
 
 	TiXmlElement* ExportToXrc(IObject *obj)
@@ -362,6 +364,7 @@ public:
 		ObjectToXrcFilter xrc(obj, _("wxCheckBox"), obj->GetPropertyAsString(_("name")));
 		xrc.AddWindowProperties();
 		xrc.AddProperty(_("label"),_("label"),XRC_TYPE_TEXT);
+		xrc.AddProperty(_("checked"),_("checked"),XRC_TYPE_BOOL);
 		return xrc.GetXrcObject();
 	}
 
@@ -370,6 +373,7 @@ public:
 		XrcToXfbFilter filter(xrcObj, _("wxCheckBox"));
 		filter.AddWindowProperties();
 		filter.AddProperty(_("label"),_("label"),XRC_TYPE_TEXT);
+		filter.AddProperty(_("checked"),_("checked"),XRC_TYPE_BOOL);
 		return filter.GetXfbObject();
 	}
 };
@@ -1169,6 +1173,11 @@ MACRO(wxCB_DROPDOWN)
 MACRO(wxCB_READONLY)
 MACRO(wxCB_SIMPLE)
 MACRO(wxCB_SORT)
+
+// wxCheckBox
+MACRO(wxCHK_2STATE)
+MACRO(wxCHK_3STATE)
+MACRO(wxCHK_ALLOW_3RD_STATE_FOR_USER)
 
 // wxGauge
 MACRO(wxGA_HORIZONTAL)

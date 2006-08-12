@@ -60,7 +60,11 @@
 
   <templates class="wxCheckBox">
     <template name="declaration">wxCheckBox* $name;</template>
-    <template name="construction">$name = new wxCheckBox( #wxparent $name, $id, $label, $pos, $size, $window_style );</template>
+    <template name="construction">
+	  $name = new wxCheckBox( #wxparent $name, $id, $label, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} ); #nl
+	  #ifnotequal $checked "0"
+		@{ $name->SetValue(true); #nl @}
+	</template>
   </templates>
 
   <templates class="wxComboBox">
