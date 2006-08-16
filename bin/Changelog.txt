@@ -1,5 +1,14 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+08-15-2006  Version 2.00.70
+* Fixed the background colour of wxPanel.
+* Fixed bitmap behavior on menu items.
++ Added wxScintilla shortcuts (Ctrl-C, Ctrl-V, Ctrl-X).
++ Added "Default" in the wxPropertyGrid colour selector (some controls don't have the BtnFace colour by default).
++ Added the properties checked and style to wxCheckBox.
+^ Set the default background color of wxFlatNotebook to ButtonFace.
+^ Updated wxFB's URL in the generated C++ code.
+
 08-03-2006  Version 2.00.69
 * Fixed bug where the first page of listbook, choicebook, and flatnotebook
   was always selected on refresh.
