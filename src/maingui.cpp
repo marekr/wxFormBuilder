@@ -50,12 +50,12 @@ bool MyApp::OnInit()
 {
   wxInitAllImageHandlers();
 
-  AppDataInit();
-
   // Obtenemos la ruta del ejecutable
   wxString exeFile(argv[0]);
   wxFileName appFileName(exeFile);
   wxString path = appFileName.GetPath();
+
+  AppDataInit( path );
 
   // Guardamos la ruta del ejecutable
   AppData()->SetApplicationPath(path);
@@ -85,8 +85,6 @@ bool MyApp::OnInit()
   #endif //__WXFB_DEBUG__
 
 
-
-  AppDataInit( path );
 
   MainFrame *frame = new MainFrame(NULL);
   frame->Show(TRUE);
