@@ -18,7 +18,7 @@
 #define Additions "wxAdditions_setup.exe"
 
 [_ISToolDownload]
-Source: http://wxformbuilder.sourceforge.net/wxAdditions_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
+Source: http://wxformbuilder.sourceforge.net/wxAdditions26_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
 
 [Setup]
 AppName={#MyAppName}
