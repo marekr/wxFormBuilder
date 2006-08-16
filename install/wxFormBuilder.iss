@@ -9,7 +9,7 @@
 
 #define UNICODE 1
 
-#define MyAppVer "2.0.69"
+#define MyAppVer "2.0.70"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
@@ -318,4 +318,3 @@ begin
 	end;
 end;
 // -- END -- Functions for custom page and downloading
-
