@@ -654,13 +654,19 @@ wxMenu* GridPanel::GetMenuFromObject(shared_ptr<ObjectBase> menu)
 				{
 					unchecked = menuItem->GetPropertyAsBitmap( wxT("unchecked_bitmap") );
 				}
-				item->SetBitmaps( menuItem->GetPropertyAsBitmap( wxT("bitmap") ), unchecked );
+				#ifdef __WXMSW__
+					item->SetBitmaps( menuItem->GetPropertyAsBitmap( wxT("bitmap") ), unchecked );
+				#elif defined( __WXGTK__ )
+					item->SetBitmap( menuItem->GetPropertyAsBitmap( wxT("bitmap") ) );
+				#endif
 			}
 			else
 			{
 				if ( !menuItem->GetProperty(wxT("unchecked_bitmap"))->IsNull() )
 				{
-					item->SetBitmaps( wxNullBitmap,  menuItem->GetPropertyAsBitmap( wxT("unchecked_bitmap") ) );
+					#ifdef __WXMSW__
+						item->SetBitmaps( wxNullBitmap,  menuItem->GetPropertyAsBitmap( wxT("unchecked_bitmap") ) );
+					#endif
 				}
 			}
 

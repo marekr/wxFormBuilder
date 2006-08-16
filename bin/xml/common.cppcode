@@ -155,13 +155,19 @@
     <template name="menuitem_add">
 		#ifnotnull $bitmap
 		@{ 
+			@#ifdef __WXMSW__ #nl
 			$name->SetBitmaps( $bitmap #ifnotnull $unchecked_bitmap @{, $unchecked_bitmap @} ); #nl 
+			@#elif defined( __WXGTK__ ) #nl
+			$name->SetBitmap( $bitmap ); #nl
+			@#endif #nl
 		@}
 		#ifnull $bitmap
 		@{
 			#ifnotnull $unchecked_bitmap
 			@{
+				@#ifdef __WXMSW__ #nl
 				$name->SetBitmaps( wxNullBitmap, $unchecked_bitmap ); #nl
+				@#endif #nl
 			@}
 		@}
 		#parent $name->Append( $name );
