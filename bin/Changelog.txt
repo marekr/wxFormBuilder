@@ -1,5 +1,9 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+08-18-2006  Version 2.00.71
++ Added a new project option for wxWidgets Version. Currently it can be 2.7+ and 2.6+.
++ Added support for wxWidgets v2.7.0 for code generation.
+
 08-15-2006  Version 2.00.70
 * Fixed the background colour of wxPanel.
 * Fixed bitmap behavior on menu items.

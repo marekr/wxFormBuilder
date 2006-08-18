@@ -612,6 +612,14 @@ void CppCodeGenerator::WriteLibrariesBlock( const set< wxString >& libraries )
 		return;
 	}
 
+	shared_ptr< Property > verProp = AppData()->GetProjectData()->GetProperty( wxT("wx_ver") );
+	wxString wxVer = wxEmptyString;
+
+	if ( verProp )
+	{
+		wxVer = verProp->GetValueAsString();
+	}
+
 	m_header->WriteLn( wxT("#ifdef __WXMSW__") );
 	m_header->Indent();
 		m_header->WriteLn( wxT("#ifdef _MSC_VER") );
@@ -620,11 +628,11 @@ void CppCodeGenerator::WriteLibrariesBlock( const set< wxString >& libraries )
 			m_header->Indent();
 				m_header->WriteLn( wxT("#ifdef UNICODE  // __WXMSW__, _MSC_VER, _DEBUG, UNICODE") );
 				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw26ud_"), wxT(".lib\" )") );
+					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("ud_"), wxT(".lib\" )") );
 				m_header->Unindent();
 				m_header->WriteLn( wxT("#else  // __WXMSW__, _MSC_VER, _DEBUG") );
 				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw26d_"), wxT(".lib\" )") );
+					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("d_"), wxT(".lib\" )") );
 				m_header->Unindent();
 				m_header->WriteLn( wxT("#endif") );
 			m_header->Unindent();
@@ -632,11 +640,11 @@ void CppCodeGenerator::WriteLibrariesBlock( const set< wxString >& libraries )
 			m_header->Indent();
 				m_header->WriteLn( wxT("#ifdef UNICODE  // __WXMSW__, _MSC_VER, UNICODE") );
 				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw26u_"), wxT(".lib\" )") );
+					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("u_"), wxT(".lib\" )") );
 				m_header->Unindent();
 				m_header->WriteLn( wxT("#else // __WXMSW__, _MSC_VER") );
 				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw26_"), wxT(".lib\" )") );
+					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("_"), wxT(".lib\" )") );
 				m_header->Unindent();
 				m_header->WriteLn( wxT("#endif") );
 			m_header->Unindent();
