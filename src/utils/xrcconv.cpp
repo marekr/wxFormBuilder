@@ -200,7 +200,13 @@ void ObjectToXrcFilter::AddProperty(const wxString &objPropName,
       break;
 
     case XRC_TYPE_BITMAP:
-      LinkText(m_obj->GetPropertyAsString(objPropName), propElement);
+      {
+        wxString bitmapProp = m_obj->GetPropertyAsString(objPropName);
+        wxString filename = bitmapProp.BeforeFirst(_T(';')).Trim();
+        wxString source = bitmapProp.AfterLast(_T(';')).Trim(false);
+        if (source == wxT("Load From File"))
+            LinkText(filename, propElement);
+      }
       break;
   }
 
@@ -442,7 +448,7 @@ void XrcToXfbFilter::AddProperty(const wxString &xrcPropName,
       break;
 
     case XRC_TYPE_BITMAP:
-      ImportTextProperty(xrcPropName, propElement, false);
+      ImportBitmapProperty(xrcPropName, propElement);
       break;
 
   }
@@ -695,6 +701,23 @@ void XrcToXfbFilter::ImportFontProperty(const wxString &xrcPropName,
   property->LinkEndChild(new TiXmlText(font_str.mb_str( wxConvUTF8 )));
   }
 
+}
+
+void XrcToXfbFilter::ImportBitmapProperty(const wxString &xrcPropName,
+                                        TiXmlElement *property)
+{
+  TiXmlElement *xrcProperty = m_xrcObj->FirstChildElement(xrcPropName.mb_str( wxConvUTF8 ));
+  if (!xrcProperty)
+    return;
+
+  TiXmlNode *xmlValue = xrcProperty->FirstChild();
+  wxString res;
+  if (xmlValue && xmlValue->ToText())
+    res = wxString(xmlValue->ToText()->Value(), wxConvUTF8);
+
+  res.Trim();
+  res += _T("; Load From File");
+  property->LinkEndChild(new TiXmlText(res.mb_str( wxConvUTF8 )));
 }
 
 void XrcToXfbFilter::ImportColourProperty(const wxString &xrcPropName,

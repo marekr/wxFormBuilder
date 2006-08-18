@@ -124,6 +124,7 @@ class XrcToXfbFilter
   void ImportTextProperty(const wxString &xrcPropName, TiXmlElement *property, bool parseXrcText = false);
   void ImportIntegerProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportBitlistProperty(const wxString &xrcPropName, TiXmlElement *property);
+  void ImportBitmapProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportColourProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportFontProperty(const wxString &xrcPropName, TiXmlElement *property);
   void ImportStringListProperty(const wxString &xrcPropName, TiXmlElement *property, bool parseXrcText = false);
