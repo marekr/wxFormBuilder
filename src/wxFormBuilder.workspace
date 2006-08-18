@@ -21,7 +21,5 @@
 			<Depends filename="..\libs\tinyxml\tinyxmlSTL.cbp" />
 		</Project>
 		<Project filename="..\libs\tinyxml\tinyxmlSTL.cbp" />
-		<Project filename="..\..\..\additions\trunk\build\plot\plot.cbp" />
-		<Project filename="..\..\..\additions\trunk\build\awx\awx.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
