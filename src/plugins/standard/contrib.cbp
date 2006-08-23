@@ -16,7 +16,7 @@
 					<Add option="-g" />
 					<Add option="-O0" />
 					<Add option="-D_DEBUG" />
-					<Add option="-D__WXDEBUG" />
+					<Add option="-D__WXDEBUG__" />
 					<Add directory="$(#WX.lib)\gcc_dll\mswd" />
 				</Compiler>
 				<Linker>
@@ -36,7 +36,7 @@
 					<Add option="-g" />
 					<Add option="-O0" />
 					<Add option="-D_DEBUG" />
-					<Add option="-D__WXDEBUG" />
+					<Add option="-D__WXDEBUG__" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-DUNICODE" />
 				</Compiler>
