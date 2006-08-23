@@ -436,8 +436,8 @@ void MainFrame::OnOpenProject(wxCommandEvent &event)
 	if (!SaveWarning())
 		return;
 
-	wxFileDialog *dialog = new wxFileDialog(this,wxT("Open Project"),m_currentDir,
-    wxT(""),wxT("wxFormBuilder Project File (*.fbp)|*.fbp|All files (*.*)|*.*"),wxOPEN | wxHIDE_READONLY);
+	wxFileDialog *dialog = new wxFileDialog( this, wxT("Open Project"), m_currentDir,
+    wxT(""), wxT("wxFormBuilder Project File (*.fbp)|*.fbp|All files (*.*)|*.*"), wxOPEN );
 
 	if (dialog->ShowModal() == wxID_OK)
 	{
@@ -468,8 +468,8 @@ void MainFrame::OnOpenRecent(wxCommandEvent &event)
 
 void MainFrame::OnImportXrc(wxCommandEvent &event)
 {
-	wxFileDialog *dialog = new wxFileDialog(this,wxT("Import XRC file"),m_currentDir,
-  wxT("example.xrc"),wxT("*.xrc"),wxOPEN | wxHIDE_READONLY);
+	wxFileDialog *dialog = new wxFileDialog( this, wxT("Import XRC file"), m_currentDir,
+  wxT("example.xrc"), wxT("*.xrc"), wxOPEN );
 
 	if (dialog->ShowModal() == wxID_OK)
 	{

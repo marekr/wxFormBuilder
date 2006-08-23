@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Common Components Plugin" />
 		<Option pch_mode="0" />
-		<Option default_target="1" />
+		<Option default_target="Debug (Unicode)" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
@@ -83,7 +83,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="" />
-				<Variable name="WX_VER" value="26" />
+				<Variable name="WX_VER" value="27" />
 				<Variable name="tinyxml" value="..\..\..\libs\tinyxml" />
 			</Environment>
 		</Build>
