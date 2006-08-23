@@ -1,23 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Common Components Plugin (Unix)" />
 		<Option pch_mode="0" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="default">
+			<Target title="Debug">
+				<Option output="../../../bin/xml/libcommon.so" />
+				<Option working_dir="../../../bin/xml" />
+				<Option object_output=".objsd" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Environment>
+					<Variable name="DEBUG" value="yes" />
+				</Environment>
+			</Target>
+			<Target title="Release">
 				<Option output="../../../bin/xml/libcommon.so" />
 				<Option working_dir="../../../bin/xml" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
+				<Environment>
+					<Variable name="DEBUG" value="no" />
+				</Environment>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --debug=$(DEBUG) --cflags`" />
 			<Add option="-DBUILD_DLL" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DNOPCH" />
@@ -28,7 +46,7 @@
 			<Add directory="../.." />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
+			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
 			<Add library="tinyxml" />
 			<Add directory="../../../libs/tinyxml/lib" />
 		</Linker>
@@ -36,27 +54,32 @@
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="../plugin.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="common.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="../../utils/xrcconv.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="../../utils/xrcconv.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Extensions />
 	</Project>

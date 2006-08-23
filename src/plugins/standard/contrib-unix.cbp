@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Contributed Components Plugin (Unix)" />
 		<Option pch_mode="0" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="default">
+			<Target title="Debug">
+				<Option output="../../../bin/xml/libcontrib.so" />
+				<Option object_output=".objsd" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="../../../bin/wxformbuilder" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Environment>
+					<Variable name="DEBUG" value="yes" />
+				</Environment>
+			</Target>
+			<Target title="Release">
 				<Option output="../../../bin/xml/libcontrib.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
+				<Option host_application="../../../bin/wxformbuilder" />
+				<Environment>
+					<Variable name="DEBUG" value="no" />
+				</Environment>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --debug=$(DEBUG) --cflags`" />
 			<Add option="-DBUILD_DLL" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DNOPCH" />
@@ -29,11 +48,12 @@
 			<Add directory="../.." />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
-			<Add library="wx_gtk2u_flatnotebook-2.6" />
-			<Add library="wx_gtk2u_propgrid-2.6" />
-			<Add library="wx_gtk2u_plot-2.6" />
-			<Add library="wx_gtk2u_awx-2.6" />
+			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_flatnotebook-`wx-config --release`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_propgrid-`wx-config --release`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_plot-`wx-config --release`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_awx-`wx-config --release`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_scintilla-`wx-config --release`" />
 			<Add library="tinyxml" />
 			<Add directory="../../../libs/tinyxml/lib" />
 			<Add directory="$(#wxadditions.lib)/gcc_dll" />
@@ -43,27 +63,32 @@
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="../plugin.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="contrib.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="../../utils/xrcconv.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="../../utils/xrcconv.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Extensions />
 	</Project>
