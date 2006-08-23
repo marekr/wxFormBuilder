@@ -13,7 +13,6 @@
 				<Option object_output="_objsd" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="yo" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-g" />

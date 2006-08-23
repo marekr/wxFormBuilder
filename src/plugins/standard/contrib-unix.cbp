@@ -41,7 +41,6 @@
 			<Add option="-DNOPCH" />
 			<Add option="-DNO_GCC_PRAGMA" />
 			<Add option="-DTIXML_USE_TICPP" />
-			<Add option="-D__WXGTK__" />
 			<Add option="-D_UNICODE" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="../../../libs/tinyxml" />
@@ -56,8 +55,7 @@
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_scintilla-`wx-config --release`" />
 			<Add library="tinyxml" />
 			<Add directory="../../../libs/tinyxml/lib" />
-			<Add directory="$(#wxadditions.lib)/gcc_dll" />
-			<Add directory="$(#wxadditions.lib)/gcc_lib" />
+			<Add directory="$(#wxadditions.lib)" />
 		</Linker>
 		<Unit filename="../component.h">
 			<Option compilerVar="" />
