@@ -165,7 +165,7 @@ void ObjectTree::AddChildren(shared_ptr<ObjectBase> obj, wxTreeItemId &parent, b
 			new_parent = m_tcObjects->AppendItem(parent,wxT(""),-1,-1,item_data);
 
 
-		m_tcObjects->Expand(parent); // por defecto expandido
+		m_tcObjects->Expand(new_parent); // por defecto expandido
 
 
 		// registramos el objeto
