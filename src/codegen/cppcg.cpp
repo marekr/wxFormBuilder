@@ -363,13 +363,6 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 	code = GetCode( project, wxT("header_preamble") );
 	m_header->WriteLn( code );
 
-	// Generate the libraries
-	set< wxString > libraries;
-	GenLibraries( project, &libraries );
-
-	// Write the library lines
-	WriteLibrariesBlock( libraries );
-
 	// generamos en el h los includes de las dependencias de los componentes.
 	set<wxString> includes;
 	GenIncludes(project, &includes);
@@ -393,6 +386,14 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 	code = GetCode( project, wxT("cpp_preamble") );
 	m_source->WriteLn( code );
 	m_source->WriteLn( wxT("") );
+
+	// Generate linker instructions for contrib libraries
+	if ( UsingContrib( project ) )
+	{
+		code = GetCode( project, wxT("link_contrib") );
+		m_source->WriteLn( code );
+		m_source->WriteLn( wxT("") );
+	}
 
 	m_source->WriteLn( wxT("#include \"") + file + wxT(".h\""));
 	m_source->WriteLn( wxT("") );
@@ -584,89 +585,33 @@ void CppCodeGenerator::GenIncludes( shared_ptr<ObjectBase> project, set<wxString
 	}
 }
 
-void CppCodeGenerator::GenLibraries( shared_ptr< ObjectBase > project, set< wxString >* libraries )
+bool CppCodeGenerator::UsingContrib( shared_ptr<ObjectBase> object )
 {
-	// Call GenIncludes on all children as well
-	for ( unsigned int i = 0; i < project->GetChildCount(); i++ )
+	shared_ptr<ObjectInfo> info = object->GetObjectInfo();
+	if ( info )
 	{
-		GenLibraries( project->GetChild(i), libraries );
-	}
-
-	// Fill the set
-	shared_ptr<CodeInfo> code_info = project->GetObjectInfo()->GetCodeInfo( wxT("C++") );
-	if (code_info)
-	{
-		CppTemplateParser parser(project,code_info->GetTemplate( wxT("library") ) );
-		wxString library = parser.ParseTemplate();
-		if ( !library.empty() )
+		shared_ptr<ObjectPackage> package = info->GetPackage();
+		if ( package )
 		{
-			libraries->insert( library );
+			if ( package->GetPackageName() == wxT("contrib") )
+			{
+				return true;
+			}
 		}
 	}
-}
 
-void CppCodeGenerator::WriteLibrariesBlock( const set< wxString >& libraries )
-{
-	if ( libraries.empty() )
+	// Call UsingContrib on all children as well
+	for ( unsigned int i = 0; i < object->GetChildCount(); i++ )
 	{
-		return;
+		if ( UsingContrib( object->GetChild(i) ) )
+		{
+			return true;
+		}
 	}
 
-	shared_ptr< Property > verProp = AppData()->GetProjectData()->GetProperty( wxT("wx_ver") );
-	wxString wxVer = wxEmptyString;
-
-	if ( verProp )
-	{
-		wxVer = verProp->GetValueAsString();
-	}
-
-	m_header->WriteLn( wxT("#ifdef __WXMSW__") );
-	m_header->Indent();
-		m_header->WriteLn( wxT("#ifdef _MSC_VER") );
-		m_header->Indent();
-			m_header->WriteLn( wxT("#ifdef _DEBUG") );
-			m_header->Indent();
-				m_header->WriteLn( wxT("#ifdef UNICODE  // __WXMSW__, _MSC_VER, _DEBUG, UNICODE") );
-				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("ud_"), wxT(".lib\" )") );
-				m_header->Unindent();
-				m_header->WriteLn( wxT("#else  // __WXMSW__, _MSC_VER, _DEBUG") );
-				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("d_"), wxT(".lib\" )") );
-				m_header->Unindent();
-				m_header->WriteLn( wxT("#endif") );
-			m_header->Unindent();
-			m_header->WriteLn( wxT("#else") );
-			m_header->Indent();
-				m_header->WriteLn( wxT("#ifdef UNICODE  // __WXMSW__, _MSC_VER, UNICODE") );
-				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("u_"), wxT(".lib\" )") );
-				m_header->Unindent();
-				m_header->WriteLn( wxT("#else // __WXMSW__, _MSC_VER") );
-				m_header->Indent();
-					WriteLibraries( libraries, wxT("#pragma comment( lib, \"wxmsw") + wxVer + wxT("_"), wxT(".lib\" )") );
-				m_header->Unindent();
-				m_header->WriteLn( wxT("#endif") );
-			m_header->Unindent();
-			m_header->WriteLn( wxT("#endif") );
-		m_header->Unindent();
-		m_header->WriteLn( wxT("#endif") );
-	m_header->Unindent();
-	m_header->WriteLn( wxT("#endif") );
-	m_header->WriteLn( wxT("") );
+	return false;
 }
 
-void CppCodeGenerator::WriteLibraries( const set< wxString >& libraries, const wxString& prefix, const wxString& suffix )
-{
-	set< wxString >::const_iterator library;
-	wxString line;
-	for ( library = libraries.begin(); library != libraries.end(); ++library )
-	{
-		line << prefix << *library << suffix;
-		m_header->WriteLn( line );
-		line.clear();
-	}
-}
 
 void CppCodeGenerator::FindDependencies( shared_ptr< ObjectBase > obj, set< shared_ptr< ObjectInfo > >& info_set )
 {

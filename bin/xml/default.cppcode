@@ -26,6 +26,11 @@
       @#ifndef WX_PRECOMP       #nl
       @#include &lt;wx/wx.h&gt; #nl
       @#endif //WX_PRECOMP
+	</template>
+	<template name="link_contrib">
+      @#ifdef __VISUALC__		#nl
+      @#include &lt;wx/link_additions.h&gt; #nl
+      @#endif //__VISUALC__
     </template>
     <template name="cpp_epilogue">
       ///////////////////////////////////////////////////////////////////////////

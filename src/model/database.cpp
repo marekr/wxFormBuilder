@@ -682,7 +682,8 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 				if (elem_obj->Attribute("smallIcon"))
 					smallIcon = elem_obj->Attribute("smallIcon");
 
-				shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ) ) );
+				shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ), package ) );
+
 				if ( !icon.empty() )
 				{
 					wxImage img( _WXSTR( m_iconPath + '/' + icon ), wxBITMAP_TYPE_ANY );

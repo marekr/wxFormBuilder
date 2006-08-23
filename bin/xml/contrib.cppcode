@@ -9,7 +9,6 @@
 			@{ #nl @#ifndef __WXGTX__ #nl $name->AddChartTitle( $titleText, $titleFont, $titleColour ); #nl @#endif @}
 		</template>
 		<template name="include">@#include &lt;wx/plot/plot.h&gt;</template>
-		<template name="library">plot</template>
 	</templates>
 
 	<templates class="wxPropertyGrid">
@@ -20,7 +19,6 @@
 			#ifequal $include_advanced "1"
 				@{ #nl @#include &lt;wx/propgrid/advprops.h&gt; @}
 		</template>
-		<template name="library">propgrid</template>
 		<template name="settings">
 		    #ifnotnull $extra_style
 		    @{ $name->SetExtraStyle( $extra_style ); @}
@@ -40,7 +38,6 @@
 		    #ifnotnull $extra_style
 		    @{ $name->SetExtraStyle( $extra_style ); @}
 		</template>
-		<template name="library">propgrid</template>
 	</templates>
 
 
@@ -60,7 +57,6 @@
 	            #nl @#include &lt;wx/image.h&gt;
 	        @}
 		</template>
-		<template name="library">flatnotebook</template>
 		<template name="settings">
 	        #ifequal $has_images "1"
 			@{
@@ -117,13 +113,11 @@
 			  @{ #nl $name->SetState( $state ); @}
 		</template>
 		<template name="include">@#include &lt;wx/awx/led.h&gt;</template>
-		<template name="library">awx</template>
 	</templates>
 
 	<templates class="wxScintilla">
 		<template name="declaration">wxScintilla* $name;</template>
 		<template name="include">@#include &lt;wx/wxscintilla.h&gt;</template>
-		<template name="library">scintilla</template>
 		<template name="construction">
 			$name = new wxScintilla( #wxparent $name, $id, $pos, $size, $window_style, wxEmptyString );
 			#nl $name->SetUseTabs( $use_tabs );

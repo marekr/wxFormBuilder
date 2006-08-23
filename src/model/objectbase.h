@@ -476,6 +476,8 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+class ObjectPackage;
+
 /**
 * Información de objeto o MetaObjeto.
 */
@@ -485,7 +487,7 @@ public:
 	/**
 	* Constructor.
 	*/
-	ObjectInfo(wxString class_name, PObjectType type);
+	ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPackage> package );
 
 	virtual ~ObjectInfo() {};
 
@@ -573,6 +575,8 @@ public:
 	void AddCodeInfo(wxString lang, shared_ptr<CodeInfo> codeinfo);
 	shared_ptr<CodeInfo> GetCodeInfo(wxString lang);
 
+	shared_ptr<ObjectPackage> GetPackage();
+
 	/**
 	* Le asigna un componente a la clase.
 	*/
@@ -583,6 +587,7 @@ private:
 	wxString m_class;         // nombre de la clase (tipo de objeto)
 
 	PObjectType m_type;     // tipo del objeto
+	weak_ptr<ObjectPackage> m_package; 	// Package that the object comes from
 
 	wxBitmap m_icon;
 	wxBitmap m_smallIcon; // The icon for the property grid toolbar

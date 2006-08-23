@@ -634,12 +634,18 @@ wxArrayString ObjectBase::GetPropertyAsArrayString(const wxString& pname)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ObjectInfo::ObjectInfo(wxString class_name, PObjectType type)
+ObjectInfo::ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPackage> package )
 {
 	m_class = class_name;
 	m_type = type;
 	m_numIns = 0;
 	m_component = NULL;
+	m_package = package;
+}
+
+shared_ptr<ObjectPackage> ObjectInfo::GetPackage()
+{
+	return m_package.lock();
 }
 
 shared_ptr<PropertyInfo> ObjectInfo::GetPropertyInfo(wxString name)

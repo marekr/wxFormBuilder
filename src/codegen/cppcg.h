@@ -133,19 +133,9 @@ private:
 	void GenIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes);
 
 	/**
-	* Generate compiler directives for linking libraries ( mostly for widgets that aren't in the standard distribution )
+	* Determine if this object or any of its children are from the contrib package
 	*/
-	void GenLibraries( shared_ptr< ObjectBase > project, set< wxString >* libraries );
-
-	/**
-	* Using the Generated Library names, create #ifdef block to link correct library for the application settings
-	*/
-	void WriteLibrariesBlock( const set< wxString >& libraries );
-
-	/**
-	* Write a set of libraries with the given prefix and suffic
-	*/
-	void WriteLibraries( const set< wxString >& libraries, const wxString& prefix, const wxString& suffix );
+	bool UsingContrib( shared_ptr<ObjectBase> object );
 
 	/**
 	* Genera la sección de '#include' para las propiedades XPM.
