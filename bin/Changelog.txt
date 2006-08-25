@@ -1,14 +1,25 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+08-25-2006  Version 2.00.72
++ Replaced wxPlot with wxPlotCtrl
+^ Made checkbox the default for boolean properties.
+* Fixed xrc generation for bitmap properties (bug FS#4)
+^ Automatic linking to wxAdditions is now done through a 
+  header distributed with wxAddtions, this is now independent 
+  of the version of wxWidgets.
+- Removed project option for wxWidgets Version.
+
 08-18-2006  Version 2.00.71
-+ Added a new project option for wxWidgets Version. Currently it can be 2.7+ and 2.6+.
++ Added a new project option for wxWidgets Version. 
+  Currently it can be 2.7+ and 2.6+.
 + Added support for wxWidgets v2.7.0 for code generation.
 
 08-15-2006  Version 2.00.70
 * Fixed the background colour of wxPanel.
 * Fixed bitmap behavior on menu items.
 + Added wxScintilla shortcuts (Ctrl-C, Ctrl-V, Ctrl-X).
-+ Added "Default" in the wxPropertyGrid colour selector (some controls don't have the BtnFace colour by default).
++ Added "Default" in the wxPropertyGrid colour selector 
+  (some controls don't have the BtnFace colour by default).
 + Added the properties checked and style to wxCheckBox.
 ^ Set the default background color of wxFlatNotebook to ButtonFace.
 ^ Updated wxFB's URL in the generated C++ code.
