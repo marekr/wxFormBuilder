@@ -641,6 +641,7 @@ ObjectInfo::ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPac
 	m_numIns = 0;
 	m_component = NULL;
 	m_package = package;
+	m_category = shared_ptr< PropertyCategory >( new PropertyCategory( m_class ) );
 }
 
 shared_ptr<ObjectPackage> ObjectInfo::GetPackage()

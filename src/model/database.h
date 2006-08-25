@@ -43,6 +43,7 @@ class ObjectBase;
 class ObjectPackage;
 class ObjectDatabase;
 class ObjectTypeDictionary;
+class PropertyCategory;
 
 typedef shared_ptr<ObjectPackage> PObjectPackage;
 typedef shared_ptr<ObjectDatabase> PObjectDatabase;
@@ -148,6 +149,8 @@ class ObjectDatabase
    * los objetos heredados
    */
   PObjectPackage LoadPackage( std::string file);
+
+  void ParseProperties( TiXmlElement* elem_obj, shared_ptr<ObjectInfo> obj_info, shared_ptr< PropertyCategory > category );
 
   /**
    * Importa una librería de componentes y lo asocia a cada clase.

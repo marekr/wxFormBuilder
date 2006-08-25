@@ -183,6 +183,45 @@ public:
 
 };
 
+class PropertyCategory
+{
+private:
+	wxString m_name;
+	vector< wxString > m_properties;
+	vector< shared_ptr< PropertyCategory > > m_categories;
+
+public:
+
+	PropertyCategory( wxString name ) : m_name( name ){}
+	void AddProperty( wxString name ){ m_properties.push_back( name ); }
+	void AddCategory( shared_ptr< PropertyCategory > category ){ m_categories.push_back( category ); }
+	wxString GetName(){ return m_name; }
+	wxString GetPropertyName( size_t index )
+	{
+		if ( index < m_properties.size() )
+		{
+			return m_properties[ index ];
+		}
+		else
+		{
+			return wxEmptyString;
+		}
+	}
+
+	shared_ptr< PropertyCategory > GetCategory( size_t index )
+	{
+		if ( index < m_categories.size() )
+		{
+			return m_categories[ index ];
+		}
+		else
+		{
+			return shared_ptr< PropertyCategory >(  );
+		}
+	}
+	size_t GetPropertyCount() { return m_properties.size(); }
+	size_t GetCategoryCount() { return m_categories.size(); }
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -491,6 +530,8 @@ public:
 
 	virtual ~ObjectInfo() {};
 
+	shared_ptr< PropertyCategory > GetCategory(){ return m_category; }
+
 	unsigned int GetPropertyCount() { return (unsigned int)m_properties.size(); }
 
 	/**
@@ -588,6 +629,8 @@ private:
 
 	PObjectType m_type;     // tipo del objeto
 	weak_ptr<ObjectPackage> m_package; 	// Package that the object comes from
+
+	shared_ptr< PropertyCategory > m_category;
 
 	wxBitmap m_icon;
 	wxBitmap m_smallIcon; // The icon for the property grid toolbar

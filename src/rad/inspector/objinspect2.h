@@ -73,6 +73,7 @@ class ObjectInspector : public wxPanel
 
   int StringToBits(const wxString& strVal, wxPGChoices& constants);
   void CreateCategory( const wxString& name, shared_ptr< ObjectBase > obj, shared_ptr< ObjectInfo > obj_info, map< wxString, shared_ptr< Property > >& map );
+  void AddProperties( const wxString& name, shared_ptr< ObjectBase > obj, shared_ptr< ObjectInfo > obj_info, shared_ptr< PropertyCategory > category, map< wxString, shared_ptr< Property > >& map );
   wxPGProperty* GetProperty(shared_ptr<Property> prop);
 
   void Create(bool force = false);

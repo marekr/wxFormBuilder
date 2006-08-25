@@ -652,6 +652,8 @@ wxPGProperty* ObjectInspector::GetProperty(shared_ptr<Property> prop)
 
 void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase> obj, shared_ptr<ObjectInfo> obj_info, map< wxString, shared_ptr< Property > >& properties )
 {
+	Debug::Print( wxT("[ObjectInspector::CreatePropertyPanel] Creating Property Editor") );
+
 	int pageIndex = m_pg->GetPageByName( name );
 	if ( wxNOT_FOUND == pageIndex )
 	{
@@ -659,36 +661,44 @@ void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase
 	}
 	m_pg->SelectPage( name );
 
-	m_pg->AppendCategory(name);
-	unsigned int prop_count = obj_info->GetPropertyCount();
+	m_pg->AppendCategory( obj_info->GetCategory()->GetName() );
+	AddProperties( name, obj, obj_info, obj_info->GetCategory(), properties );
+	m_pg->SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
+}
 
-	if (prop_count > 0)
+void ObjectInspector::AddProperties( const wxString& name, shared_ptr< ObjectBase > obj, shared_ptr< ObjectInfo > obj_info, shared_ptr< PropertyCategory > category, map< wxString, shared_ptr< Property > >& properties )
+{
+	size_t propCount = category->GetPropertyCount();
+	for ( size_t i = 0; i < propCount; i++ )
 	{
-		//wxFlexGridSizer* sizer = new wxFlexGridSizer(prop_count, 2, 0, 0);
-		for (unsigned int i=0; i<prop_count ; i++)
+		wxString propName = category->GetPropertyName( i );
+		shared_ptr< Property > prop = obj->GetProperty( propName );
+
+		if ( !prop )
 		{
-			shared_ptr<PropertyInfo> prop_desc = obj_info->GetPropertyInfo(i);
-			shared_ptr<Property>     prop      = obj->GetProperty(prop_desc->GetName());
-			//wxWindow *prop_editor = NULL;
-
-			assert(prop_desc && prop);
-
-			wxString prop_name( prop_desc->GetName() );
-			Debug::Print( wxT("[ObjectInspector::CreatePropertyPanel] Creating Property Editor") );
-
-			// we do not want to duplicate inherited properties
-			if (properties.find(prop_desc->GetName()) == properties.end())
-			{
-				wxPGId id = m_pg->Append(GetProperty(prop));
-				m_pg->SetPropertyHelpString( id, prop_desc->GetDescription() );
-
-				properties.insert( map< wxString, shared_ptr< Property > >::value_type( prop_desc->GetName(), prop ) );
-				m_propmap.insert(ObjInspectorMap::value_type(id.GetPropertyPtr(), prop));
-			}
+			continue;
 		}
 
+		shared_ptr< PropertyInfo > propInfo = prop->GetPropertyInfo();
+
+		// we do not want to duplicate inherited properties
+		if ( properties.find( propName ) == properties.end() )
+		{
+			wxPGId id = m_pg->Append( GetProperty( prop ) );
+			m_pg->SetPropertyHelpString( id, propInfo->GetDescription() );
+
+			properties.insert( map< wxString, shared_ptr< Property > >::value_type( propName, prop ) );
+			m_propmap.insert( ObjInspectorMap::value_type( id.GetPropertyPtr(), prop ) );
+		}
 	}
 
+	size_t catCount = category->GetCategoryCount();
+	for ( size_t i = 0; i < catCount; i++ )
+	{
+		shared_ptr< PropertyCategory > nextCat = category->GetCategory( i );
+		m_pg->AppendIn( category->GetName(), wxPropertyCategory( nextCat->GetName() ) );
+		AddProperties( name, obj, obj_info, nextCat, properties );
+	}
 }
 
 void ObjectInspector::OnPropertyGridChange( wxPropertyGridEvent& event )

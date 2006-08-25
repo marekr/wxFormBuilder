@@ -40,6 +40,7 @@
 #define NAME_TAG "name"
 #define DESCRIPTION_TAG "help"
 #define PROPERTY_TAG "property"
+#define CATEGORY_TAG "category"
 #define OBJECT_TAG "object"
 #define CLASS_TAG "class"
 #define PACKAGE_TAG "package"
@@ -706,74 +707,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 				}
 
 				// parseamos las propiedades
-				TiXmlElement* elem_prop = elem_obj->FirstChildElement(PROPERTY_TAG);
-				while (elem_prop)
-				{
-					std::string pname = elem_prop->Attribute(NAME_TAG);
-					bool hidden = false;    //Juan
-					if (elem_prop->Attribute(HIDDEN_TAG)){
-						int val;
-						elem_prop->Attribute(HIDDEN_TAG, &val);
-						hidden = val != 0;
-					}
-					std::string description;
-					if ( elem_prop->Attribute(DESCRIPTION_TAG))
-					{
-						description = elem_prop->Attribute(DESCRIPTION_TAG);
-					}
-					PropertyType ptype = ParsePropertyType( _WXSTR( elem_prop->Attribute("type") ) );
-					std::string def_value;
-					shared_ptr<OptionList> opt_list;
-
-					//          DEBUG_PRINT("    PROPERTY: '" + pname + "'\n");
-
-					// si la propiedad es de tipo "bitlist" debemos parsear cada
-					// una de las opciones
-					if (ptype == PT_BITLIST || ptype == PT_OPTION)
-					{
-						opt_list = shared_ptr<OptionList>(new OptionList());
-						TiXmlElement *elem_opt = elem_prop->FirstChildElement("option");
-						while(elem_opt)
-						{
-							std::string macro_name = elem_opt->Attribute(NAME_TAG);
-							std::string macro_description;
-							if ( elem_opt->Attribute(DESCRIPTION_TAG))
-							{
-								macro_description = elem_opt->Attribute(DESCRIPTION_TAG);
-							}
-							opt_list->AddOption( _WXSTR(macro_name), _WXSTR(macro_description) );
-							elem_opt = elem_opt->NextSiblingElement("option");
-
-							m_macroSet.insert(_WXSTR(macro_name));
-							// vamos a comprobar si la macro está registrada en la aplicación
-							// de los contrario mostraremos un mensaje de advertencia.
-							/*{
-							int macro;
-							PMacroDictionary dic = MacroDictionary::GetInstance();
-							if (!dic->SearchMacro(macro_name,&macro))
-							wxLogWarning(wxT("Macro '%s' not defined on component library!"),_WXSTR(macro_name).c_str());
-							}*/
-						}
-					}
-
-					TiXmlNode * lastChild = elem_prop->LastChild();
-					if( lastChild )
-					{
-						TiXmlText * elem_text = lastChild->ToText();
-						if (elem_text)
-							def_value = elem_text->Value();
-					}
-
-					// creamos la instancia del descriptor de propiedad
-					// Juan
-					shared_ptr<PropertyInfo> prop_info(new PropertyInfo(_WXSTR(pname),ptype,_WXSTR(def_value),_WXSTR(description),hidden,opt_list));
-
-					// añadimos el descriptor de propiedad
-					obj_info->AddPropertyInfo(prop_info);
-
-
-					elem_prop = elem_prop->NextSiblingElement(PROPERTY_TAG);
-				}
+				ParseProperties( elem_obj, obj_info, obj_info->GetCategory() );
 				/*
 				// leemos la descripcion de generacion de código
 				TiXmlElement* elem_codegen = elem_obj->FirstChildElement(CODEGEN_TAG);
@@ -817,6 +751,90 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file)
 	}
 
 	return package;
+}
+
+void ObjectDatabase::ParseProperties( TiXmlElement* elem_obj, shared_ptr<ObjectInfo> obj_info, shared_ptr< PropertyCategory > category )
+{
+	TiXmlElement* elem_category = elem_obj->FirstChildElement(CATEGORY_TAG);
+	while (elem_category)
+	{
+		std::string cname = elem_category->Attribute(NAME_TAG);
+		shared_ptr< PropertyCategory > new_cat( new PropertyCategory( _WXSTR( cname ) ) );
+		category->AddCategory( new_cat );
+		ParseProperties( elem_category, obj_info, new_cat );
+		elem_category = elem_category->NextSiblingElement(CATEGORY_TAG);
+	}
+
+	TiXmlElement* elem_prop = elem_obj->FirstChildElement(PROPERTY_TAG);
+	while (elem_prop)
+	{
+		std::string pname = elem_prop->Attribute(NAME_TAG);
+		category->AddProperty( _WXSTR(pname) );
+		bool hidden = false;    //Juan
+		if (elem_prop->Attribute(HIDDEN_TAG)){
+			int val;
+			elem_prop->Attribute(HIDDEN_TAG, &val);
+			hidden = val != 0;
+		}
+		std::string description;
+		if ( elem_prop->Attribute(DESCRIPTION_TAG))
+		{
+			description = elem_prop->Attribute(DESCRIPTION_TAG);
+		}
+
+		PropertyType ptype = ParsePropertyType( _WXSTR( elem_prop->Attribute("type") ) );
+		std::string def_value;
+		shared_ptr<OptionList> opt_list;
+
+		//          DEBUG_PRINT("    PROPERTY: '" + pname + "'\n");
+
+		// si la propiedad es de tipo "bitlist" debemos parsear cada
+		// una de las opciones
+		if (ptype == PT_BITLIST || ptype == PT_OPTION)
+		{
+			opt_list = shared_ptr<OptionList>(new OptionList());
+			TiXmlElement *elem_opt = elem_prop->FirstChildElement("option");
+			while(elem_opt)
+			{
+				std::string macro_name = elem_opt->Attribute(NAME_TAG);
+				std::string macro_description;
+				if ( elem_opt->Attribute(DESCRIPTION_TAG))
+				{
+					macro_description = elem_opt->Attribute(DESCRIPTION_TAG);
+				}
+				opt_list->AddOption( _WXSTR(macro_name), _WXSTR(macro_description) );
+				elem_opt = elem_opt->NextSiblingElement("option");
+
+				m_macroSet.insert(_WXSTR(macro_name));
+				// vamos a comprobar si la macro está registrada en la aplicación
+				// de los contrario mostraremos un mensaje de advertencia.
+				/*{
+				int macro;
+				PMacroDictionary dic = MacroDictionary::GetInstance();
+				if (!dic->SearchMacro(macro_name,&macro))
+				wxLogWarning(wxT("Macro '%s' not defined on component library!"),_WXSTR(macro_name).c_str());
+				}*/
+			}
+		}
+
+		TiXmlNode * lastChild = elem_prop->LastChild();
+		if( lastChild )
+		{
+			TiXmlText * elem_text = lastChild->ToText();
+			if (elem_text)
+				def_value = elem_text->Value();
+		}
+
+		// creamos la instancia del descriptor de propiedad
+		// Juan
+		shared_ptr<PropertyInfo> prop_info(new PropertyInfo(_WXSTR(pname),ptype,_WXSTR(def_value),_WXSTR(description),hidden,opt_list));
+
+		// añadimos el descriptor de propiedad
+		obj_info->AddPropertyInfo(prop_info);
+
+
+		elem_prop = elem_prop->NextSiblingElement(PROPERTY_TAG);
+	}
 }
 
 bool ObjectDatabase::ShowInPalette(wxString type)
