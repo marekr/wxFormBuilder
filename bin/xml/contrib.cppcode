@@ -1,14 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="C++">
 
-	<templates class="wxPlotWindow">
-		<template name="declaration">wxPlotWindow* $name;</template>
+	<templates class="wxPlotCtrl">
+		<template name="declaration">wxPlotCtrl* $name;</template>
 		<template name="construction">
-			$name = new wxPlotWindow(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );
-		  #ifnotnull $titleText
-			@{ #nl @#ifndef __WXGTX__ #nl $name->AddChartTitle( $titleText, $titleFont, $titleColour ); #nl @#endif @}
+			$name = new wxPlotCtrl(#wxparent $name, $id, $pos, $size );
 		</template>
-		<template name="include">@#include &lt;wx/plot/plot.h&gt;</template>
+		<template name="settings">
+			$name->SetScrollOnThumbRelease( $scroll_on_thumb_release ); #nl			
+			
+			$name->SetDrawSymbols( $draw_symbols ); #nl
+			$name->SetDrawLines( $draw_lines ); #nl
+			$name->SetDrawSpline( $draw_spline ); #nl
+			$name->SetDrawGrid( $draw_grid ); #nl
+			#ifnotnull $grid_colour @{ $name->SetGridColour( $grid_colour ); #nl @}
+			#ifnotnull $border_colour @{ $name->SetBorderColour( $border_colour ); #nl @}
+			
+			$name->SetAreaMouseFunction( $area_mouse_function ); #nl
+			$name->SetAreaMouseMarker( $area_mouse_marker ); #nl
+			$name->SetCrossHairCursor( $crosshair_cursor ); #nl
+			
+			#ifnotnull $axis_font @{ $name->SetAxisFont( $axis_font ); #nl @}
+			#ifnotnull $axis_colour @{ $name->SetAxisColour( $axis_colour ); #nl @}
+			#ifnotnull $axis_label_font @{ $name->SetAxisLabelFont( $axis_label_font ); #nl @}
+			#ifnotnull $axis_label_colour @{ $name->SetAxisLabelColour( $axis_label_colour ); #nl @}
+			
+			$name->SetShowXAxis( $show_x_axis ); #nl
+			$name->SetShowXAxisLabel( $show_x_axis_label ); #nl
+			$name->SetXAxisLabel( $x_axis_label ); #nl
+			
+			$name->SetShowYAxis( $show_y_axis ); #nl
+			$name->SetShowYAxisLabel( $show_y_axis_label ); #nl
+			$name->SetYAxisLabel( $y_axis_label ); #nl	
+			
+			$name->SetShowPlotTitle( $show_plot_title ); #nl
+			$name->SetPlotTitle( $plot_title ); #nl
+			#ifnotnull $plot_title_font @{ $name->SetPlotTitleFont( $plot_title_font ); #nl @}
+			#ifnotnull $plot_title_colour @{ $name->SetPlotTitleColour( $plot_title_colour ); #nl @}
+			
+			$name->SetShowKey( $show_key ); #nl
+			$name->SetKeyPosition( $key_position ); #nl
+			#ifnotnull $key_font @{ $name->SetKeyFont( $key_font ); #nl @}
+			#ifnotnull $key_colour @{ $name->SetKeyColour( $key_colour ); #nl @}
+		</template>
+		<template name="include">@#include &lt;wx/plotctrl/plotctrl.h&gt;</template>
 	</templates>
 
 	<templates class="wxPropertyGrid">

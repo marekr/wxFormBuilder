@@ -1,22 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <package name="contrib" lib="libcontrib" icon="plot16x16.png" desc="wxWidgets contributed controls">
 
-	<objectinfo class="wxPlotWindow" icon="plot.xpm" type="widget">
+	<objectinfo class="wxPlotCtrl" icon="plot.xpm" type="expanded_widget">
 		<inherits class="wxWindow" />
-		<property name="name" type="text">m_plotWindow</property>
-		<property name="style" type="bitlist">
-		  <option name="wxPLOT_BUTTON_MOVE"       help="Display buttons to allow moving individual curves up or down." />
-		  <option name="wxPLOT_BUTTON_ENLARGE"    help="Display buttons to allow enlarging individual curves vertically." />
-		  <option name="wxPLOT_BUTTON_ZOOM"       help="Display buttons to allow zooming all curves horizontally." />
-		  <option name="wxPLOT_BUTTON_ALL"        help="Display all buttons." />
-		  <option name="wxPLOT_Y_AXIS"            help="Display an Y axis to the left of the drawing area." />
-		  <option name="wxPLOT_X_AXIS"            help="Display a X axis at the bottom of the drawing area." />
-		  <option name="wxPLOT_DEFAULT"           help="All of the above options."/>
-				wxPLOT_DEFAULT
-		</property>
-		<property name="titleText" type="wxString_i18n" />
-		<property name="titleFont" type="wxFont" />
-		<property name="titleColour" type="wxColour" />
+		<property name="name" type="text">m_plotCtrl</property>
+		<property name="sample_function" 			type="text" help="Enter test functions with x as the independent variable to see them plotted. This property does not change generated code.">sin(x)</property>
+		<property name="scroll_on_thumb_release" 	type="bool" help="Scroll the window only when the mouse button is released (for slow machines).">0</property>
+		<property name="draw_symbols" 				type="bool" help="Draw the data curve symbols on the plotctrl.">0</property>
+		<property name="draw_lines" 				type="bool" help="Draw the interconnecting straight lines between data points.">0</property>
+		<property name="draw_spline" 				type="bool" help="Draw the interconnecting splines between data points.">1</property>
+		<category name="Mouse">
+			<property name="crosshair_cursor" 			type="bool" help="Use a full width/height crosshair as a cursor.">0</property>
+			<property name="area_mouse_function" type="option" help="Set what the mouse will do for different actions.">
+				<option name="wxPLOTCTRL_MOUSE_NOTHING"		help="Do nothing."/>
+				<option name="wxPLOTCTRL_MOUSE_ZOOM"		help="Zoom into the plot."/>
+				<option name="wxPLOTCTRL_MOUSE_SELECT"		help="Select points in the active curve."/>
+				<option name="wxPLOTCTRL_MOUSE_DESELECT"	help="Deselect points in the active curve."/>
+				<option name="wxPLOTCTRL_MOUSE_PAN"			help="Offset the origin."/>
+				wxPLOTCTRL_MOUSE_ZOOM
+			</property>
+			<property name="area_mouse_marker" type="option" help="Set what sort of marker should be drawn when dragging mouse.">
+				<option name="wxPLOTCTRL_MARKER_NONE"		help="Draw nothing."/>
+				<option name="wxPLOTCTRL_MARKER_RECT"		help="Draw a rectangle."/>
+				<option name="wxPLOTCTRL_MARKER_VERT"		help="Draw two vertical lines."/>
+				<option name="wxPLOTCTRL_MARKER_HORIZ"		help="Draw two horizontal lines."/>
+				wxPLOTCTRL_MARKER_RECT
+			</property> 
+		</category>
+		<category name="Grid">
+			<property name="draw_grid" 					type="bool" help="Draw the plot grid over the whole window, else just tick marks at edge.">1</property>
+			<property name="grid_colour" 				type="wxColour" help="Set the colour of the grid lines in the plot area, default grey."></property>
+			<property name="border_colour" 				type="wxColour" help="Set the colour of the border around the plot area, default black."></property>
+		</category>
+		<category name="Axes">
+			<property name="axis_font" 					type="wxFont" 	help="Set the axis numbers font, default normal."></property>
+			<property name="axis_colour" 				type="wxColour" help="Set the axis numbers colour, default black."></property>
+			<property name="axis_label_font" 			type="wxFont" 	help="Set axis label font, default swiss."></property>
+			<property name="axis_label_colour" 			type="wxColour" help="Set axis label colour, default black."></property>
+			<category name="X Axis">
+				<property name="show_x_axis" 				type="bool" help="Show the X axis.">1</property>
+				<property name="show_x_axis_label" 			type="bool" help="Show the X axis label.">0</property>
+				<property name="x_axis_label" 				type="wxString_i18n" help="Set the X axis label.">X Axis</property>
+			</category>
+			<category name="Y Axis">
+				<property name="show_y_axis" 				type="bool" help="Show the Y axis.">1</property>
+				<property name="show_y_axis_label" 			type="bool" help="Show the Y axis label.">0</property>
+				<property name="y_axis_label" 				type="wxString_i18n" help="Set the Y axis label.">Y Axis</property>
+			</category>
+		</category>
+		<category name="Title">		
+			<property name="show_plot_title" 			type="bool" help="Show the plot title.">0</property>
+			<property name="plot_title" 				type="wxString_i18n" help="Set the plot title.">Title</property>
+			<property name="plot_title_font" 			type="wxFont" 	help="Set the title font, default swiss."></property>
+			<property name="plot_title_colour" 			type="wxColour" help="Set the title colour, default black."></property>
+		</category>
+		<category name="Key">
+			<property name="show_key" 					type="bool" help="Show the key.">1</property>
+			<property name="key_position" 				type="wxPoint" help="Set the key position in %width, %height (0-100).">100,100</property>
+			<property name="key_font" 					type="wxFont" 	help="Set the key font."></property>
+			<property name="key_colour" 				type="wxColour" help="Set the key colour."></property>
+		</category>    
 	</objectinfo>
 
 	<objectinfo class="wxPropertyGrid" icon="propgrid.xpm" type="expanded_widget">

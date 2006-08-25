@@ -101,7 +101,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="" />
-				<Variable name="WX_VER" value="27" />
+				<Variable name="WX_VER" value="270" />
 				<Variable name="tinyxml" value="..\libs\tinyxml" />
 			</Environment>
 		</Build>
@@ -128,7 +128,7 @@
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_gcc" />
 			<Add library="advapi32" />
 			<Add library="comctl32" />
 			<Add library="comdlg32" />

@@ -27,7 +27,7 @@
 #include "plugins/plugin.h"
 #include "utils/xrcconv.h"
 
-#include <wx/plot/plot.h>
+#include <wx/plotctrl/plotctrl.h>
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <wx/awx/led.h>
 
@@ -44,70 +44,67 @@
 #include <wx/object.h>
 #include <wx/image.h>
 ///////////////////////////////////////////////////////////////////////////////
-class SineCurve: public wxPlotCurve
-{
-public:
-
-	double m_phaseShift;
-
-	SineCurve( int offsetY, double startY, double endY, double phaseShift = 0) : wxPlotCurve( offsetY, startY, endY )
-	{
-		m_phaseShift = phaseShift;
-	}
-	virtual wxInt32 GetStartX()
-	{
-		return 0;
-	}
-	virtual wxInt32 GetEndX()
-	{
-		return 100000;
-	}
-	virtual double GetY( wxInt32 x )
-	{
-		return sin( ((double)x - m_phaseShift)/1000 );
-	}
-};
-
-class PlotWindowComponent : public ComponentBase
+class PlotCtrlComponent : public ComponentBase
 {
 public:
 	wxObject* Create(IObject *obj, wxObject *parent)
 	{
 		// Set plot style
-		wxPlotWindow* plot = new wxPlotWindow((wxWindow*)parent,-1,
+		wxPlotCtrl* plot = new wxPlotCtrl((wxWindow*)parent,-1,
 			obj->GetPropertyAsPoint(_("pos")),
-			obj->GetPropertyAsSize(_("size")),
-			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
+			obj->GetPropertyAsSize(_("size")) );
 
+		plot->SetScrollOnThumbRelease( obj->GetPropertyAsInteger(_("scroll_on_thumb_release")) != 0 );
+		plot->SetCrossHairCursor( obj->GetPropertyAsInteger( _("crosshair_cursor") ) != 0 );
+		plot->SetDrawSymbols( obj->GetPropertyAsInteger( _("draw_symbols") ) != 0 );
+		plot->SetDrawLines( obj->GetPropertyAsInteger( _("draw_lines") ) != 0 );
+		plot->SetDrawSpline( obj->GetPropertyAsInteger( _("draw_spline") ) != 0 );
+		plot->SetDrawGrid( obj->GetPropertyAsInteger( _("draw_grid") ) != 0 );
 
-		// Set Chart Title -- plot is still distributed as part of the main package for GTK
-		#ifndef __WXGTK__
-		wxString titleText = obj->GetPropertyAsString(_("titleText"));
+		plot->SetShowXAxis( obj->GetPropertyAsInteger( _("show_x_axis") ) != 0 );
+		plot->SetShowYAxis( obj->GetPropertyAsInteger( _("show_y_axis") ) != 0 );
+		plot->SetShowXAxisLabel( obj->GetPropertyAsInteger( _("show_x_axis_label") ) != 0 );
+		plot->SetShowYAxisLabel( obj->GetPropertyAsInteger( _("show_y_axis_label") ) != 0 );
+		plot->SetShowPlotTitle( obj->GetPropertyAsInteger( _("show_plot_title") ) != 0 );
+		plot->SetShowKey( obj->GetPropertyAsInteger( _("show_key") ) != 0 );
 
-		if ( !titleText.empty() )
+		plot->SetAreaMouseFunction( (wxPlotCtrlMouse_Type)obj->GetPropertyAsInteger( _("area_mouse_function") ) );
+		plot->SetAreaMouseMarker( (wxPlotCtrlMarker_Type)obj->GetPropertyAsInteger( _("area_mouse_marker") ) );
+
+		plot->SetGridColour( obj->GetPropertyAsColour( _("grid_colour") ) );
+		plot->SetBorderColour( obj->GetPropertyAsColour( _("border_colour") ) );
+
+		plot->SetAxisFont( obj->GetPropertyAsFont( _("axis_font") ) );
+		plot->SetAxisColour( obj->GetPropertyAsColour( _("axis_colour") ) );
+
+		plot->SetAxisLabelFont( obj->GetPropertyAsFont( _("axis_label_font") ) );
+		plot->SetAxisLabelColour( obj->GetPropertyAsColour( _("axis_label_colour") ) );
+
+		if ( !obj->GetPropertyAsString( _("plot_title_font") ).empty() )
 		{
-			plot->AddChartTitle( titleText, obj->GetPropertyAsFont(_("titleFont")), obj->GetPropertyAsColour(_("titleColour")) );
+			plot->SetPlotTitleFont( obj->GetPropertyAsFont( _("plot_title_font") ) );
 		}
-		#endif
+		plot->SetPlotTitleColour( obj->GetPropertyAsColour( _("plot_title_colour") ) );
 
-		// Add example curves
-		SineCurve* sine = new SineCurve( 0, -1.5, 1.5);
-		sine->SetPenNormal( wxPen( *wxBLUE ) );
-		sine->SetPenSelected( wxPen( *wxBLUE, 2 ) );
-		plot->Add( sine );
+		plot->SetKeyFont( obj->GetPropertyAsFont( _("key_font") ) );
+		plot->SetKeyColour( obj->GetPropertyAsColour( _("key_colour") ) );
 
-		SineCurve* sine2 = new SineCurve( 15, -1.5, 1.5, 0.78);
-		sine2->SetPenNormal( wxPen( *wxRED ) );
-		sine2->SetPenSelected( wxPen( *wxRED, 2 ) );
-		plot->Add( sine2 );
+		plot->SetXAxisLabel( obj->GetPropertyAsString( _("x_axis_label") ) );
+		plot->SetYAxisLabel( obj->GetPropertyAsString( _("y_axis_label") ) );
+		plot->SetPlotTitle( obj->GetPropertyAsString( _("plot_title") ) );
+		plot->SetKeyPosition( obj->GetPropertyAsPoint( _("key_position") ) );
 
-		plot->SetUnitsPerValue( 0.001 );
-		plot->SetZoom( .03 );
+		wxPlotFunction plotFunc;
+		plotFunc.Create( obj->GetPropertyAsString(_("sample_function")), wxT("x") );
+		if ( plotFunc.Ok() )
+		{
+			plot->AddCurve( plotFunc, true, true );
+		}
 
 		return plot;
 
 	}
-	TiXmlElement* ExportToXrc(IObject *obj)
+	/*TiXmlElement* ExportToXrc(IObject *obj)
 	{
 		ObjectToXrcFilter xrc(obj, _("wxPlotWindow"), obj->GetPropertyAsString(_("name")));
 		xrc.AddWindowProperties();
@@ -121,7 +118,7 @@ public:
 		filter.AddWindowProperties();
 		filter.AddProperty(_("style"),_("style"), XRC_TYPE_BITLIST);
 		return filter.GetXfbObject();
-	}
+	}*/
 };
 class PropertyGridComponent : public ComponentBase
 {
@@ -556,14 +553,16 @@ public:
 BEGIN_LIBRARY()
 
 // wxPlotWindow
-WINDOW_COMPONENT("wxPlotWindow",PlotWindowComponent)
-MACRO(wxPLOT_BUTTON_MOVE)
-MACRO(wxPLOT_BUTTON_ENLARGE)
-MACRO(wxPLOT_BUTTON_ZOOM)
-MACRO(wxPLOT_BUTTON_ALL)
-MACRO(wxPLOT_Y_AXIS)
-MACRO(wxPLOT_X_AXIS)
-MACRO(wxPLOT_DEFAULT)
+WINDOW_COMPONENT("wxPlotCtrl",PlotCtrlComponent)
+MACRO(wxPLOTCTRL_MOUSE_NOTHING)
+MACRO(wxPLOTCTRL_MOUSE_ZOOM)
+MACRO(wxPLOTCTRL_MOUSE_SELECT)
+MACRO(wxPLOTCTRL_MOUSE_DESELECT)
+MACRO(wxPLOTCTRL_MOUSE_PAN)
+MACRO(wxPLOTCTRL_MARKER_NONE)
+MACRO(wxPLOTCTRL_MARKER_RECT)
+MACRO(wxPLOTCTRL_MARKER_VERT)
+MACRO(wxPLOTCTRL_MARKER_HORIZ)
 
 // wxPropertyGrid
 WINDOW_COMPONENT("wxPropertyGrid", PropertyGridComponent)

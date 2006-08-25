@@ -85,7 +85,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="" />
-				<Variable name="WX_VER" value="27" />
+				<Variable name="WX_VER" value="270" />
 				<Variable name="tinyxml" value="..\..\..\libs\tinyxml" />
 			</Environment>
 		</Build>
@@ -105,9 +105,10 @@
 			<Add directory="..\.." />
 		</Compiler>
 		<Linker>
-			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_plot_gcc" />
+			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_gcc" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_plotctrl_gcc" />
+			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_things_gcc" />
 			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_awx_gcc" />
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
 			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_propgrid_gcc" />
 			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_scintilla_gcc" />
 			<Add library="wxmsw$(WX_VER)$(WXADD_SUFFIX)_flatnotebook_gcc" />
