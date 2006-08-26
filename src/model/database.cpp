@@ -867,6 +867,12 @@ void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 	typedef IComponentLibrary* (*PFGetComponentLibrary)();
 	wxString path = _WXSTR(m_xmlPath) + wxT('/') + libfile;
 
+	// This will prevent loading debug libraries in release and vice versa
+	// That used to cause crashes when trying to debug
+	#ifdef _DEBUG
+		path += wxT("d");
+	#endif
+
 	// intentamos cargar la DLL
 	wxDynamicLibrary *library = new wxDynamicLibrary(path);
 

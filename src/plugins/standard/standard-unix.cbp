@@ -6,9 +6,10 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../../bin/xml/libcommon.so" />
+				<Option output="../../../bin/xml/libcommond.so" />
 				<Option working_dir="../../../bin/xml" />
 				<Option object_output=".objsd" />
 				<Option type="3" />
