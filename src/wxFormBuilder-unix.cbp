@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
 				<Option output="../bin/wxformbuilderd" />
@@ -58,7 +59,8 @@
 			<Add directory="$(tinyxml)" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
+			<Add option="`wx-config --debug=$(DEBUG)`" />
+			<Add option="-Wl,-rpath,$``ORIGIN/lib" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_flatnotebook-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_propgrid-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_scintilla-`wx-config --release`" />
