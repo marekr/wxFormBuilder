@@ -50,9 +50,10 @@
 			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_flatnotebook-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_propgrid-`wx-config --release`" />
-			<Add library="`wx-config --debug=$(DEBUG) --basename`_plot-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_awx-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_scintilla-`wx-config --release`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_plotctrl-`wx-config --release`" />
+			<Add library="`wx-config --debug=$(DEBUG) --basename`_things-`wx-config --release`" />
 			<Add library="tinyxml" />
 			<Add directory="../../../libs/tinyxml/lib" />
 			<Add directory="$(#wxadditions.lib)" />

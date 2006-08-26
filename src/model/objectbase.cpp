@@ -533,7 +533,7 @@ bool ObjectBase::IsNull (const wxString& pname)
 {
 	shared_ptr<Property> property = GetProperty( pname );
 	if (property)
-		return property->GetValueAsString() == wxT("");
+		return property->IsNull();
 	else
 		return true;
 }

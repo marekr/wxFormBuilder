@@ -71,23 +71,50 @@ public:
 		plot->SetAreaMouseFunction( (wxPlotCtrlMouse_Type)obj->GetPropertyAsInteger( _("area_mouse_function") ) );
 		plot->SetAreaMouseMarker( (wxPlotCtrlMarker_Type)obj->GetPropertyAsInteger( _("area_mouse_marker") ) );
 
-		plot->SetGridColour( obj->GetPropertyAsColour( _("grid_colour") ) );
-		plot->SetBorderColour( obj->GetPropertyAsColour( _("border_colour") ) );
+		if ( !obj->IsNull( _("grid_colour") ) )
+		{
+			plot->SetGridColour( obj->GetPropertyAsColour( _("grid_colour") ) );
+		}
+		if ( !obj->IsNull( _("border_colour") ) )
+		{
+			plot->SetBorderColour( obj->GetPropertyAsColour( _("border_colour") ) );
+		}
 
-		plot->SetAxisFont( obj->GetPropertyAsFont( _("axis_font") ) );
-		plot->SetAxisColour( obj->GetPropertyAsColour( _("axis_colour") ) );
+		if ( !obj->IsNull( _("axis_font") ) )
+		{
+			plot->SetAxisFont( obj->GetPropertyAsFont( _("axis_font") ) );
+		}
+		if ( !obj->IsNull( _("axis_colour") ) )
+		{
+			plot->SetAxisColour( obj->GetPropertyAsColour( _("axis_colour") ) );
+		}
 
-		plot->SetAxisLabelFont( obj->GetPropertyAsFont( _("axis_label_font") ) );
-		plot->SetAxisLabelColour( obj->GetPropertyAsColour( _("axis_label_colour") ) );
+		if ( !obj->IsNull( _("axis_label_font") ) )
+		{
+			plot->SetAxisLabelFont( obj->GetPropertyAsFont( _("axis_label_font") ) );
+		}
+		if ( !obj->IsNull( _("axis_label_colour") ) )
+		{
+			plot->SetAxisLabelColour( obj->GetPropertyAsColour( _("axis_label_colour") ) );
+		}
 
-		if ( !obj->GetPropertyAsString( _("plot_title_font") ).empty() )
+		if ( !obj->IsNull( _("plot_title_font") ) )
 		{
 			plot->SetPlotTitleFont( obj->GetPropertyAsFont( _("plot_title_font") ) );
 		}
-		plot->SetPlotTitleColour( obj->GetPropertyAsColour( _("plot_title_colour") ) );
+		if ( !obj->IsNull( _("plot_title_colour") ) )
+		{
+			plot->SetPlotTitleColour( obj->GetPropertyAsColour( _("plot_title_colour") ) );
+		}
 
-		plot->SetKeyFont( obj->GetPropertyAsFont( _("key_font") ) );
-		plot->SetKeyColour( obj->GetPropertyAsColour( _("key_colour") ) );
+		if ( !obj->IsNull( _("key_font") ) )
+		{
+			plot->SetKeyFont( obj->GetPropertyAsFont( _("key_font") ) );
+		}
+		if ( !obj->IsNull( _("key_colour") ) )
+		{
+			plot->SetKeyColour( obj->GetPropertyAsColour( _("key_colour") ) );
+		}
 
 		plot->SetXAxisLabel( obj->GetPropertyAsString( _("x_axis_label") ) );
 		plot->SetYAxisLabel( obj->GetPropertyAsString( _("y_axis_label") ) );
