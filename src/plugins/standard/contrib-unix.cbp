@@ -6,13 +6,14 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
 				<Option output="../../../bin/xml/libcontrib.so" />
 				<Option object_output=".objsd" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../bin/wxformbuilder" />
+				<Option host_application="../../../bin/wxformbuilderd" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
