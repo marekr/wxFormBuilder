@@ -46,6 +46,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
+			<Add option="-Wl,-rpath,$``ORIGIN../lib" />
 			<Add library="tinyxml" />
 			<Add directory="../../../libs/tinyxml/lib" />
 		</Linker>

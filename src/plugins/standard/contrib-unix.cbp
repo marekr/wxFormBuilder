@@ -49,6 +49,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
+			<Add option="-Wl,-rpath,$``ORIGIN../lib" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_flatnotebook-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_propgrid-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_awx-`wx-config --release`" />
