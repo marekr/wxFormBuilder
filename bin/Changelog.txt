@@ -1,5 +1,8 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+08-28-2006  Version 2.00.73
+^ File size for wxAdditions in the wxFormBuilder installer.
+
 08-25-2006  Version 2.00.72
 + Replaced wxPlot with wxPlotCtrl
 ^ Made checkbox the default for boolean properties.
