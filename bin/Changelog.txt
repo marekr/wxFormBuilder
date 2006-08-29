@@ -2,6 +2,7 @@
 ************************************************************************
 08-28-2006  Version 2.00.73
 ^ File size for wxAdditions in the wxFormBuilder installer.
+* Fixed behaviour of wxSizer::Fit(). This fixes FS#9
 
 08-25-2006  Version 2.00.72
 + Replaced wxPlot with wxPlotCtrl
