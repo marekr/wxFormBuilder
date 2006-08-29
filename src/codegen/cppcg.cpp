@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // wxFormBuilder - A Visual Dialog Editor for wxWidgets.
 // Copyright (C) 2005 José Antonio Hurtado
@@ -752,8 +752,10 @@ void CppCodeGenerator::GenConstruction(shared_ptr<ObjectBase> obj, bool is_widge
 			// It's not a good practice to embed templates into the source code,
 			// because you will need to recompile...
 
-			wxString _template =	wxT("#wxparent $name->SetSizer( $name );\n")
-									wxT("#wxparent $name->Layout();");
+			wxString _template =	wxT("#wxparent $name->SetSizer( $name ); #nl")
+									wxT("#wxparent $name->Layout();")
+									wxT("#ifnull #parent $size")
+									wxT("@{ #nl $name->Fit( #wxparent $name ); @}");
 
 
 			CppTemplateParser parser(obj,_template);

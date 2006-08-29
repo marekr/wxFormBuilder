@@ -62,24 +62,31 @@ bool Property::IsDefaultValue()
 
 bool Property::IsNull()
 {
-	if ( PT_BITMAP == m_info->GetType() )
+	switch ( m_info->GetType() )
 	{
-		wxString path;
-		size_t semicolonIndex = m_value.find_first_of( wxT(";") );
-		if ( semicolonIndex != m_value.npos )
+		case PT_BITMAP:
 		{
-			path = m_value.substr( 0, semicolonIndex );
-		}
-		else
-		{
-			path = m_value;
-		}
+			wxString path;
+			size_t semicolonIndex = m_value.find_first_of( wxT(";") );
+			if ( semicolonIndex != m_value.npos )
+			{
+				path = m_value.substr( 0, semicolonIndex );
+			}
+			else
+			{
+				path = m_value;
+			}
 
-		return path.empty();
-	}
-	else
-	{
-		return m_value.empty();
+			return path.empty();
+		}
+		case PT_WXSIZE:
+		{
+			return ( wxDefaultSize == TypeConv::StringToSize( m_value ) );
+		}
+		default:
+		{
+			return m_value.empty();
+		}
 	}
 }
 

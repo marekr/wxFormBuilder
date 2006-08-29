@@ -245,10 +245,10 @@ void VisualEditor::Create()
 			}
 		}
 
-		if (need_fit)
-			m_back->Fit();
-
 		m_back->Layout();
+
+		if ( need_fit && m_back->GetSizer() )
+			m_back->GetSizer()->Fit(m_back);
 
 		if (menubar || statusbar || toolbar)
 			m_back->SetFrameWidgets(menubar, toolbar, statusbar);
