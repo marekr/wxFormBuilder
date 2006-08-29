@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
 				<Option output="..\..\..\bin\xml\libadditionald.dll" />
@@ -64,7 +65,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release (Unicode)">
-				<Option output="..\..\..\bin\xml\libadditionalu.dll" />
+				<Option output="..\..\..\bin\xml\libadditional.dll" />
 				<Option object_output=".objsu" />
 				<Option type="3" />
 				<Option compiler="gcc" />

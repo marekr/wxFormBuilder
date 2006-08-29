@@ -9,12 +9,12 @@
 
 #define UNICODE 1
 
-#define MyAppVer "2.0.72"
+#define MyAppVer "2.0.73"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
 #define MyAppExeName "wxFormBuilder.exe"
-#define wxFormBuilderMinVer "2.0.56"
+#define wxFormBuilderMinVer "2.0.72"
 #define Additions "wxAdditions_setup.exe"
 
 [_ISToolDownload]
@@ -318,4 +318,3 @@ begin
 	end;
 end;
 // -- END -- Functions for custom page and downloading
-
