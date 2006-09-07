@@ -1,5 +1,9 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+09-07-2006 Version 2.00.74
+* Fixed behaviour of wxSize and wxPoint properties when NumLock was
+  on (and possibly others).
+
 08-28-2006  Version 2.00.73
 ^ File size for wxAdditions in the wxFormBuilder installer.
 * Fixed behaviour of wxSizer::Fit(). This fixes FS#9
