@@ -144,6 +144,7 @@ TiXmlElement* XrcCodeGenerator::GetElement(shared_ptr<ObjectBase> obj)
     // El componente no soporta XRC
     element = new TiXmlElement("object");
     element->SetAttribute("class","unknown");
+    element->SetAttribute("name",_STDSTR(obj->GetPropertyAsString(_("name"))));
   }
 
   return element;

@@ -303,22 +303,6 @@ public:
 
 		return grid;
 	}
-
-	// This shouldn't be here. Unsupported objects should be treated in the same way
-	// either in the ComponentBase class or in the wxFormBuilder XRC backend.
-	/*TiXmlElement* ExportToXrc(IObject *obj)
-	{
-		ObjectToXrcFilter xrc(obj, _("unknown"), obj->GetPropertyAsString(_("name")));
-		xrc.AddWindowProperties();
-		return xrc.GetXrcObject();
-	}
-
-	TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj)
-	{
-		XrcToXfbFilter filter(xrcObj, _("unknown"));
-		filter.AddWindowProperties();
-		return filter.GetXfbObject();
-	}*/
 };
 
 
