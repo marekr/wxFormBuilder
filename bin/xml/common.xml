@@ -35,6 +35,7 @@
     <property name="tooltip" type="wxString"        help="Attach a tooltip to the window."/>
     <property name="enabled" type="bool"            help="Enable or disable the window for user input. Note that when a parent window is disabled, all of its children are disabled as well and they are reenabled again when the parent is.">1</property>
     <property name="hidden" type="bool"             help="Shows or hides the window.">0</property>
+    <property name="subclass" type="wxString" help="XRC Only. Sets the subclass value on the object tag so one can easily use custom widgets which are simple variations from standard ones without having to create a new plugin in wxFB nor create a full xrc handler for wxWidgets." />
   </objectinfo>
 
   <objectinfo class="wxButton" icon="button.xpm" type="widget">
@@ -94,6 +95,7 @@
       <option name="wxTE_CAPITALIZE"    help="On PocketPC and Smartphone, causes the first letter to be capitalized."/>
     </property>
     <property name="value" type="wxString_i18n" />
+    <property name="maxlength" type="text" />
   </objectinfo>
 
   <objectinfo class="wxStaticText" icon="static_text.xpm" type="widget">

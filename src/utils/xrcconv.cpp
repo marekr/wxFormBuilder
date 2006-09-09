@@ -366,6 +366,9 @@ void ObjectToXrcFilter::AddWindowProperties()
 
   if (!m_obj->IsNull(_("tooltip")))
     AddProperty(_("tooltip"), wxT("tooltip"), XRC_TYPE_TEXT);
+  
+  if (!m_obj->IsNull(_("subclass")))
+    m_xrcObj->SetAttribute("subclass",m_obj->GetPropertyAsString(_T("subclass")).mb_str( wxConvUTF8 ));
 };
 
 ///////////////////////////////////////////////////////////////////////////////

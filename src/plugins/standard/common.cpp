@@ -206,6 +206,8 @@ public:
 		xrc.AddWindowProperties();
 		//xrc.AddProperty(_("style"),_("style"),XRC_TYPE_BITLIST);
 		xrc.AddProperty(_("value"),_("value"),XRC_TYPE_TEXT);
+        if (!obj->IsNull(_("maxlength")))
+            xrc.AddProperty(_("maxlength"), _("maxlength"), XRC_TYPE_INTEGER);
 		return xrc.GetXrcObject();
 	}
 
@@ -215,6 +217,7 @@ public:
 		filter.AddWindowProperties();
 		//filter.AddProperty(_("style"),_("style"),XRC_TYPE_BITLIST);
 		filter.AddProperty(_("value"),_("value"),XRC_TYPE_TEXT);
+        filter.AddProperty(_("maxlength"), _("maxlength"), XRC_TYPE_INTEGER);
 		return filter.GetXfbObject();
 	}
 
@@ -300,6 +303,22 @@ public:
 
 		return grid;
 	}
+
+	// This shouldn't be here. Unsupported objects should be treated in the same way
+	// either in the ComponentBase class or in the wxFormBuilder XRC backend.
+	/*TiXmlElement* ExportToXrc(IObject *obj)
+	{
+		ObjectToXrcFilter xrc(obj, _("unknown"), obj->GetPropertyAsString(_("name")));
+		xrc.AddWindowProperties();
+		return xrc.GetXrcObject();
+	}
+
+	TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj)
+	{
+		XrcToXfbFilter filter(xrcObj, _("unknown"));
+		filter.AddWindowProperties();
+		return filter.GetXfbObject();
+	}*/
 };
 
 
