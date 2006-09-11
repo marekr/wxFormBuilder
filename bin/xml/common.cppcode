@@ -51,6 +51,10 @@
   <templates class="wxTextCtrl">
     <template name="declaration">wxTextCtrl* $name;</template>
     <template name="construction">$name = new wxTextCtrl( #wxparent $name, $id, $value, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>
+	<template name="settings">
+		#ifnotnull $maxlength
+		@{ $name->SetMaxLength( $maxlength ); @}
+	</template>
   </templates>
 
   <templates class="wxStaticText">

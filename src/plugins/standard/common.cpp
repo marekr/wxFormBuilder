@@ -193,11 +193,17 @@ public:
 
 	wxObject* Create(IObject *obj, wxObject *parent)
 	{
-		return new wxTextCtrl((wxWindow *)parent,-1,
+		wxTextCtrl* tc = new wxTextCtrl((wxWindow *)parent,-1,
 			obj->GetPropertyAsString(_("value")),
 			obj->GetPropertyAsPoint(_("pos")),
 			obj->GetPropertyAsSize(_("size")),
 			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
+
+		if ( !obj->IsNull( _("maxlength") ) )
+		{
+			tc->SetMaxLength( obj->GetPropertyAsInteger( _("maxlength") ) );
+		}
+		return tc;
 	}
 
 	TiXmlElement* ExportToXrc(IObject *obj)

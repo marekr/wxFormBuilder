@@ -95,7 +95,7 @@
       <option name="wxTE_CAPITALIZE"    help="On PocketPC and Smartphone, causes the first letter to be capitalized."/>
     </property>
     <property name="value" type="wxString_i18n" />
-    <property name="maxlength" type="text" />
+    <property name="maxlength" type="text" help="The maximum length of user-entered text."/>
   </objectinfo>
 
   <objectinfo class="wxStaticText" icon="static_text.xpm" type="widget">
