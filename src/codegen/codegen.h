@@ -119,7 +119,8 @@ protected:
 		ID_NEWLINE,
 		ID_IFEQUAL,
 		ID_IFNOTEQUAL,
-		ID_APPEND
+		ID_APPEND,
+		ID_CLASS
 	} Ident;
 
 
@@ -159,6 +160,7 @@ protected:
 	bool ParseIfEqual();
 	bool ParseIfNotEqual();
 	void ParseAppend();
+	void ParseClass();
 
 	shared_ptr< Property > GetProperty();
 	shared_ptr< ObjectBase > GetWxParent();

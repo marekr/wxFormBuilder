@@ -131,6 +131,7 @@ private:
 	* Genera la sección de '#include' fichero.
 	*/
 	void GenIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes);
+	void GenObjectIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes);
 
 	/**
 	* Determine if this object or any of its children are from the contrib package

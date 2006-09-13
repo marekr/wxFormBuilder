@@ -566,6 +566,21 @@ void CppCodeGenerator::GenEnumIds(shared_ptr< ObjectBase > class_obj)
 
 void CppCodeGenerator::GenIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes)
 {
+	GenObjectIncludes( project, includes );
+
+	shared_ptr<Property> user_headers = project->GetProperty( wxT("user_headers") );
+	if ( user_headers )
+	{
+		wxArrayString array = user_headers->GetValueAsArrayString();
+		for ( unsigned int i = 0 ; i < array.Count(); i++ )
+		{
+			includes->insert( wxT("#include \"") + array[i] + wxT("\"") );
+		}
+	}
+}
+
+void CppCodeGenerator::GenObjectIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes)
+{
 	// Call GenIncludes on all children as well
 	for ( unsigned int i = 0; i < project->GetChildCount(); i++ )
 	{
@@ -756,7 +771,6 @@ void CppCodeGenerator::GenConstruction(shared_ptr<ObjectBase> obj, bool is_widge
 									wxT("#wxparent $name->Layout();")
 									wxT("#ifnull #parent $size")
 									wxT("@{ #nl $name->Fit( #wxparent $name ); @}");
-
 
 			CppTemplateParser parser(obj,_template);
 			parser.UseRelativePath(m_useRelativePath, m_basePath);

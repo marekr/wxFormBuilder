@@ -164,6 +164,9 @@ bool TemplateParser::ParseMacro()
 	case ID_APPEND:
 		ParseAppend();
 		break;
+	case ID_CLASS:
+		ParseClass();
+		break;
 	default:
 		assert(false);
 		return false;
@@ -659,6 +662,8 @@ TemplateParser::Ident TemplateParser::SearchIdent(wxString ident)
 		return ID_IFNOTEQUAL;
 	else if (ident == wxT("append") )
 		return ID_APPEND;
+	else if (ident == wxT("class") )
+		return ID_CLASS;
 	else
 		return ID_ERROR;
 }
@@ -769,6 +774,18 @@ bool TemplateParser::ParseNewLine()
 void TemplateParser::ParseAppend()
 {
 	ignore_whitespaces();
+}
+
+void TemplateParser::ParseClass()
+{
+	if ( m_obj->IsNull( wxT("subclass") ) )
+	{
+		m_out << m_obj->GetClassName();
+	}
+	else
+	{
+		m_out << m_obj->GetPropertyAsString( wxT("subclass") );
+	}
 }
 
 wxString TemplateParser::PropertyToCode(shared_ptr<Property> property)
