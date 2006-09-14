@@ -35,7 +35,7 @@
     <property name="tooltip" type="wxString"        help="Attach a tooltip to the window."/>
     <property name="enabled" type="bool"            help="Enable or disable the window for user input. Note that when a parent window is disabled, all of its children are disabled as well and they are reenabled again when the parent is.">1</property>
     <property name="hidden" type="bool"             help="Shows or hides the window.">0</property>
-    <property name="subclass" type="wxString" help="XRC Only. Sets the subclass value on the object tag so one can easily use custom widgets which are simple variations from standard ones without having to create a new plugin in wxFB nor create a full xrc handler for wxWidgets." />
+    <property name="subclass" type="wxString" help="For easy use of custom widgets which are simple variations from standard ones, without requiring a new plugin for wxFB or a full xrc handler for wxWidgets. For C++, this replaces the name of the class. Use the 'user_headers' project property to include a custom header. For XRC, this sets the subclass value on the object tag." />
   </objectinfo>
 
   <objectinfo class="wxButton" icon="button.xpm" type="widget">

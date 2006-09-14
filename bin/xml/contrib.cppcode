@@ -2,9 +2,9 @@
 <codegen language="C++">
 
 	<templates class="wxPlotCtrl">
-		<template name="declaration">wxPlotCtrl* $name;</template>
+		<template name="declaration">#class* $name;</template>
 		<template name="construction">
-			$name = new wxPlotCtrl(#wxparent $name, $id, $pos, $size );
+			$name = new #class(#wxparent $name, $id, $pos, $size );
 		</template>
 		<template name="settings">
 			$name->SetScrollOnThumbRelease( $scroll_on_thumb_release ); #nl			
@@ -47,8 +47,8 @@
 	</templates>
 
 	<templates class="wxPropertyGrid">
-		<template name="declaration">wxPropertyGrid* $name;</template>
-		<template name="construction">$name = new wxPropertyGrid(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="declaration">#class* $name;</template>
+		<template name="construction">$name = new #class(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
 		<template name="include">
 			@#include &lt;wx/propgrid/propgrid.h&gt;
 			#ifequal $include_advanced "1"
@@ -61,8 +61,8 @@
 	</templates>
 
 	<templates class="wxPropertyGridManager">
-		<template name="declaration">wxPropertyGridManager* $name;</template>
-		<template name="construction">$name = new wxPropertyGridManager(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="declaration">#class* $name;</template>
+		<template name="construction">$name = new #class(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
 		<template name="include">
 			@#include &lt;wx/propgrid/propgrid.h&gt; #nl
 			@#include &lt;wx/propgrid/manager.h&gt;
@@ -78,13 +78,13 @@
 
 	<templates class="wxFlatNotebook">
 		<template name="declaration">
-			wxFlatNotebook* $name;
+			#class* $name;
 			#ifequal $has_images "1"
 			@{
 				#nl wxFlatNotebookImageList $name #append Images;
 			@}
 		</template>
-		<template name="construction">$name = new wxFlatNotebook(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="construction">$name = new #class(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
 		<template name="include">
 			@#include &lt;wx/wxFlatNotebook/wxFlatNotebook.h&gt;
 			#ifequal $auto_scale_images "1"
@@ -141,9 +141,9 @@
 	</templates>
 
 	<templates class="awxLed">
-		<template name="declaration">awxLed* $name;</template>
+		<template name="declaration">#class* $name;</template>
 		<template name="construction">
-			$name = new awxLed( #wxparent $name, $id, $pos, $size, $color, $window_style );
+			$name = new #class( #wxparent $name, $id, $pos, $size, $color, $window_style );
 		    #ifnotnull $state
 			  @{ #nl $name->SetState( $state ); @}
 		</template>
@@ -151,10 +151,10 @@
 	</templates>
 
 	<templates class="wxScintilla">
-		<template name="declaration">wxScintilla* $name;</template>
+		<template name="declaration">#class* $name;</template>
 		<template name="include">@#include &lt;wx/wxscintilla.h&gt;</template>
 		<template name="construction">
-			$name = new wxScintilla( #wxparent $name, $id, $pos, $size, $window_style, wxEmptyString );
+			$name = new #class( #wxparent $name, $id, $pos, $size, $window_style, wxEmptyString );
 			#nl $name->SetUseTabs( $use_tabs );
 			#nl $name->SetTabWidth( $tab_width );
 			#nl $name->SetIndent( $tab_width );
