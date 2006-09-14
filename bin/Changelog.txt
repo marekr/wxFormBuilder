@@ -1,6 +1,6 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
-date Version 2.00.75
+09-13-2006 Version 2.00.75
 + Added subclass and user_headers properties. This closes FS#5.
 
 09-07-2006 Version 2.00.74

@@ -9,7 +9,7 @@
 
 #define UNICODE 1
 
-#define MyAppVer "2.0.74"
+#define MyAppVer "2.0.75"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
@@ -18,7 +18,7 @@
 #define Additions "wxAdditions_setup.exe"
 
 [_ISToolDownload]
-Source: http://wxformbuilder.sourceforge.net/wxAdditions26_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
+Source: http://wxformbuilder.sourceforge.net/wxAdditions27_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
 
 [Setup]
 AppName={#MyAppName}
