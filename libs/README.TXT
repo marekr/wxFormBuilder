@@ -20,13 +20,27 @@ Includes:
      
      Use the included Code::Blocks project (.cbp) if you want to build this library alone.
        
-  
-  - For Win32/Linux, you have the Code::Blocks projects files.
+  3. wxAdditions
+	 This is a complete set of additional components that is required to build wxFormBuilder.
+	 You can get the source using Subversion. There are included Code::Blocks workspace for 
+	 Linux and makefiles for Windows. This is going to change soon to makefiles for all
+	 platforms, it just needs testing.
+	 
+	 Subversion command:
+		svn co https://svn.sourceforge.net/svnroot/wxformbuilder/additions/trunk additions
+		
+	  - For Linux, you have the Code::Blocks projects files.
+	  
+	  - For Win32, you have makefiles.
   
   
 Notes:
   - Code::Blocks is a free cross-platform IDE and it can be found here:
     http://codeblocks.org
+	
+  - Subversion is a great free cross-platform version control manager.
+    It can be found here:
+	http://subversion.tigris.org
 
   - I suggest you use the Code::Blocks workspace because it will place everything where
     it belongs. No need to worry about the files being located in the proper location.
@@ -34,6 +48,7 @@ Notes:
   - Makefiles will be coming in the future.
 
 Enjoy,
+  The wxFormBuilder Team
   
-  José Antonio Hurtado.  
+  José Antonio Hurtado.
   mail: joseantonio.hurtado@gmail.com

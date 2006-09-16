@@ -4,22 +4,18 @@ bugs:
 - Spaces on the begining are being trimed from the generated code in the text of the
   wxStaticText control.
 - wxFlatNotebook doesn't seem to have the right size in Linux with wxWidgets v2.6.1
-- wxFont and wxPlotWindow - wierd
+- wxFont - wierd
 
 Features:
 
 - Quick panel with at least name, label, ID.
-- Check into statically linking to the wxWidgets Library in Linux.
 - Drag&Drop on object tree
-- Keyboard shorcuts in scintilla control
 - Preferences dialog
 - More detail/warning about errors:
      ex: listbox can't have both extended and multiple set.
 
 New Controls:
 
-- wxMathPlot
-- ( a better plot tool that pusztai found )
 - wxCommPort
 
 
@@ -50,3 +46,10 @@ Finished:
 - Added icon support to wxFlatNotebook.
 - The property manager in Linux loses the buttons on the top.
 - No good way to set default values for inherited properties in xml.
+- Keyboard shorcuts in scintilla control
+- wxPlotWindow - wierd
+- wxMathPlot
+- ( a better plot tool that pusztai found )
+- Check into statically linking to the wxWidgets Library in Linux.
+
+
