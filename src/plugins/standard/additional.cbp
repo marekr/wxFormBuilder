@@ -33,7 +33,7 @@
 				<Option object_output=".objsud" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="\usr\src\wxfb2\bin\wxformbuilder" />
+				<Option host_application="..\..\..\bin\wxformbuilderd.exe" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-O0" />

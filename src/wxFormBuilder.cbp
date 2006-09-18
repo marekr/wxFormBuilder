@@ -6,6 +6,7 @@
 		<Option pch_mode="2" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
 				<Option output="..\bin\wxFormBuilderd.exe" />
@@ -649,6 +650,15 @@
 			<Option target="Release" />
 			<Option target="Release (Unicode)" />
 			<Option target="Debug (Unicode)" />
+		</Unit>
+		<Unit filename="utils\wxfbexception.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
 		</Unit>
 		<Unit filename="wxFormBuilder.rc">
 			<Option compilerVar="WINDRES" />

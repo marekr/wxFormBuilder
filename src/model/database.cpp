@@ -29,6 +29,7 @@
 #include "utils/stringutils.h"
 #include "utils/typeconv.h"
 #include "utils/debug.h"
+#include "utils/wxfbexception.h"
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/dir.h>
@@ -468,29 +469,38 @@ void ObjectDatabase::LoadPlugins()
     	wxString nextPluginIconPath = nextPluginPath + wxFILE_SEP_PATH + wxT("icons");
     	if ( wxDir::Exists( nextPluginPath ) )
     	{
-			wxDir pluginXmlDir( nextPluginXmlPath );
-			if ( pluginXmlDir.IsOpened() )
-			{
-				wxString packageXmlFile;
-				bool moreXmlFiles = pluginXmlDir.GetFirst( &packageXmlFile, wxT("*.xml"), wxDIR_FILES | wxDIR_HIDDEN );
-				while ( moreXmlFiles )
+    		if ( wxDir::Exists( nextPluginXmlPath ) )
+    		{
+				wxDir pluginXmlDir( nextPluginXmlPath );
+				if ( pluginXmlDir.IsOpened() )
 				{
-					wxFileName nextXmlFile( nextPluginXmlPath + wxFILE_SEP_PATH + packageXmlFile );
-					PObjectPackage package = LoadPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginIconPath );
-					if ( package )
+					wxString packageXmlFile;
+					bool moreXmlFiles = pluginXmlDir.GetFirst( &packageXmlFile, wxT("*.xml"), wxDIR_FILES | wxDIR_HIDDEN );
+					while ( moreXmlFiles )
 					{
-						m_pkgs.push_back( package );
+						wxFileName nextXmlFile( nextPluginXmlPath + wxFILE_SEP_PATH + packageXmlFile );
+						PObjectPackage package = LoadPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginIconPath );
+						if ( package )
+						{
+							try
+							{
+								// Setup the inheritance for base classes
+								SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath );
 
-						// Setup the inheritance for base classes
-						SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath );
-
-						// Load the C++ code tempates
-						nextXmlFile.SetExt( wxT("cppcode") );
-						LoadCodeGen( _STDSTR(nextXmlFile.GetFullPath()) );
+								// Load the C++ code tempates
+								nextXmlFile.SetExt( wxT("cppcode") );
+								LoadCodeGen( _STDSTR(nextXmlFile.GetFullPath()) );
+								m_pkgs.push_back( package );
+							}
+							catch ( wxFBException& ex )
+							{
+								wxLogError( ex.what() );
+							}
+						}
+						moreXmlFiles = pluginXmlDir.GetNext( &packageXmlFile );
 					}
-					moreXmlFiles = pluginXmlDir.GetNext( &packageXmlFile );
 				}
-			}
+    		}
     	}
 
         moreDirectories = pluginsDir.GetNext( &pluginDirName );
@@ -906,14 +916,11 @@ void ObjectDatabase::ImportComponentLibrary( wxString libfile )
 			}*/
 		}
 		else
-			Debug::Print( wxT("[Database::ImportComponentLibrary] %s is not a valid component library"),
-			path.c_str());
+			THROW_WXFBEX( path << wxT(" is not a valid component library") )
 
 	}
 	else
-		Debug::Print( wxT("[Database::ImportComponentLibrary] Error loading library %s."),
-		path.c_str());
-
+		THROW_WXFBEX( wxT("Error loading library ") << path )
 }
 
 PropertyType ObjectDatabase::ParsePropertyType (wxString str)

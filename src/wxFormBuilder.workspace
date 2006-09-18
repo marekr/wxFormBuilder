@@ -4,7 +4,6 @@
 		<Project filename="wxFormBuilder.cbp" active="1">
 			<Depends filename="plugins\standard\layout.cbp" />
 			<Depends filename="plugins\standard\additional.cbp" />
-			<Depends filename="plugins\standard\contrib.cbp" />
 			<Depends filename="plugins\standard\standard.cbp" />
 			<Depends filename="..\libs\tinyxml\tinyxmlSTL.cbp" />
 		</Project>
@@ -12,9 +11,6 @@
 			<Depends filename="..\libs\tinyxml\tinyxmlSTL.cbp" />
 		</Project>
 		<Project filename="plugins\standard\additional.cbp">
-			<Depends filename="..\libs\tinyxml\tinyxmlSTL.cbp" />
-		</Project>
-		<Project filename="plugins\standard\contrib.cbp">
 			<Depends filename="..\libs\tinyxml\tinyxmlSTL.cbp" />
 		</Project>
 		<Project filename="plugins\standard\standard.cbp">

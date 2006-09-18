@@ -159,6 +159,7 @@ class ObjectDatabase
 
   /**
    * Importa una librería de componentes y lo asocia a cada clase.
+   * @throw wxFBException If the library could not be imported.
    */
   void ImportComponentLibrary(wxString libfile);
 
