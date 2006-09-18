@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<codegen language="C++">
+
+	<templates class="wxPlotCtrl">
+		<template name="declaration">#class* $name;</template>
+		<template name="construction">
+			$name = new #class(#wxparent $name, $id, $pos, $size );
+		</template>
+		<template name="settings">
+			$name->SetScrollOnThumbRelease( $scroll_on_thumb_release ); #nl			
+			
+			$name->SetDrawSymbols( $draw_symbols ); #nl
+			$name->SetDrawLines( $draw_lines ); #nl
+			$name->SetDrawSpline( $draw_spline ); #nl
+			$name->SetDrawGrid( $draw_grid ); #nl
+			#ifnotnull $grid_colour @{ $name->SetGridColour( $grid_colour ); #nl @}
+			#ifnotnull $border_colour @{ $name->SetBorderColour( $border_colour ); #nl @}
+			
+			$name->SetAreaMouseFunction( $area_mouse_function ); #nl
+			$name->SetAreaMouseMarker( $area_mouse_marker ); #nl
+			$name->SetCrossHairCursor( $crosshair_cursor ); #nl
+			
+			#ifnotnull $axis_font @{ $name->SetAxisFont( $axis_font ); #nl @}
+			#ifnotnull $axis_colour @{ $name->SetAxisColour( $axis_colour ); #nl @}
+			#ifnotnull $axis_label_font @{ $name->SetAxisLabelFont( $axis_label_font ); #nl @}
+			#ifnotnull $axis_label_colour @{ $name->SetAxisLabelColour( $axis_label_colour ); #nl @}
+			
+			$name->SetShowXAxis( $show_x_axis ); #nl
+			$name->SetShowXAxisLabel( $show_x_axis_label ); #nl
+			$name->SetXAxisLabel( $x_axis_label ); #nl
+			
+			$name->SetShowYAxis( $show_y_axis ); #nl
+			$name->SetShowYAxisLabel( $show_y_axis_label ); #nl
+			$name->SetYAxisLabel( $y_axis_label ); #nl	
+			
+			$name->SetShowPlotTitle( $show_plot_title ); #nl
+			$name->SetPlotTitle( $plot_title ); #nl
+			#ifnotnull $plot_title_font @{ $name->SetPlotTitleFont( $plot_title_font ); #nl @}
+			#ifnotnull $plot_title_colour @{ $name->SetPlotTitleColour( $plot_title_colour ); #nl @}
+			
+			$name->SetShowKey( $show_key ); #nl
+			$name->SetKeyPosition( $key_position ); #nl
+			#ifnotnull $key_font @{ $name->SetKeyFont( $key_font ); #nl @}
+			#ifnotnull $key_colour @{ $name->SetKeyColour( $key_colour ); #nl @}
+		</template>
+		<template name="include">@#include &lt;wx/plotctrl/plotctrl.h&gt;</template>
+	</templates>
+
+	<templates class="wxPropertyGrid">
+		<template name="declaration">#class* $name;</template>
+		<template name="construction">$name = new #class(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="include">
+			@#include &lt;wx/propgrid/propgrid.h&gt;
+			#ifequal $include_advanced "1"
+				@{ #nl @#include &lt;wx/propgrid/advprops.h&gt; @}
+		</template>
+		<template name="settings">
+		    #ifnotnull $extra_style
+		    @{ $name->SetExtraStyle( $extra_style ); @}
+		</template>
+	</templates>
+
+	<templates class="wxPropertyGridManager">
+		<template name="declaration">#class* $name;</template>
+		<template name="construction">$name = new #class(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="include">
+			@#include &lt;wx/propgrid/propgrid.h&gt; #nl
+			@#include &lt;wx/propgrid/manager.h&gt;
+			#ifequal $include_advanced "1"
+				@{ #nl @#include &lt;wx/propgrid/advprops.h&gt; @}
+		</template>
+		<template name="settings">
+		    #ifnotnull $extra_style
+		    @{ $name->SetExtraStyle( $extra_style ); @}
+		</template>
+	</templates>
+
+
+	<templates class="wxFlatNotebook">
+		<template name="declaration">
+			#class* $name;
+			#ifequal $has_images "1"
+			@{
+				#nl wxFlatNotebookImageList $name #append Images;
+			@}
+		</template>
+		<template name="construction">$name = new #class(#wxparent $name, $id, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @});</template>
+		<template name="include">
+			@#include &lt;wx/wxFlatNotebook/wxFlatNotebook.h&gt;
+			#ifequal $auto_scale_images "1"
+	        @{
+	            #nl @#include &lt;wx/image.h&gt;
+	        @}
+		</template>
+		<template name="settings">
+	        #ifequal $has_images "1"
+			@{
+	    		int $name #append Index = 0; #nl
+	    		$name->SetImageList( &amp;$name #append Images );
+				#ifequal $auto_scale_images "1"
+				@{
+			 		#nl wxBitmap $name #append Bitmap; #nl
+	    			wxImage $name #append Image;
+	    		@}
+			@}
+		</template>
+	</templates>
+
+	<templates class="flatnotebookpage">
+		<template name="page_add">
+			#ifequal #parent $has_images "1"
+	        @{
+	            #ifnotnull $bitmap
+	            @{
+			        #ifequal #parent $auto_scale_images "1"
+			        @{
+	                	#parent $name #append Bitmap = $bitmap; #nl
+		                if ( #parent $name #append Bitmap.Ok() ) #nl
+		                @{ #nl
+			                #parent $name #append Image = #parent $name #append Bitmap.ConvertToImage(); #nl
+			                #parent $name #append Images.Add( #parent $name #append Image.Scale( 16, 16 ) ); #nl
+                        @} #nl
+					@}
+					#ifnotequal #parent $auto_scale_images "1"
+			        @{
+			            #parent $name #append Images.Add( $bitmap ); #nl
+			        @}
+				    #parent $name->AddPage( #child $name, $label, $select, #parent $name #append Index ); #nl
+					#parent $name #append Index++;
+	            @}
+	            #ifnull $bitmap
+	        	@{
+	        	    #parent $name->AddPage( #child $name, $label, $select );
+	        	@}
+	        @}
+	        #ifnotequal #parent $has_images "1"
+	        @{
+				#parent $name->AddPage( #child $name, $label, $select );
+   			@}
+		</template>
+	</templates>
+
+	<templates class="awxLed">
+		<template name="declaration">#class* $name;</template>
+		<template name="construction">
+			$name = new #class( #wxparent $name, $id, $pos, $size, $color, $window_style );
+		    #ifnotnull $state
+			  @{ #nl $name->SetState( $state ); @}
+		</template>
+		<template name="include">@#include &lt;wx/awx/led.h&gt;</template>
+	</templates>
+
+	<templates class="wxScintilla">
+		<template name="declaration">#class* $name;</template>
+		<template name="include">@#include &lt;wx/wxscintilla.h&gt;</template>
+		<template name="construction">
+			$name = new #class( #wxparent $name, $id, $pos, $size, $window_style, wxEmptyString );
+			#nl $name->SetUseTabs( $use_tabs );
+			#nl $name->SetTabWidth( $tab_width );
+			#nl $name->SetIndent( $tab_width );
+			#nl $name->SetTabIndents( $tab_indents );
+			#nl $name->SetBackSpaceUnIndents( $backspace_unindents );
+			#nl $name->SetViewEOL( $view_eol );
+			#nl $name->SetViewWhiteSpace( $view_whitespace );
+			#nl $name->SetMarginWidth( 2, 0 );
+			#nl $name->SetIndentationGuides( $indentation_guides );
+			#ifequal $folding "1"
+			@{
+				#nl $name->SetMarginType( 1, wxSCI_MARGIN_SYMBOL );
+				#nl $name->SetMarginMask( 1, wxSCI_MASK_FOLDERS );
+				#nl $name->SetMarginWidth( 1, 16);
+				#nl $name->SetMarginSensitive( 1, true );
+
+				#nl $name->SetProperty( wxT("fold"), wxT("1") );
+				#nl $name->SetFoldFlags( wxSCI_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED );
+			@}
+			#ifnotequal $folding "1"
+			@{
+				#nl $name->SetMarginWidth( 1, 0 );
+			@}
+			#ifequal $line_numbers "1"
+			@{
+				#nl $name->SetMarginType( 0, wxSCI_MARGIN_NUMBER );
+				#nl $name->SetMarginWidth( 0, $name->TextWidth( wxSCI_STYLE_LINENUMBER, wxT("_99999") ) );
+			@}
+			#ifnotequal $line_numbers "1"
+			@{
+				#nl $name->SetMarginWidth( 0, 0 );
+			@}			
+			#ifnotnull $font
+			@{
+				#nl $name->StyleSetFont( wxSCI_STYLE_DEFAULT, $font );
+			@}
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS );
+			#nl $name->MarkerSetBackground( wxSCI_MARKNUM_FOLDER, wxColour( wxT("BLACK") ) );
+			#nl $name->MarkerSetForeground( wxSCI_MARKNUM_FOLDER, wxColour( wxT("WHITE") ) );
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_BOXMINUS );
+			#nl $name->MarkerSetBackground( wxSCI_MARKNUM_FOLDEROPEN, wxColour( wxT("BLACK") ) );
+			#nl $name->MarkerSetForeground( wxSCI_MARKNUM_FOLDEROPEN, wxColour( wxT("WHITE") ) );
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_EMPTY );
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUS );
+			#nl $name->MarkerSetBackground( wxSCI_MARKNUM_FOLDEREND, wxColour( wxT("BLACK") ) );
+			#nl $name->MarkerSetForeground( wxSCI_MARKNUM_FOLDEREND, wxColour( wxT("WHITE") ) );
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUS );
+			#nl $name->MarkerSetBackground( wxSCI_MARKNUM_FOLDEROPENMID, wxColour( wxT("BLACK") ) );
+			#nl $name->MarkerSetForeground( wxSCI_MARKNUM_FOLDEROPENMID, wxColour( wxT("WHITE") ) );
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_EMPTY );
+			#nl $name->MarkerDefine( wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_EMPTY );
+			#nl $name->SetSelBackground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT ) );
+			#nl $name->SetSelForeground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHTTEXT ) );
+		</template>
+	</templates>
+</codegen>  

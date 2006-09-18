@@ -31,6 +31,8 @@
 #include "utils/debug.h"
 #include <wx/filename.h>
 #include <wx/image.h>
+#include <wx/dir.h>
+#include <ticpp.h>
 
 //#define DEBUG_PRINT(x) cout << x
 
@@ -437,131 +439,131 @@ bool IncludeInPalette(wxString type)
 	return true;
 }
 
-bool ObjectDatabase::LoadFile( std::string file)
+void ObjectDatabase::LoadPlugins()
 {
-	bool result = false;
-	TiXmlDocument doc(m_xmlPath + '/' + file);
-	result = doc.LoadFile();
+	// Load some default templates
+	LoadPackage( m_xmlPath + "default.xml", _WXSTR(m_iconPath) );
+	LoadCodeGen( m_xmlPath + "default.cppcode" );
 
-	if (result)
+	// Open plugins directory for iteration
+	if ( !wxDir::Exists( m_pluginPath ) )
 	{
-		// Cargamos el paquete por defecto
-		LoadPackage("default.xml");
-		LoadCodeGen("default.cppcode");
-
-		TiXmlElement* root = doc.FirstChildElement("packages");
-		if (root)
-		{
-			TiXmlElement* elem = root->FirstChildElement(PACKAGE_TAG);
-
-			// En primer lugar se carga uno por uno todos los objetos
-			// de los archivos xml en una primera pasada.
-			while (elem)
-			{
-				std::string file = elem->Attribute("file");
-				wxFileName fn(_WXSTR(file));
-				fn.SetExt(wxT("cppcode"));
-
-				PObjectPackage package = LoadPackage(file);
-				if (package)
-				{
-					m_pkgs.push_back(package);
-					LoadCodeGen(_STDSTR(fn.GetFullName()));
-				}
-
-				elem = elem->NextSiblingElement(PACKAGE_TAG);
-			}
-
-			// En una segunda pasada, añadimos a cada objeto
-			// sus correspondientes "objetos base" para que puedan heredar
-			// sus propiedades
-			elem = root->FirstChildElement(PACKAGE_TAG);
-			while (elem)
-			{
-				std::string file = elem->Attribute("file");
-				SetupPackage(file);
-				elem = elem->NextSiblingElement(PACKAGE_TAG);
-			}
-		}
-
-		// imprimimos las macros declaradas pero no importadas.
-#ifdef __WXFB_DEBUG__
-		MacroSet::iterator it;
-		//Debug::Print("Missing macros of component libraries");
-		wxLogMessage(wxT("Missing macros of component libraries"));
-		for (it = m_macroSet.begin(); it != m_macroSet.end(); it++)
-		{
-			wxLogMessage(_WXSTR(*it));
-			//Debug::Print((wxChar*)(*it).c_str());
-		}
-#endif
-
-
+		return;
 	}
-	//  else
-	//  {
-	//    cout << "Loading error on "<< file <<" file." << endl;
-	//    system("pause");
-	//  }
 
-	return result;
+	wxDir pluginsDir( m_pluginPath );
+	if ( !pluginsDir.IsOpened() )
+	{
+		return;
+	}
+
+	// Iterate through plugin directories and load the package from the xml subdirectory
+	wxString pluginDirName;
+	bool moreDirectories = pluginsDir.GetFirst( &pluginDirName, wxEmptyString, wxDIR_DIRS | wxDIR_HIDDEN );
+    while ( moreDirectories )
+    {
+    	// Iterate through .xml files in the xml directory
+    	wxString nextPluginPath = m_pluginPath + pluginDirName;
+    	wxString nextPluginXmlPath = nextPluginPath + wxFILE_SEP_PATH + wxT("xml");
+    	wxString nextPluginIconPath = nextPluginPath + wxFILE_SEP_PATH + wxT("icons");
+    	if ( wxDir::Exists( nextPluginPath ) )
+    	{
+			wxDir pluginXmlDir( nextPluginXmlPath );
+			if ( pluginXmlDir.IsOpened() )
+			{
+				wxString packageXmlFile;
+				bool moreXmlFiles = pluginXmlDir.GetFirst( &packageXmlFile, wxT("*.xml"), wxDIR_FILES | wxDIR_HIDDEN );
+				while ( moreXmlFiles )
+				{
+					wxFileName nextXmlFile( nextPluginXmlPath + wxFILE_SEP_PATH + packageXmlFile );
+					PObjectPackage package = LoadPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginIconPath );
+					if ( package )
+					{
+						m_pkgs.push_back( package );
+
+						// Setup the inheritance for base classes
+						SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath );
+
+						// Load the C++ code tempates
+						nextXmlFile.SetExt( wxT("cppcode") );
+						LoadCodeGen( _STDSTR(nextXmlFile.GetFullPath()) );
+					}
+					moreXmlFiles = pluginXmlDir.GetNext( &packageXmlFile );
+				}
+			}
+    	}
+
+        moreDirectories = pluginsDir.GetNext( &pluginDirName );
+    }
+
 }
 
-void ObjectDatabase::SetupPackage( std::string file)
+void ObjectDatabase::SetupPackage( std::string file, wxString libPath )
 {
-	//  DEBUG_PRINT("SETTING-UP " + file + "...");
-
-	TiXmlDocument doc(m_xmlPath + '/' + file);
-	if (doc.LoadFile())
+	try
 	{
-		//    DEBUG_PRINT("OK\n");
-		TiXmlElement* root = doc.FirstChildElement(PACKAGE_TAG);
-		if (root)
+		ticpp::Document doc( file );
+		doc.LoadFile();
+
+		ticpp::Element* root = doc.FirstChildElement(PACKAGE_TAG);
+
+		// get the library to import
+		std::string lib;
+		root->GetAttributeOrDefault( "lib", &lib, "" );
+		if ( !lib.empty() )
 		{
-			// comprobamos si hay libraría que importar
-			if (root->Attribute("lib"))
-				ImportComponentLibrary( _WXSTR(root->Attribute("lib")) );
-
-			TiXmlElement* elem_obj = root->FirstChildElement(OBJINFO_TAG);
-			while (elem_obj)
-			{
-				std::string class_name  = elem_obj->Attribute(CLASS_TAG);
-				shared_ptr<ObjectInfo> class_info = GetObjectInfo( _WXSTR(class_name) );
-
-				TiXmlElement* elem_base = elem_obj->FirstChildElement("inherits");
-				while (elem_base)
-				{
-					std::string base_name = elem_base->Attribute(CLASS_TAG);
-					// Añadimos la referencia a su clase base
-					shared_ptr<ObjectInfo> base_info  = GetObjectInfo( _WXSTR(base_name) );
-					if (class_info && base_info)
-					{
-						size_t baseIndex = class_info->AddBaseClass(base_info);
-						TiXmlElement* inheritedProperty = elem_base->FirstChildElement("property");
-						std::string prop_name, value;
-						while( inheritedProperty )
-						{
-							prop_name = inheritedProperty->Attribute(NAME_TAG);
-							value = inheritedProperty->GetText();
-							class_info->AddBaseClassDefaultPropertyValue( baseIndex, _WXSTR(prop_name), _WXSTR(value) );
-							inheritedProperty = inheritedProperty->NextSiblingElement("property");
-						}
-					}
-					elem_base = elem_base->NextSiblingElement("inherits");
-				}
-
-				// vamos a añadir la interfaz "C++", predefinida para los componentes
-				// y widgets
-				if (HasCppProperties(class_info->GetObjectTypeName()))
-				{
-					shared_ptr<ObjectInfo> cpp_interface = GetObjectInfo( wxT("C++") );
-					if (cpp_interface)
-						class_info->AddBaseClass(cpp_interface);
-				}
-
-				elem_obj = elem_obj->NextSiblingElement(OBJINFO_TAG);
-			}
+			ImportComponentLibrary( libPath + wxFILE_SEP_PATH + _WXSTR(lib) );
 		}
+
+		ticpp::Element* elem_obj = root->FirstChildElement( OBJINFO_TAG, false );
+		while ( elem_obj )
+		{
+			std::string class_name;
+			elem_obj->GetAttribute( CLASS_TAG, &class_name );
+
+			shared_ptr<ObjectInfo> class_info = GetObjectInfo( _WXSTR(class_name) );
+
+			ticpp::Element* elem_base = elem_obj->FirstChildElement( "inherits", false );
+			while ( elem_base )
+			{
+				std::string base_name;
+				elem_base->GetAttribute( CLASS_TAG, &base_name );
+
+				// Add a reference to its base class
+				shared_ptr<ObjectInfo> base_info  = GetObjectInfo( _WXSTR(base_name) );
+				if ( class_info && base_info )
+				{
+					size_t baseIndex = class_info->AddBaseClass( base_info );
+
+					std::string prop_name, value;
+					ticpp::Element* inheritedProperty = elem_base->FirstChildElement( "property", false );
+					while( inheritedProperty )
+					{
+						inheritedProperty->GetAttribute( NAME_TAG, &prop_name );
+						value = inheritedProperty->GetText();
+						class_info->AddBaseClassDefaultPropertyValue( baseIndex, _WXSTR(prop_name), _WXSTR(value) );
+						inheritedProperty = inheritedProperty->NextSiblingElement( "property", false );
+					}
+				}
+				elem_base = elem_base->NextSiblingElement( "inherits", false );
+			}
+
+			// Add the "C++" base class, predefined for the components and widgets
+			if ( HasCppProperties( class_info->GetObjectTypeName() ) )
+			{
+				shared_ptr<ObjectInfo> cpp_interface = GetObjectInfo( wxT("C++") );
+				if ( cpp_interface )
+				{
+					class_info->AddBaseClass( cpp_interface );
+				}
+			}
+
+			elem_obj = elem_obj->NextSiblingElement( OBJINFO_TAG, false );
+		}
+	}
+	catch ( ticpp::Exception& ex )
+	{
+		wxLogError( _WXSTR(ex.m_details) );
 	}
 }
 
@@ -584,256 +586,236 @@ bool ObjectDatabase::HasCppProperties(wxString type)
 
 void ObjectDatabase::LoadCodeGen( std::string file)
 {
-	TiXmlDocument doc(m_xmlPath + '/' + file);
-	if (doc.LoadFile())
+	try
 	{
-		// leemos la descripcion de generacion de código
-		TiXmlElement* elem_codegen = doc.FirstChildElement("codegen");
-		if (elem_codegen)
+		ticpp::Document doc( file );
+		doc.LoadFile();
+
+		// read the codegen element
+		ticpp::Element* elem_codegen = doc.FirstChildElement("codegen");
+		std::string language;
+		elem_codegen->GetAttribute( "language", &language );
+
+		// read the templates
+		ticpp::Element* elem_templates = elem_codegen->FirstChildElement( "templates", false );
+		while ( elem_templates  )
 		{
-			std::string language = elem_codegen->Attribute("language");
+			std::string class_name;
+			elem_templates->GetAttribute( "class", &class_name );
 
-			// leemos cada plantilla de código
-			TiXmlElement* elem_templates = elem_codegen->FirstChildElement("templates");
-			while (elem_templates)
+			shared_ptr<CodeInfo> code_info( new CodeInfo() );
+
+			ticpp::Element* elem_template = elem_templates->FirstChildElement( "template", false );
+			while ( elem_template )
 			{
-				std::string class_name = elem_templates->Attribute("class");
-				TiXmlElement *elem_template = elem_templates->FirstChildElement("template");
-				shared_ptr<CodeInfo> code_info(new CodeInfo());
+				std::string template_name;
+				elem_template->GetAttribute( "name", &template_name );
 
-				while (elem_template)
-				{
-					std::string template_name = elem_template->Attribute("name");
-					std::string template_code;
+				std::string template_code = elem_template->GetText( false );
 
-					TiXmlNode * lastChild = elem_template->LastChild();
-					if ( lastChild )
-					{
-						TiXmlText * elem_code = lastChild->ToText();
-						if (elem_code)
-							template_code = elem_code->Value();
-					}
+				code_info->AddTemplate( _WXSTR(template_name), _WXSTR(template_code) );
 
-					code_info->AddTemplate( _WXSTR(template_name), _WXSTR(template_code) );
-					elem_template = elem_template->NextSiblingElement("template");
-				}
-
-				shared_ptr<ObjectInfo> obj_info = GetObjectInfo( _WXSTR(class_name) );
-				if (obj_info)
-				{
-					obj_info->AddCodeInfo( _WXSTR(language), code_info);
-				}
-
-				elem_templates = elem_templates->NextSiblingElement("templates");
+				elem_template = elem_template->NextSiblingElement( "template", false );
 			}
 
+			shared_ptr<ObjectInfo> obj_info = GetObjectInfo( _WXSTR(class_name) );
+			if ( obj_info )
+			{
+				obj_info->AddCodeInfo( _WXSTR(language), code_info );
+			}
+
+			elem_templates = elem_templates->NextSiblingElement( "templates", false );
 		}
+	}
+	catch( ticpp::Exception& ex )
+	{
+		wxLogError( _WXSTR(ex.m_details) );
 	}
 }
 
-PObjectPackage ObjectDatabase::LoadPackage( std::string file)
+PObjectPackage ObjectDatabase::LoadPackage( std::string file, wxString iconPath )
 {
 	PObjectPackage package;
 
-	//  DEBUG_PRINT("LOADING " + file + "...");
-
-	TiXmlDocument doc(m_xmlPath + '/' + file);
-	if (doc.LoadFile())
+	try
 	{
-		//    DEBUG_PRINT("OK\n");
-		TiXmlElement* root = doc.FirstChildElement(PACKAGE_TAG);
-		if (root)
-		{
-			const char* name = root->Attribute(NAME_TAG);
-			if ( NULL == name )
-			{
-				name = "poopy";
-			}
-			std::string pkg_name = name;
-			std::string pkg_desc = root->Attribute(PKGDESC_TAG);
-			const char* icon_path = root->Attribute(ICON_TAG);
+		ticpp::Document doc( file );
+		doc.LoadFile();
 
-			wxBitmap pkg_icon;
-			if ( 0 == icon_path )
+		ticpp::Element* root = doc.FirstChildElement( PACKAGE_TAG );
+
+		// Name Attribute
+		std::string pkg_name;
+		root->GetAttribute( NAME_TAG, &pkg_name );
+
+		// Description Attribute
+		std::string pkg_desc;
+		root->GetAttributeOrDefault( PKGDESC_TAG, &pkg_desc, "" );
+
+		// Icon Path Attribute
+		std::string pkgIconName;
+		root->GetAttributeOrDefault( ICON_TAG, &pkgIconName, "" );
+		wxString pkgIconPath = iconPath + wxFILE_SEP_PATH +  _WXSTR(pkgIconName);
+
+		wxBitmap pkg_icon;
+		if ( !pkgIconName.empty() && wxFileName::FileExists( pkgIconPath ) )
+		{
+			wxImage image( pkgIconPath, wxBITMAP_TYPE_ANY );
+			pkg_icon = wxBitmap( image.Scale( 16, 16 ) );
+		}
+		else
+		{
+			pkg_icon = AppBitmaps::GetBitmap( wxT("unknown"), 16 );
+		}
+
+		package = PObjectPackage ( new ObjectPackage( _WXSTR(pkg_name), _WXSTR(pkg_desc), pkg_icon ) );
+
+
+		ticpp::Element* elem_obj = root->FirstChildElement( OBJINFO_TAG, false );
+
+		while (elem_obj)
+		{
+			std::string class_name;
+			elem_obj->GetAttribute( CLASS_TAG, &class_name );
+
+			std::string type;
+			elem_obj->GetAttribute( "type", &type );
+
+			std::string widget;
+			elem_obj->GetAttributeOrDefault( "widget", &widget, "" );
+
+			std::string icon;
+			elem_obj->GetAttributeOrDefault( "icon", &icon, "" );
+			wxString iconFullPath = iconPath + wxFILE_SEP_PATH + _WXSTR(icon);
+
+			std::string smallIcon;
+			elem_obj->GetAttributeOrDefault( "smallIcon", &smallIcon, "" );
+			wxString smallIconFullPath = iconPath + wxFILE_SEP_PATH + _WXSTR(smallIcon);
+
+			shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ), package ) );
+
+			if ( !icon.empty() && wxFileName::FileExists( iconFullPath ) )
 			{
-				pkg_icon = AppBitmaps::GetBitmap( wxT("unknown"), 16 );
+				wxImage img( iconFullPath, wxBITMAP_TYPE_ANY );
+				obj_info->SetIconFile( wxBitmap( img.Scale( ICON_SIZE, ICON_SIZE ) ) );
 			}
 			else
 			{
-				wxImage image( _WXSTR( m_iconPath + '/' +  root->Attribute( ICON_TAG ) ), wxBITMAP_TYPE_ANY );
-				pkg_icon = wxBitmap( image.Scale( 16, 16 ) );
+				obj_info->SetIconFile( AppBitmaps::GetBitmap( wxT("unknown"), ICON_SIZE ) );
 			}
 
-			package = PObjectPackage (new ObjectPackage( _WXSTR(pkg_name), _WXSTR(pkg_desc), pkg_icon));
-
-
-			TiXmlElement* elem_obj = root->FirstChildElement(OBJINFO_TAG);
-
-			while (elem_obj)
+			if ( !smallIcon.empty() && wxFileName::FileExists( smallIconFullPath ) )
 			{
-				std::string class_name  = elem_obj->Attribute(CLASS_TAG);
-				std::string type        = elem_obj->Attribute("type");
-				std::string widget;
-				if (elem_obj->Attribute("widget"))
-					widget = elem_obj->Attribute("widget");
-				std::string icon;
-				if (elem_obj->Attribute("icon"))
-					icon = elem_obj->Attribute("icon");
-				std::string smallIcon;
-				if (elem_obj->Attribute("smallIcon"))
-					smallIcon = elem_obj->Attribute("smallIcon");
-
-				shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ), package ) );
-
-				if ( !icon.empty() )
-				{
-					wxImage img( _WXSTR( m_iconPath + '/' + icon ), wxBITMAP_TYPE_ANY );
-					obj_info->SetIconFile( wxBitmap( img.Scale( ICON_SIZE, ICON_SIZE ) ) );
-				}
-				else
-				{
-					obj_info->SetIconFile( AppBitmaps::GetBitmap( wxT("unknown"), ICON_SIZE ) );
-				}
-
-				if ( !smallIcon.empty() )
-				{
-					wxImage img( _WXSTR( m_iconPath + '/' + smallIcon ), wxBITMAP_TYPE_ANY );
-					obj_info->SetSmallIconFile( wxBitmap( img.Scale( SMALL_ICON_SIZE, SMALL_ICON_SIZE ) ) );
-				}
-				else
-				{
-					wxImage img = obj_info->GetIconFile().ConvertToImage();
-					obj_info->SetSmallIconFile( wxBitmap( img.Scale( SMALL_ICON_SIZE, SMALL_ICON_SIZE ) ) );
-				}
-
-				// parseamos las propiedades
-				ParseProperties( elem_obj, obj_info, obj_info->GetCategory() );
-				/*
-				// leemos la descripcion de generacion de código
-				TiXmlElement* elem_codegen = elem_obj->FirstChildElement(CODEGEN_TAG);
-				while (elem_codegen)
-				{
-				wxString language = elem_codegen->Attribute(PRGLANG_TAG);
-				shared_ptr<CodeInfo> code_info(new CodeInfo());
-
-				// leemos cada plantilla de código
-				TiXmlElement* elem_template = elem_codegen->FirstChildElement(TEMPLATE_TAG);
-				while (elem_template)
-				{
-				wxString template_name = elem_template->Attribute(NAME_TAG);
-				wxString template_code;
-
-				TiXmlText * elem_code = elem_template->LastChild()->ToText();
-				if (elem_code)
-				template_code = elem_code->Value();
-
-				code_info->AddTemplate(template_name,template_code);
-				elem_template = elem_template->NextSiblingElement(TEMPLATE_TAG);
-				}
-
-				obj_info->AddCodeInfo(language,code_info);
-				elem_codegen = elem_codegen->NextSiblingElement(CODEGEN_TAG);
-				};
-				*/
-
-				// añadimos el descriptor de objeto al registro
-				m_objs.insert( map< wxString, shared_ptr< ObjectInfo > >::value_type( _WXSTR(class_name), obj_info ) );
-
-				// y al grupo
-				if ( ShowInPalette( obj_info->GetObjectTypeName() ) )
-				{
-					package->Add( obj_info );
-				}
-
-				elem_obj = elem_obj->NextSiblingElement( OBJINFO_TAG );
+				wxImage img( smallIconFullPath, wxBITMAP_TYPE_ANY );
+				obj_info->SetSmallIconFile( wxBitmap( img.Scale( SMALL_ICON_SIZE, SMALL_ICON_SIZE ) ) );
 			}
+			else
+			{
+				wxImage img = obj_info->GetIconFile().ConvertToImage();
+				obj_info->SetSmallIconFile( wxBitmap( img.Scale( SMALL_ICON_SIZE, SMALL_ICON_SIZE ) ) );
+			}
+
+			// Parse the Properties
+			ParseProperties( elem_obj, obj_info, obj_info->GetCategory() );
+
+			// Add the ObjectInfo to the map
+			m_objs.insert( map< wxString, shared_ptr< ObjectInfo > >::value_type( _WXSTR(class_name), obj_info ) );
+
+			// Add the object to the palette
+			if ( ShowInPalette( obj_info->GetObjectTypeName() ) )
+			{
+				package->Add( obj_info );
+			}
+
+			elem_obj = elem_obj->NextSiblingElement( OBJINFO_TAG, false );
 		}
+	}
+	catch ( ticpp::Exception& ex )
+	{
+		wxLogError( _WXSTR(ex.m_details) );
 	}
 
 	return package;
 }
 
-void ObjectDatabase::ParseProperties( TiXmlElement* elem_obj, shared_ptr<ObjectInfo> obj_info, shared_ptr< PropertyCategory > category )
+void ObjectDatabase::ParseProperties( ticpp::Element* elem_obj, shared_ptr<ObjectInfo> obj_info, shared_ptr< PropertyCategory > category )
 {
-	TiXmlElement* elem_category = elem_obj->FirstChildElement(CATEGORY_TAG);
-	while (elem_category)
+	ticpp::Element* elem_category = elem_obj->FirstChildElement( CATEGORY_TAG, false );
+	while ( elem_category )
 	{
-		std::string cname = elem_category->Attribute(NAME_TAG);
+		// Category name attribute
+		std::string cname;
+		elem_category->GetAttribute( NAME_TAG, &cname );
 		shared_ptr< PropertyCategory > new_cat( new PropertyCategory( _WXSTR( cname ) ) );
+
+		// Add category
 		category->AddCategory( new_cat );
+
+		// Recurse
 		ParseProperties( elem_category, obj_info, new_cat );
-		elem_category = elem_category->NextSiblingElement(CATEGORY_TAG);
+
+		elem_category = elem_category->NextSiblingElement( CATEGORY_TAG, false );
 	}
 
-	TiXmlElement* elem_prop = elem_obj->FirstChildElement(PROPERTY_TAG);
-	while (elem_prop)
+	ticpp::Element* elem_prop = elem_obj->FirstChildElement( PROPERTY_TAG, false );
+	while ( elem_prop )
 	{
-		std::string pname = elem_prop->Attribute(NAME_TAG);
+		// Property Name Attribute
+		std::string pname;
+		elem_prop->GetAttribute( NAME_TAG, &pname );
 		category->AddProperty( _WXSTR(pname) );
-		bool hidden = false;    //Juan
-		if (elem_prop->Attribute(HIDDEN_TAG)){
-			int val;
-			elem_prop->Attribute(HIDDEN_TAG, &val);
-			hidden = val != 0;
-		}
+
+		// Hidden Attribute
+		bool hidden;
+		elem_prop->GetAttributeOrDefault( HIDDEN_TAG, &hidden, false );
+
 		std::string description;
-		if ( elem_prop->Attribute(DESCRIPTION_TAG))
-		{
-			description = elem_prop->Attribute(DESCRIPTION_TAG);
-		}
+		elem_prop->GetAttributeOrDefault( DESCRIPTION_TAG, &description, "" );
 
-		PropertyType ptype = ParsePropertyType( _WXSTR( elem_prop->Attribute("type") ) );
-		std::string def_value;
+		std::string prop_type;
+		elem_prop->GetAttribute( "type", &prop_type );
+		PropertyType ptype = ParsePropertyType( _WXSTR( prop_type ) );
+
+		// if the property is a "bitlist" then parse all of the options
 		shared_ptr<OptionList> opt_list;
-
-		//          DEBUG_PRINT("    PROPERTY: '" + pname + "'\n");
-
-		// si la propiedad es de tipo "bitlist" debemos parsear cada
-		// una de las opciones
-		if (ptype == PT_BITLIST || ptype == PT_OPTION)
+		if ( ptype == PT_BITLIST || ptype == PT_OPTION )
 		{
-			opt_list = shared_ptr<OptionList>(new OptionList());
-			TiXmlElement *elem_opt = elem_prop->FirstChildElement("option");
-			while(elem_opt)
+			opt_list = shared_ptr< OptionList >( new OptionList() );
+			ticpp::Element* elem_opt = elem_prop->FirstChildElement( "option", false );
+			while( elem_opt )
 			{
-				std::string macro_name = elem_opt->Attribute(NAME_TAG);
-				std::string macro_description;
-				if ( elem_opt->Attribute(DESCRIPTION_TAG))
-				{
-					macro_description = elem_opt->Attribute(DESCRIPTION_TAG);
-				}
-				opt_list->AddOption( _WXSTR(macro_name), _WXSTR(macro_description) );
-				elem_opt = elem_opt->NextSiblingElement("option");
+				std::string macro_name;
+				elem_opt->GetAttribute( NAME_TAG, &macro_name );
 
-				m_macroSet.insert(_WXSTR(macro_name));
-				// vamos a comprobar si la macro está registrada en la aplicación
-				// de los contrario mostraremos un mensaje de advertencia.
-				/*{
-				int macro;
-				PMacroDictionary dic = MacroDictionary::GetInstance();
-				if (!dic->SearchMacro(macro_name,&macro))
-				wxLogWarning(wxT("Macro '%s' not defined on component library!"),_WXSTR(macro_name).c_str());
-				}*/
+				std::string macro_description;
+				elem_opt->GetAttributeOrDefault( DESCRIPTION_TAG, &macro_description, "" );
+
+				opt_list->AddOption( _WXSTR(macro_name), _WXSTR(macro_description) );
+
+				m_macroSet.insert( _WXSTR(macro_name) );
+
+				elem_opt = elem_opt->NextSiblingElement( "option", false );
 			}
 		}
 
-		TiXmlNode * lastChild = elem_prop->LastChild();
-		if( lastChild )
+		// Get default value
+		std::string def_value;
+		try
 		{
-			TiXmlText * elem_text = lastChild->ToText();
-			if (elem_text)
-				def_value = elem_text->Value();
+			ticpp::Node* lastChild = elem_prop->LastChild();
+			ticpp::Text* text = lastChild->ToText();
+			def_value = text->Value();
 		}
+		catch( ticpp::Exception& ){}
 
-		// creamos la instancia del descriptor de propiedad
-		// Juan
-		shared_ptr<PropertyInfo> prop_info(new PropertyInfo(_WXSTR(pname),ptype,_WXSTR(def_value),_WXSTR(description),hidden,opt_list));
+		// create an instance of PropertyInfo
+		shared_ptr<PropertyInfo> prop_info( new PropertyInfo( _WXSTR(pname), ptype, _WXSTR(def_value), _WXSTR(description), hidden, opt_list ) );
 
-		// añadimos el descriptor de propiedad
+		// add the PropertyInfo to the property
 		obj_info->AddPropertyInfo(prop_info);
 
 
-		elem_prop = elem_prop->NextSiblingElement(PROPERTY_TAG);
+		elem_prop = elem_prop->NextSiblingElement( PROPERTY_TAG, false );
 	}
 }
 
@@ -862,10 +844,10 @@ bool ObjectDatabase::ShowInPalette(wxString type)
 }
 
 
-void ObjectDatabase::ImportComponentLibrary(wxString libfile)
+void ObjectDatabase::ImportComponentLibrary( wxString libfile )
 {
 	typedef IComponentLibrary* (*PFGetComponentLibrary)();
-	wxString path = _WXSTR(m_xmlPath) + wxT('/') + libfile;
+	wxString path = libfile;
 
 	// This will prevent loading debug libraries in release and vice versa
 	// That used to cause crashes when trying to debug
@@ -874,7 +856,7 @@ void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 	#endif
 
 	// intentamos cargar la DLL
-	wxDynamicLibrary *library = new wxDynamicLibrary(path);
+	wxDynamicLibrary *library = new wxDynamicLibrary( path );
 
 	if (library->IsLoaded())
 	{
@@ -885,7 +867,7 @@ void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 		if (GetComponentLibrary)
 		{
 			Debug::Print( wxT("[Database::ImportComponentLibrary] Importing %s library"),
-				libfile.c_str());
+				path.c_str());
 
 			IComponentLibrary *comp_lib = GetComponentLibrary();
 
@@ -925,12 +907,12 @@ void ObjectDatabase::ImportComponentLibrary(wxString libfile)
 		}
 		else
 			Debug::Print( wxT("[Database::ImportComponentLibrary] %s is not a valid component library"),
-			libfile.c_str());
+			path.c_str());
 
 	}
 	else
 		Debug::Print( wxT("[Database::ImportComponentLibrary] Error loading library %s."),
-		libfile.c_str());
+		path.c_str());
 
 }
 

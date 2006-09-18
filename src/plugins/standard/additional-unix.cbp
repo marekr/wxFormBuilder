@@ -9,11 +9,11 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../../bin/xml/libadditionald.so" />
+				<Option output="../../../bin/plugins/additional/libadditionald.so" />
 				<Option object_output=".objsd" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="/usr/src/wxfb/bin/wxformbuilder" />
+				<Option host_application="/usr/src/wxfb/bin/wxformbuilderd" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -22,7 +22,7 @@
 				</Environment>
 			</Target>
 			<Target title="Release">
-				<Option output="../../../bin/xml/libadditional.so" />
+				<Option output="../../../bin/plugins/additional/libadditional.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="/usr/src/wxfb/bin/wxformbuilder" />

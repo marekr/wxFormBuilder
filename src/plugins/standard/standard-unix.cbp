@@ -9,8 +9,8 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../../bin/xml/libcommond.so" />
-				<Option working_dir="../../../bin/xml" />
+				<Option output="../../../bin/plugins/common/libcommond.so" />
+				<Option working_dir="../../../bin/plugins/common" />
 				<Option object_output=".objsd" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -22,8 +22,8 @@
 				</Environment>
 			</Target>
 			<Target title="Release">
-				<Option output="../../../bin/xml/libcommon.so" />
-				<Option working_dir="../../../bin/xml" />
+				<Option output="../../../bin/plugins/common/libcommon.so" />
+				<Option working_dir="../../../bin/plugins/common" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Environment>

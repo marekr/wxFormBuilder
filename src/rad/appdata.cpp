@@ -344,16 +344,17 @@ void ApplicationData::Destroy()
 
 ApplicationData::ApplicationData(const wxString &rootdir)
 :
+m_rootDir( rootdir ),
+m_objDb( new ObjectDatabase() ),
 m_fbpVerMajor( 1 ),
 m_fbpVerMinor( 3 )
 {
-	m_rootDir = rootdir;
-	AppBitmaps::LoadBitmaps( m_rootDir + wxT("/xml/icons.xml"), m_rootDir + wxT("/resources/icons/") );
-	m_objDb = PObjectDatabase( new ObjectDatabase() );
-	m_objDb->SetXmlPath(_STDSTR( m_rootDir + wxT("/xml/") ) ) ;
-	m_objDb->SetIconPath( _STDSTR( m_rootDir + wxT("/resources/icons/") ) );
+	AppBitmaps::LoadBitmaps( m_rootDir + wxFILE_SEP_PATH + wxT("xml") + wxFILE_SEP_PATH + wxT("icons.xml"), m_rootDir + wxFILE_SEP_PATH + wxT("resources") + wxFILE_SEP_PATH + wxT("icons") + wxFILE_SEP_PATH );
+	m_objDb->SetXmlPath(_STDSTR( m_rootDir + wxFILE_SEP_PATH + wxT("xml") + wxFILE_SEP_PATH ) ) ;
+	m_objDb->SetIconPath( _STDSTR( m_rootDir + wxFILE_SEP_PATH + wxT("resources") + wxFILE_SEP_PATH + wxT("icons") + wxFILE_SEP_PATH ) );
+	m_objDb->SetPluginPath( m_rootDir + wxFILE_SEP_PATH + wxT("plugins") + wxFILE_SEP_PATH ) ;
 	m_objDb->LoadObjectTypes();
-	m_objDb->LoadFile();
+	m_objDb->LoadPlugins();
 }
 
 shared_ptr<ObjectBase> ApplicationData::GetSelectedObject()

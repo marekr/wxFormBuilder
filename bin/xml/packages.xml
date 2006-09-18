@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<packages>
-  <package file="common.xml" />
-	<package file="additional.xml" />
-  <package file="contrib.xml" />
-  <package file="layout.xml" />
-  <package file="forms.xml" />
-</packages>

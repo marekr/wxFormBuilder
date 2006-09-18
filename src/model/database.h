@@ -48,6 +48,11 @@ class PropertyCategory;
 typedef shared_ptr<ObjectPackage> PObjectPackage;
 typedef shared_ptr<ObjectDatabase> PObjectDatabase;
 
+namespace ticpp
+{
+	class Element;
+}
+
 /**
  * Paquete de clases de objetos.
  * Determinará la agrupación en la paleta de componentes.
@@ -111,20 +116,20 @@ class ObjectDatabase
  private:
   typedef vector<PObjectPackage> PackageVector;
 
-  // diccionario para obtener el valor numérico a partir de la cadena
-  // de texto del archivo XML.
+  // Map the property type string to the property type number
   typedef map<wxString,PropertyType> PTMap;
   typedef map<wxString,PObjectType> ObjectTypeMap;
   typedef vector<wxDynamicLibrary *> CLibraryVector;
   typedef set<wxString> MacroSet;
 
-  std::string m_xmlPath; // directorio donde se encuentran los archivos xml
+  std::string m_xmlPath;
   std::string m_iconPath;
+  wxString m_pluginPath;
   map< wxString, shared_ptr< ObjectInfo > > m_objs;
   PackageVector m_pkgs;
   PTMap m_propTypes;
   CLibraryVector m_libs;
-  ObjectTypeMap m_types; // registro de tipos de objetos.
+  ObjectTypeMap m_types; // register object types
 
   // para comprobar que no se nos han quedado macros sin añadir en las
   // liberias de componentes, vamos a crear un conjunto con las macros
@@ -134,7 +139,7 @@ class ObjectDatabase
   MacroSet m_macroSet;
 
   /**
-   * Inicializa el dicctionario de tipos de propiedades.
+   * Initialize the property type map.
    */
   void InitPropertyTypes();
 
@@ -148,9 +153,9 @@ class ObjectDatabase
    * Carga los objetos de un paquete con todas sus propiedades salvo
    * los objetos heredados
    */
-  PObjectPackage LoadPackage( std::string file);
+  PObjectPackage LoadPackage( std::string file, wxString iconPath = wxEmptyString );
 
-  void ParseProperties( TiXmlElement* elem_obj, shared_ptr<ObjectInfo> obj_info, shared_ptr< PropertyCategory > category );
+  void ParseProperties( ticpp::Element* elem_obj, shared_ptr<ObjectInfo> obj_info, shared_ptr< PropertyCategory > category );
 
   /**
    * Importa una librería de componentes y lo asocia a cada clase.
@@ -161,7 +166,7 @@ class ObjectDatabase
    * Incluye la información heredada de los objetos de un paquete.
    * En la segunda pasada configura cada paquete con sus objetos base.
    */
-  void SetupPackage( std::string file);
+  void SetupPackage( std::string file, wxString libPath );
 
   /**
    * Determina si el tipo de objeto hay que incluirlo en la paleta de
@@ -201,23 +206,24 @@ class ObjectDatabase
    * Configura la ruta donde se encuentran los iconos asociados a los objetos.
    */
   void SetIconPath( std::string path) { m_iconPath = path; }
+  void SetPluginPath( wxString path) { m_pluginPath = path; }
 
   /**
    * Obtiene la ruta donde se encuentran los ficheros con la descripción de
    * objetos.
    */
   std::string GetXmlPath()          { return m_xmlPath; }
-
-  /**
-   * Carga las descripciones de objetos a partir del fichero donde se incluyen
-   * todos los paquetes.
-   */
-  bool LoadFile( std::string file = "packages.xml" );
+  wxString GetPluginPath()          { return m_pluginPath; }
 
   /**
    * Carga las definiciones de tipos de objetos.
    */
   bool LoadObjectTypes();
+
+  /**
+   * Find and load plugins from the plugins directory
+   */
+  void LoadPlugins();
 
   /**
    * Fabrica de objetos.
