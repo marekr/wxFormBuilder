@@ -24,7 +24,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "wx/wx.h"
-#include "plugins/component.h"
+#include "component.h"
 #include "tinyxml.h"
 
 #define XRC_TYPE_TEXT    0

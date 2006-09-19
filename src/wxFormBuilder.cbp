@@ -104,6 +104,7 @@
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="270" />
 				<Variable name="tinyxml" value="..\sdk\tinyxml" />
+				<Variable name="plugin_interface" value="..\sdk\plugin_interface" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -124,11 +125,13 @@
 			<Add directory="$(tinyxml)" />
 			<Add directory="..\sdk\boost_1_31_0_smart_ptr" />
 			<Add directory="..\src" />
+			<Add directory="$(plugin_interface)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
+			<Add library="plugin_interface$(WX_SUFFIX)" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_gcc" />
 			<Add library="advapi32" />
 			<Add library="comctl32" />
@@ -152,6 +155,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#wxadditions.lib)\gcc_dll" />
 			<Add directory="$(tinyxml)\lib" />
+			<Add directory="$(plugin_interface)\lib" />
 		</Linker>
 		<Unit filename="codegen\codegen.cpp">
 			<Option compilerVar="CPP" />
@@ -280,15 +284,6 @@
 			<Option target="Debug (Unicode)" />
 			<Option target="Release" />
 			<Option target="Release (Unicode)" />
-		</Unit>
-		<Unit filename="plugins\component.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Release (Unicode)" />
-			<Option target="Debug (Unicode)" />
 		</Unit>
 		<Unit filename="rad\about.cpp">
 			<Option compilerVar="CPP" />

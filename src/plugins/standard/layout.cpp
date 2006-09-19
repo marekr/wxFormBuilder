@@ -23,10 +23,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "plugins/component.h"
-#include "plugins/plugin.h"
-#include "utils/xrcconv.h"
-#include "tinyxml.h"
+#include <component.h>
+#include <plugin.h>
+#include <xrcconv.h>
+#include <tinyxml.h>
 #include <wx/tokenzr.h>
 
 #ifdef __WX24__

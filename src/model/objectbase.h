@@ -43,7 +43,7 @@
 #include "tinyxml.h"
 
 #include "wx/wx.h"
-#include "plugins/component.h"
+#include <component.h>
 
 using namespace std;
 using namespace boost;

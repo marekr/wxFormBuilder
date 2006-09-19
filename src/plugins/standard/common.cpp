@@ -23,15 +23,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "plugins/component.h"
-#include "plugins/plugin.h"
-#include "utils/xrcconv.h"
+#include <component.h>
+#include <plugin.h>
+#include <xrcconv.h>
 
-#include "wx/grid.h"
-#include "wx/statline.h"
-#include "wx/listctrl.h"
-#include "wx/radiobox.h"
-#include "wx/bmpbuttn.h"
+#include <wx/grid.h>
+#include <wx/statline.h>
+#include <wx/listctrl.h>
+#include <wx/radiobox.h>
+#include <wx/bmpbuttn.h>
 
 
 
@@ -1006,7 +1006,7 @@ WINDOW_COMPONENT("wxListBox", ListBoxComponent)
 WINDOW_COMPONENT("wxRadioBox", RadioBoxComponent)
 WINDOW_COMPONENT("wxCheckBox", CheckBoxComponent)
 WINDOW_COMPONENT("wxStaticBitmap", StaticBitmapComponent)
-WINDOW_COMPONENT("wxXpmStaticBitmap", XpmStaticBitmapComponent)
+//WINDOW_COMPONENT("wxXpmStaticBitmap", XpmStaticBitmapComponent)
 WINDOW_COMPONENT("wxStaticLine", StaticLineComponent)
 WINDOW_COMPONENT("wxMenuBar", MenuBarComponent)
 WINDOW_COMPONENT("wxMenu", MenuComponent)

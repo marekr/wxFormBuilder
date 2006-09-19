@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<package name="forms" icon="frame16x16.png" desc="wxWidgets windows">
+<package name="forms" lib="libcommon" icon="frame16x16.png" desc="wxWidgets windows">
   <objectinfo class="Frame" icon="frame.xpm" type="form">
     <inherits class="wxWindow">
 		<property name="window_style">wxTAB_TRAVERSAL</property>

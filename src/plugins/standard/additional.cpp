@@ -23,9 +23,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "plugins/component.h"
-#include "plugins/plugin.h"
-#include "utils/xrcconv.h"
+#include <component.h>
+#include <plugin.h>
+#include <xrcconv.h>
 #include "icons/unknown.xpm"
 
 #include <wx/calctrl.h>
@@ -758,7 +758,7 @@ public:
 				}
 			}
 		}
-		
+
 		if (selectProperty==wxT("0") && selection >= 0)
 			lb->SetSelection(selection);
 		else

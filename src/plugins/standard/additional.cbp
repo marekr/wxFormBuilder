@@ -89,6 +89,7 @@
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="27" />
 				<Variable name="tinyxml" value="..\..\..\sdk\tinyxml" />
+				<Variable name="plugin_interface" value="..\..\..\sdk\plugin_interface" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -104,48 +105,17 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(tinyxml)" />
 			<Add directory="..\.." />
+			<Add directory="$(plugin_interface)" />
 		</Compiler>
 		<Linker>
+			<Add library="plugin_interface$(WX_SUFFIX)" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(tinyxml)\lib" />
+			<Add directory="$(plugin_interface)\lib" />
 		</Linker>
-		<Unit filename="..\component.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="..\plugin.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-			<Option target="Release" />
-		</Unit>
 		<Unit filename="additional.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="..\..\utils\xrcconv.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="..\..\utils\xrcconv.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Debug (Unicode)" />
 			<Option target="Release (Unicode)" />

@@ -892,8 +892,7 @@ void ObjectDatabase::ImportComponentLibrary( wxString libfile )
 				if (class_info)
 					class_info->SetComponent(comp);
 				else
-					Debug::Print( wxT("[Database::ImportComponentLibrary] ObjectInfo %s not found!"),
-					_STDSTR(class_name).c_str());
+					Debug::Print( wxT("ObjectInfo for <%s> not found while loading library <%s>"), class_name.c_str(), path.c_str() );
 			}
 
 			// Añadimos al diccionario de macros todas las macros definidas en la
