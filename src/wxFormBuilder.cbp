@@ -122,7 +122,7 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
-			<Add directory="..\libs\boost_1_31_0_smart_ptr" />
+			<Add directory="..\sdk\boost_1_31_0_smart_ptr" />
 			<Add directory="..\src" />
 		</Compiler>
 		<ResourceCompiler>
