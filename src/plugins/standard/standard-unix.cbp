@@ -30,6 +30,9 @@
 					<Variable name="DEBUG" value="no" />
 				</Environment>
 			</Target>
+			<Environment>
+				<Variable name="tinyxml" value="../../../sdk/tinyxml" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
@@ -43,14 +46,14 @@
 			<Add option="-DNO_GCC_PRAGMA" />
 			<Add option="-DTIXML_USE_TICPP" />
 			<Add option="-D_UNICODE" />
-			<Add directory="../../../libs/tinyxml" />
+			<Add directory="$(tinyxml)" />
 			<Add directory="../.." />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
 			<Add option="-Wl,-rpath,$``ORIGIN../lib" />
 			<Add library="tinyxml" />
-			<Add directory="../../../libs/tinyxml/lib" />
+			<Add directory="$(tinyxml)/lib" />
 		</Linker>
 		<Unit filename="../component.h">
 			<Option compilerVar="" />

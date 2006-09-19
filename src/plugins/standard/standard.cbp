@@ -85,7 +85,7 @@
 			<Environment>
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="27" />
-				<Variable name="tinyxml" value="..\..\..\libs\tinyxml" />
+				<Variable name="tinyxml" value="..\..\..\sdk\tinyxml" />
 			</Environment>
 		</Build>
 		<Compiler>
