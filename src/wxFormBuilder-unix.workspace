@@ -5,17 +5,17 @@
 			<Depends filename="plugins/standard/layout-unix.cbp" />
 			<Depends filename="plugins/standard/additional-unix.cbp" />
 			<Depends filename="plugins/standard/standard-unix.cbp" />
-			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
 		</Project>
 		<Project filename="plugins/standard/layout-unix.cbp">
-			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
 		</Project>
 		<Project filename="plugins/standard/additional-unix.cbp">
-			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
 		</Project>
 		<Project filename="plugins/standard/standard-unix.cbp">
-			<Depends filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
 		</Project>
-		<Project filename="../libs/tinyxml/tinyxmlSTL.cbp" />
+		<Project filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

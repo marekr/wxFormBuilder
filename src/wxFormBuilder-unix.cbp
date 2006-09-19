@@ -21,6 +21,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --debug=yes`" />
+					<Add library="tinyxmld" />
 				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="yes" />
@@ -33,6 +34,9 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />
+				<Linker>
+					<Add library="tinyxml" />
+				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="no" />
 				</Environment>
@@ -64,7 +68,6 @@
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_flatnotebook-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_propgrid-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_scintilla-`wx-config --release`" />
-			<Add library="tinyxml" />
 			<Add directory="$(tinyxml)/lib" />
 			<Add directory="$(#wxadditions.lib)" />
 		</Linker>

@@ -17,6 +17,9 @@
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add library="tinyxmld" />
+				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="yes" />
 				</Environment>
@@ -26,6 +29,9 @@
 				<Option working_dir="../../../bin/plugins/common" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Linker>
+					<Add library="tinyxml" />
+				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="no" />
 				</Environment>
@@ -52,7 +58,6 @@
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
 			<Add option="-Wl,-rpath,$``ORIGIN../lib" />
-			<Add library="tinyxml" />
 			<Add directory="$(tinyxml)/lib" />
 		</Linker>
 		<Unit filename="../component.h">
