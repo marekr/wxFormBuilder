@@ -101,6 +101,7 @@
 				</Environment>
 			</Target>
 			<Environment>
+				<Variable name="boost" value="boost" />
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="270" />
 				<Variable name="tinyxml" value="..\sdk\tinyxml" />
@@ -120,15 +121,15 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DTIXML_USE_TICPP" />
-			<Add directory="$(#WX.include)" />
+			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
-			<Add directory="..\sdk\boost_1_31_0_smart_ptr" />
+			<Add directory="$(boost)" />
 			<Add directory="..\src" />
 			<Add directory="$(plugin_interface)" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX.include)" />
+			<Add directory="$(#wx.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add library="plugin_interface$(WX_SUFFIX)" />

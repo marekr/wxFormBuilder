@@ -17,18 +17,21 @@ echo.
 :: -- wxPropGrid --
 echo Building wxPropGrid with MinGW Gcc
 echo.
+cd propgrid
 call wxBuild_default MINGW ALL
 cd ..
 
 :: -- wxFlatNotebook --
 echo Building wxFlatNotebook with MinGW Gcc
 echo.
+cd wxFlatNotebook
 call wxBuild_default MINGW ALL
 cd ..
 
 :: -- wxScintilla --
 echo Building wxScintilla with MinGW Gcc
 echo.
+cd wxScintilla
 call wxBuild_default MINGW ALL
 cd ..
 
