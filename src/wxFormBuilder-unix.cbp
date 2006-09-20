@@ -43,6 +43,7 @@
 			</Target>
 			<Environment>
 				<Variable name="tinyxml" value="../sdk/tinyxml" />
+				<Variable name="plugin_interface" value="../sdk/plugin_interface" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -61,6 +62,7 @@
 			<Add directory="../src" />
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
+			<Add directory="$(plugin_interface)" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG)`" />

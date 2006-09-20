@@ -9,13 +9,17 @@
 		</Project>
 		<Project filename="plugins/standard/layout-unix.cbp">
 			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/plugin_interface/plugin_interface-unix.cbp" />
 		</Project>
 		<Project filename="plugins/standard/additional-unix.cbp">
 			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/plugin_interface/plugin_interface-unix.cbp" />
 		</Project>
 		<Project filename="plugins/standard/standard-unix.cbp">
 			<Depends filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
+			<Depends filename="../sdk/plugin_interface/plugin_interface-unix.cbp" />
 		</Project>
 		<Project filename="../sdk/tinyxml/tinyxmlSTL.cbp" />
+		<Project filename="../sdk/plugin_interface/plugin_interface-unix.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

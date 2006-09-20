@@ -16,10 +16,8 @@
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
-				<Linker>
-					<Add library="tinyxmld" />
-				</Linker>
 				<Environment>
+					<Variable name="SUFFIX" value="d" />
 					<Variable name="DEBUG" value="yes" />
 				</Environment>
 			</Target>
@@ -27,15 +25,13 @@
 				<Option output="../../../bin/plugins/layout/liblayout.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Linker>
-					<Add library="tinyxml" />
-				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="no" />
 				</Environment>
 			</Target>
 			<Environment>
 				<Variable name="tinyxml" value="../../../sdk/tinyxml" />
+				<Variable name="plugin_interface" value="../../../sdk/plugin_interface" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -52,40 +48,18 @@
 			<Add option="-D_UNICODE" />
 			<Add directory="$(tinyxml)" />
 			<Add directory="../.." />
+			<Add directory="$(plugin_interface)" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG) --libs`" />
 			<Add option="-Wl,-rpath,$``ORIGIN../lib" />
+			<Add library="plugin_interface$(SUFFIX)" />
+			<Add library="tinyxml$(SUFFIX)" />
 			<Add directory="$(tinyxml)/lib" />
+			<Add directory="$(plugin_interface)/lib" />
 		</Linker>
-		<Unit filename="../component.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="../plugin.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
 		<Unit filename="layout.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="../../utils/xrcconv.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="../../utils/xrcconv.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
