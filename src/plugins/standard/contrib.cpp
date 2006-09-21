@@ -23,9 +23,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "plugins/component.h"
-#include "plugins/plugin.h"
-#include "utils/xrcconv.h"
+#include "component.h"
+#include "plugin.h"
+#include "xrcconv.h"
 
 #include <wx/plotctrl/plotctrl.h>
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>

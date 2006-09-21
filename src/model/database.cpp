@@ -522,7 +522,14 @@ void ObjectDatabase::SetupPackage( std::string file, wxString libPath )
 		root->GetAttributeOrDefault( "lib", &lib, "" );
 		if ( !lib.empty() )
 		{
+			// Allows plugin dependency dlls to be next to plugin dll in windows
+			wxString workingDir = ::wxGetCwd();
+			wxFileName::SetCwd( libPath );
+
 			ImportComponentLibrary( libPath + wxFILE_SEP_PATH + _WXSTR(lib) );
+
+			// Put Cwd back
+			wxFileName::SetCwd( workingDir );
 		}
 
 		ticpp::Element* elem_obj = root->FirstChildElement( OBJINFO_TAG, false );
