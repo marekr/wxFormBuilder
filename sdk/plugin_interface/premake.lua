@@ -1,19 +1,22 @@
-package.name = "plugin_interface"
+package.name = "Plugin_Interface"
 package.kind = "lib"
 package.language = "c++"
 package.files = { matchfiles( "*.h", "*.cpp" ) }
-package.libdir = "lib"
+-- Change the default lib extention to .a instead of .lib
 package.targetextension = "a"
 -- Set object output directory.
 package.config["Debug"].objdir = ".objsd"
-package.config["DebugUnicode"].objdir = ".objsud"
+package.config["Debug (Unicode)"].objdir = ".objsud"
 package.config["Release"].objdir = ".objs"
-package.config["ReleaseUnicode"].objdir = ".objsu"
+package.config["Release (Unicode)"].objdir = ".objsu"
 -- Set the targets.
 package.config["Debug"].target = "fbPluginInterfaced"
-package.config["DebugUnicode"].target = "fbPluginInterfaceud"
+package.config["Debug (Unicode)"].target = "fbPluginInterfaceud"
 package.config["Release"].target = "fbPluginInterface"
-package.config["ReleaseUnicode"].target = "fbPluginInterfaceu"
+package.config["Release (Unicode)"].target = "fbPluginInterfaceu"
+-- Set the build options for the Unicode build Targets.
+package.config["Debug (Unicode)"].buildflags = { "unicode" }
+package.config["Release (Unicode)"].buildflags = { "no-symbols", "optimize", "unicode" }
 -- Set include paths
 package.includepaths = { "$(#WX.include)", "../tinyxml" }
 -- Set defines.
@@ -28,7 +31,7 @@ package.config["Debug"].defines =
 	"__WXDEBUG__",	
 	"TIXML_USE_TICPP"
 }
-package.config["DebugUnicode"].defines = 
+package.config["Debug (Unicode)"].defines = 
 {
 	"DEBUG",
 	"WIN32",
@@ -52,7 +55,7 @@ package.config["Release"].defines =
 	"__WXMSW__",
 	"TIXML_USE_TICPP"
 }
-package.config["ReleaseUnicode"].defines = 
+package.config["Release (Unicode)"].defines = 
 {
 	"NDEBUG",
 	"WIN32",
