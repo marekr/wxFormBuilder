@@ -2,8 +2,7 @@ package.name = "plugin_interface"
 package.kind = "lib"
 package.language = "c++"
 package.files = { matchfiles( "*.h", "*.cpp" ) }
---project.configs = { "Debug", "DebugUnicode", "Release", "ReleaseUnicode" }
---package.libdir = "lib"
+package.libdir = "lib"
 package.targetextension = "a"
 -- Set object output directory.
 package.config["Debug"].objdir = ".objsd"
@@ -11,10 +10,10 @@ package.config["DebugUnicode"].objdir = ".objsud"
 package.config["Release"].objdir = ".objs"
 package.config["ReleaseUnicode"].objdir = ".objsu"
 -- Set the targets.
-package.config["Debug"].target = "lib/fbPluginInterfaced"
-package.config["DebugUnicode"].target = "lib/fbPluginInterfaceud"
-package.config["Release"].target = "lib/fbPluginInterface"
-package.config["ReleaseUnicode"].target = "lib/fbPluginInterfaceu"
+package.config["Debug"].target = "fbPluginInterfaced"
+package.config["DebugUnicode"].target = "fbPluginInterfaceud"
+package.config["Release"].target = "fbPluginInterface"
+package.config["ReleaseUnicode"].target = "fbPluginInterfaceu"
 -- Set include paths
 package.includepaths = { "$(#WX.include)", "../tinyxml" }
 -- Set defines.
