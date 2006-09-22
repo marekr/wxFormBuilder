@@ -1,5 +1,22 @@
 wxFormBuilder Plugin SDK
 ------------------------
+Introduction:
+	The wxFormBuilder SDK makes it simple to create plug-ins for wxFormBuilder.
+	It is a set of needed libraries that every plug-in must use to be considered
+	a wxFormBuilder plug-in. The SDK uses a simple but effective build tool called
+	Premake. You use premake to build makefiles, Visual Studio 7.1/2005 projects,
+	and Code::Blocks projects. Now makefile and Code::Blocks are the supported
+	types that the wxFormBuilder team tests and uses, so your millage may vary
+	with the other build types. 
+	
+	To create the needed build types navigate to the 'sdk' directory under the
+	wxFormBuilder directory structure and type:
+	
+		1. Code::Blocks Projects and workspace:
+			premake-win32 --target cb-gcc
+			
+		2. Linux makefile:
+			premake --target gnu
 
 Includes:
 
@@ -21,6 +38,9 @@ Notes:
 	- Code::Blocks is a free cross-platform IDE and it can be found here:
 	  http://codeblocks.org
 
+	- Premake can be found here:
+	  http://premake.sourceforge.net
+	
 	- Subversion is a great free cross-platform version control manager.
 	  It can be found here:
 	  http://subversion.tigris.org
