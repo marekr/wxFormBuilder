@@ -2,8 +2,10 @@ package.name = "Plugin_Interface"
 package.kind = "lib"
 package.language = "c++"
 package.files = { matchfiles( "*.h", "*.cpp" ) }
--- Change the default lib extention to .a instead of .lib
-package.targetextension = "a"
+if ( options[target] == "cb-gcc" ) then
+    -- Change the default lib extention to .a instead of .lib
+    package.targetextension = "a"
+end
 -- Set object output directory.
 package.config["Debug"].objdir = ".objsd"
 package.config["Debug (Unicode)"].objdir = ".objsud"
