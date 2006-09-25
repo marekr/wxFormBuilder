@@ -1,7 +1,9 @@
 project.name = "wxFormBuilder SDK"
-project.configs = { "Debug", "Debug (Unicode)", "Release", "Release (Unicode)" }
+if ( OS == "windows" ) then
+	project.configs = { "Debug", "Debug (Unicode)", "Release", "Release (Unicode)" }
+end
 project.libdir = "lib"
 
 -- Add sdk projects here.
-dopackage( "Plugin_Interface" )
-dopackage( "TinyXML" )
+dopackage( "plugin_interface" )
+dopackage( "tinyxml" )
