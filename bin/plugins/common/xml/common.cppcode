@@ -132,8 +132,8 @@
   </templates>
 
   <templates class="submenu">
-    <template name="declaration">#class* $name;</template>
-    <template name="construction">$name = new #class();</template>
+    <template name="declaration">wxMenu* $name;</template>
+    <template name="construction">$name = new wxMenu();</template>
     <template name="include">@#include &lt;wx/menu.h&gt;</template>
     <template name="menu_add">#parent $name->Append( -1, $label, $name );</template>
   </templates>
