@@ -417,7 +417,7 @@ void MainFrame::OnSaveProject(wxCommandEvent &event)
 
 void MainFrame::OnSaveAsProject(wxCommandEvent &event)
 {
-	wxFileDialog *dialog = new wxFileDialog(this,wxT("Open Project"),m_currentDir,
+	wxFileDialog *dialog = new wxFileDialog(this,wxT("Save Project"),m_currentDir,
     wxT(""),wxT("wxFormBuilder Project File (*.fbp)|*.fbp|All files (*.*)|*.*"),wxSAVE);
 
 	if (dialog->ShowModal() == wxID_OK)
