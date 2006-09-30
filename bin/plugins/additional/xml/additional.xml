@@ -126,7 +126,7 @@
 
   <objectinfo class="splitteritem" type="splitteritem" />
 
-  <objectinfo class="wxCheckList" icon="checkbox.xpm" type="widget">
+  <objectinfo class="wxCheckListBox" icon="checkbox.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_checkList</property>
     <property name="style" type="bitlist">

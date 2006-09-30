@@ -125,8 +125,8 @@
   </templates>
 
   <templates class="wxMenu">
-    <template name="declaration">#class* $name;</template>
-    <template name="construction">$name = new #class();</template>
+    <template name="declaration">wxMenu* $name;</template>
+    <template name="construction">$name = new wxMenu();</template>
     <template name="include">@#include &lt;wx/menu.h&gt;</template>
     <template name="menu_add">#parent $name->Append( $name, $label );</template>
   </templates>
@@ -139,7 +139,7 @@
   </templates>
 
   <templates class="wxMenuItem">
-    <template name="construction">#class* $name = new #class( #parent $name, $id, wxString( $label ) #ifnotnull $shortcut @{ + wxT('\t') + $shortcut @}, $help, $kind );</template>
+    <template name="construction">wxMenuItem* $name = new wxMenuItem( #parent $name, $id, wxString( $label ) #ifnotnull $shortcut @{ + wxT('\t') + $shortcut @}, $help, $kind );</template>
     <template name="settings">
       #ifequal $enabled "0"
       @{$name->Enable( $enabled ); #nl @}

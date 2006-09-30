@@ -159,8 +159,10 @@ class ApplicationData// : public DataObservable
 	/**
 	Recursive function used to convert the object tree in the project file to the latest version.
 	@param object A pointer to the object element
+	@param fileMajor The major revision of the file
+	@param fileMinor The minor revision of the file
 	*/
-	void ConvertObject( ticpp::Element* object );
+	void ConvertObject( ticpp::Element* object, int fileMajor, int fileMinor );
 
 	/**
 	Iterates through 'property' element children of @a parent.

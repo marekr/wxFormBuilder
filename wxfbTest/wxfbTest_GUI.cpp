@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jul 20 2006)
-// http://wxformbuilder.sourceforge.net/
+// C++ code generated with wxFormBuilder (version Sep 30 2006)
+// http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
@@ -17,9 +17,9 @@
 
 #include "wxfbTest_GUI.h"
 
-#include "..\\bin\\resources\\icons\\bitmap_button.xpm"
-#include "..\\bin\\resources\\icons\\button.xpm"
-#include "..\\bin\\resources\\icons\\calendar.xpm"
+#include "../bin/resources/icons/balign.xpm"
+#include "../bin/resources/icons/copy.xpm"
+#include "../bin/resources/icons/cut.xpm"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -40,8 +40,8 @@ MainFrame::MainFrame( wxWindow* parent, int id, wxString title, wxPoint pos, wxS
 	
 	m_statusBar1 = this->CreateStatusBar( 1, wxST_SIZEGRIP, ID_DEFAULT );
 	m_toolBar1 = this->CreateToolBar( wxTB_HORIZONTAL, ID_DEFAULT ); 
-	m_toolBar1->AddTool( ID_DEFAULT, wxT("tool"), wxBitmap( button_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT("") );
-	m_toolBar1->AddTool( ID_DEFAULT, wxT("tool"), wxBitmap( bitmap_button_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT("") );
+	m_toolBar1->AddTool( ID_DEFAULT, wxT("tool"), wxBitmap( copy_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT("") );
+	m_toolBar1->AddTool( ID_DEFAULT, wxT("tool"), wxBitmap( cut_xpm ), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT("") );
 	m_toolBar1->Realize();
 	
 }
@@ -57,7 +57,7 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	m_button1 = new wxButton( this, ID_DEFAULT, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_button1, 0, wxALL, 5 );
 	
-	m_bpButton1 = new wxBitmapButton( this, ID_DEFAULT, wxBitmap( calendar_xpm ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton1 = new wxBitmapButton( this, ID_DEFAULT, wxBitmap( balign_xpm ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	bSizer2->Add( m_bpButton1, 0, wxALL, 5 );
 	
 	m_textCtrl1 = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
@@ -67,6 +67,7 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	bSizer2->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_checkBox1 = new wxCheckBox( this, ID_DEFAULT, wxT("Check Me!"), wxDefaultPosition, wxDefaultSize, 0 );
+	
 	bSizer2->Add( m_checkBox1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_comboBox1 = new wxComboBox( this, ID_DEFAULT, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
@@ -96,7 +97,7 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	wxGridSizer* gSizer1;
 	gSizer1 = new wxGridSizer( 2, 2, 0, 0 );
 	
-	m_bitmap1 = new wxStaticBitmap( this, ID_DEFAULT, wxBitmap( wxT("..\\bin\\resources\\splash.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxSize( 100,20 ), 0 );
+	m_bitmap1 = new wxStaticBitmap( this, ID_DEFAULT, wxBitmap( wxT("../bin/resources/splash.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxSize( 100,20 ), 0 );
 	gSizer1->Add( m_bitmap1, 1, wxALL|wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer;
@@ -124,8 +125,10 @@ MainPanel::MainPanel( wxWindow* parent, int id, wxPoint pos, wxSize size, int st
 	m_slider1 = new wxSlider( this, ID_DEFAULT, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	gSizer1->Add( m_slider1, 0, wxALL|wxEXPAND, 5 );
 	
-	m_gauge1 = new wxGauge( this, ID_DEFAULT, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
-	gSizer1->Add( m_gauge1, 0, wxALL|wxEXPAND, 5 );
+	wxString m_checkList1Choices[] = { wxT("a"), wxT("b"), wxT("g"), wxT("c") };
+	int m_checkList1NChoices = sizeof( m_checkList1Choices ) / sizeof( wxString );
+	m_checkList1 = new wxCheckListBox( this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, m_checkList1NChoices, m_checkList1Choices, wxLB_ALWAYS_SB|wxLB_SORT );
+	gSizer1->Add( m_checkList1, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( gSizer1, 1, wxEXPAND, 5 );
 	

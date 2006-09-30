@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jul 20 2006)
-// http://wxformbuilder.sourceforge.net/
+// C++ code generated with wxFormBuilder (version Sep 30 2006)
+// http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,8 @@
 
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
+#include <wx/checklst.h>
 #include <wx/choice.h>
-#include <wx/gauge.h>
 #include <wx/grid.h>
 #include <wx/listctrl.h>
 #include <wx/menu.h>
@@ -77,7 +77,7 @@ class MainPanel : public wxPanel
 		wxListCtrl* m_listCtrl;
 		wxChoice* m_choice1;
 		wxSlider* m_slider1;
-		wxGauge* m_gauge1;
+		wxCheckListBox* m_checkList1;
 	
 	public:
 		MainPanel( wxWindow* parent, int id = -1, wxPoint pos = wxDefaultPosition, wxSize size = wxSize( 800,600 ), int style = wxTAB_TRAVERSAL );

@@ -347,7 +347,7 @@ ApplicationData::ApplicationData(const wxString &rootdir)
 m_rootDir( rootdir ),
 m_objDb( new ObjectDatabase() ),
 m_fbpVerMajor( 1 ),
-m_fbpVerMinor( 3 )
+m_fbpVerMinor( 4 )
 {
 	AppBitmaps::LoadBitmaps( m_rootDir + wxFILE_SEP_PATH + wxT("xml") + wxFILE_SEP_PATH + wxT("icons.xml"), m_rootDir + wxFILE_SEP_PATH + wxT("resources") + wxFILE_SEP_PATH + wxT("icons") + wxFILE_SEP_PATH );
 	m_objDb->SetXmlPath(_STDSTR( m_rootDir + wxFILE_SEP_PATH + wxT("xml") + wxFILE_SEP_PATH ) ) ;
@@ -987,7 +987,7 @@ bool ApplicationData::ConvertProject( const wxString& path, int fileMajor, int f
 		ticpp::Element* root = doc.FirstChildElement();
 		if ( root->Value() == string("object") )
 		{
-			ConvertObject( root );
+			ConvertObject( root, fileMajor, fileMinor );
 
 			// Create a clone of now-converted object tree, so it can be linked
 			// underneath the root element
@@ -1015,7 +1015,10 @@ bool ApplicationData::ConvertProject( const wxString& path, int fileMajor, int f
 		}
 		else
 		{
-			ConvertObject( root->FirstChildElement( "object" ) );
+			ConvertObject( root->FirstChildElement( "object" ), fileMajor, fileMinor );
+			ticpp::Element* fileVersion = root->FirstChildElement( "FileVersion" );
+			fileVersion->SetAttribute( "major", m_fbpVerMajor );
+			fileVersion->SetAttribute( "minor", m_fbpVerMinor );
 		}
 		doc.SaveFile();
 	}
@@ -1027,12 +1030,12 @@ bool ApplicationData::ConvertProject( const wxString& path, int fileMajor, int f
 	return true;
 }
 
-void ApplicationData::ConvertObject( ticpp::Element* parent )
+void ApplicationData::ConvertObject( ticpp::Element* parent, int fileMajor, int fileMinor )
 {
 	ticpp::Iterator< ticpp::Element > object( "object" );
 	for ( object = parent->FirstChildElement( "object", false ); object != object.end(); ++object )
 	{
-		ConvertObject( object.Get() );
+		ConvertObject( object.Get(), fileMajor, fileMinor );
 	}
 
 	// Reusable sets to find properties with
@@ -1044,68 +1047,87 @@ void ApplicationData::ConvertObject( ticpp::Element* parent )
 	std::string objClass;
 	parent->GetAttribute( "class", &objClass );
 
-	// The property 'option' became 'proportion'
-	if ( objClass == "sizeritem" || objClass == "spacer" )
+	/* The changes below will convert an unversioned file to version 1.3 */
+
+	if ( fileMajor < 1 || ( 1 == fileMajor && fileMinor < 3 ) )
 	{
-		oldProps.clear();
-		oldProps.insert( "option" );
-		GetPropertiesToConvert( parent, oldProps, &newProps );
-		if ( !newProps.empty() )
+		// The property 'option' became 'proportion'
+		if ( objClass == "sizeritem" || objClass == "spacer" )
 		{
-			// One in, one out
-			(*newProps.begin())->SetAttribute( "name", "proportion" );
+			oldProps.clear();
+			oldProps.insert( "option" );
+			GetPropertiesToConvert( parent, oldProps, &newProps );
+			if ( !newProps.empty() )
+			{
+				// One in, one out
+				(*newProps.begin())->SetAttribute( "name", "proportion" );
+			}
+		}
+
+		// The 'style' property used to have both wxWindow styles and the styles of the specific controls
+		// now it only has the styles of the specfic controls, and wxWindow styles are saved in window_style
+		// This also applies to 'extra_style', which was once combined with 'style'.
+		// And they were named 'WindowStyle' and one point, too...
+
+		std::set< wxString > windowStyles;
+		windowStyles.insert( wxT("wxSIMPLE_BORDER") );
+		windowStyles.insert( wxT("wxDOUBLE_BORDER") );
+		windowStyles.insert( wxT("wxSUNKEN_BORDER") );
+		windowStyles.insert( wxT("wxRAISED_BORDER") );
+		windowStyles.insert( wxT("wxSTATIC_BORDER") );
+		windowStyles.insert( wxT("wxNO_BORDER") );
+		windowStyles.insert( wxT("wxTRANSPARENT_WINDOW") );
+		windowStyles.insert( wxT("wxTAB_TRAVERSAL") );
+		windowStyles.insert( wxT("wxWANTS_CHARS") );
+		windowStyles.insert( wxT("wxVSCROLL") );
+		windowStyles.insert( wxT("wxHSCROLL") );
+		windowStyles.insert( wxT("wxALWAYS_SHOW_SB") );
+		windowStyles.insert( wxT("wxCLIP_CHILDREN") );
+		windowStyles.insert( wxT("wxFULL_REPAINT_ON_RESIZE") );
+
+		// Transfer the window styles
+		oldProps.clear();
+		oldProps.insert( "style" );
+		oldProps.insert( "WindowStyle" );
+		GetPropertiesToConvert( parent, oldProps, &newProps );
+		for ( newProp = newProps.begin(); newProp != newProps.end(); ++newProp )
+		{
+			TransferOptionList( *newProp, &windowStyles, "window_style" );
+		}
+
+
+		std::set< wxString > extraWindowStyles;
+		extraWindowStyles.insert( wxT("wxWS_EX_VALIDATE_RECURSIVELY") );
+		extraWindowStyles.insert( wxT("wxWS_EX_BLOCK_EVENTS") );
+		extraWindowStyles.insert( wxT("wxWS_EX_TRANSIENT") );
+		extraWindowStyles.insert( wxT("wxWS_EX_PROCESS_IDLE") );
+		extraWindowStyles.insert( wxT("wxWS_EX_PROCESS_UI_UPDATES") );
+
+		// Transfer the window extra styles
+		oldProps.clear();
+		oldProps.insert( "style" );
+		oldProps.insert( "extra_style" );
+		oldProps.insert( "WindowStyle" );
+		GetPropertiesToConvert( parent, oldProps, &newProps );
+		for ( newProp = newProps.begin(); newProp != newProps.end(); ++newProp )
+		{
+			TransferOptionList( *newProp, &extraWindowStyles, "window_extra_style" );
 		}
 	}
 
-	// The 'style' property used to have both wxWindow styles and the styles of the specific controls
-	// now it only has the styles of the specfic controls, and wxWindow styles are saved in window_style
-	// This also applies to 'extra_style', which was once combined with 'style'.
-	// And they were named 'WindowStyle' and one point, too...
+	/* The file is now at at least version 1.3 */
 
-	std::set< wxString > windowStyles;
-	windowStyles.insert( wxT("wxSIMPLE_BORDER") );
-	windowStyles.insert( wxT("wxDOUBLE_BORDER") );
-	windowStyles.insert( wxT("wxSUNKEN_BORDER") );
-	windowStyles.insert( wxT("wxRAISED_BORDER") );
-	windowStyles.insert( wxT("wxSTATIC_BORDER") );
-	windowStyles.insert( wxT("wxNO_BORDER") );
-	windowStyles.insert( wxT("wxTRANSPARENT_WINDOW") );
-	windowStyles.insert( wxT("wxTAB_TRAVERSAL") );
-	windowStyles.insert( wxT("wxWANTS_CHARS") );
-	windowStyles.insert( wxT("wxVSCROLL") );
-	windowStyles.insert( wxT("wxHSCROLL") );
-	windowStyles.insert( wxT("wxALWAYS_SHOW_SB") );
-	windowStyles.insert( wxT("wxCLIP_CHILDREN") );
-	windowStyles.insert( wxT("wxFULL_REPAINT_ON_RESIZE") );
-
-	// Transfer the window styles
-	oldProps.clear();
-	oldProps.insert( "style" );
-	oldProps.insert( "WindowStyle" );
-	GetPropertiesToConvert( parent, oldProps, &newProps );
-	for ( newProp = newProps.begin(); newProp != newProps.end(); ++newProp )
+	if ( fileMajor < 1 || ( 1 == fileMajor && fileMinor < 4 ) )
 	{
-		TransferOptionList( *newProp, &windowStyles, "window_style" );
+		if ( objClass == "wxCheckList" )
+		{
+			// The class we once named "wxCheckList" really represented a "wxCheckListBox", now that we use the #class macro in
+			// code generation, it generates the wrong code
+			parent->SetAttribute( "class", "wxCheckListBox" );
+		}
 	}
 
-
-	std::set< wxString > extraWindowStyles;
-	extraWindowStyles.insert( wxT("wxWS_EX_VALIDATE_RECURSIVELY") );
-	extraWindowStyles.insert( wxT("wxWS_EX_BLOCK_EVENTS") );
-	extraWindowStyles.insert( wxT("wxWS_EX_TRANSIENT") );
-	extraWindowStyles.insert( wxT("wxWS_EX_PROCESS_IDLE") );
-	extraWindowStyles.insert( wxT("wxWS_EX_PROCESS_UI_UPDATES") );
-
-	// Transfer the window extra styles
-	oldProps.clear();
-	oldProps.insert( "style" );
-	oldProps.insert( "extra_style" );
-	oldProps.insert( "WindowStyle" );
-	GetPropertiesToConvert( parent, oldProps, &newProps );
-	for ( newProp = newProps.begin(); newProp != newProps.end(); ++newProp )
-	{
-		TransferOptionList( *newProp, &extraWindowStyles, "window_extra_style" );
-	}
+	/* The file is now at at least version 1.4 */
 }
 
 void ApplicationData::GetPropertiesToConvert( ticpp::Node* parent, const std::set< std::string >& names, std::set< ticpp::Element* >* properties )

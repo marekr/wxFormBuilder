@@ -879,7 +879,7 @@ WINDOW_COMPONENT("wxChoicebook", ChoicebookComponent)
 ABSTRACT_COMPONENT("choicebookpage", ChoicebookPageComponent)
 
 // wxCheckListBox
-WINDOW_COMPONENT("wxCheckList",CheckListBoxComponent)
+WINDOW_COMPONENT("wxCheckListBox",CheckListBoxComponent)
 
 // wxCalendarCtrl
 MACRO(wxCAL_SUNDAY_FIRST)
