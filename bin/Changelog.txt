@@ -1,5 +1,13 @@
 ﻿                     wxFormBuilder ChangeLog
 ************************************************************************
+date Version 2.00.76
+* Fixed generation bugs in submenu and wxCheckList (now wxCheckListBox)
+  These were caused by subclass in version 2.00.75. This closes FS#20.
+* Changed title of save dialog box from "Open Project" to "Save Project"
+  This closes FS#18.
+* Fixed xrc generation of static bitmap using patch supplied by henrique.
+  This closes FS#16
+  
 09-13-2006 Version 2.00.75
 + Added subclass and user_headers properties. This closes FS#5.
 
