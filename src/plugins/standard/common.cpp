@@ -403,7 +403,14 @@ public:
 	{
 		ObjectToXrcFilter xrc(obj, _("wxStaticBitmap"), obj->GetPropertyAsString(_("name")));
 		xrc.AddWindowProperties();
-    xrc.AddProperty(_("bitmap"),_("bitmap"),XRC_TYPE_BITMAP);
+		wxString bitmap_path = obj->GetPropertyAsString(_("bitmap"));
+        size_t semicolonIndex = bitmap_path.find_first_of( wxT(";") );
+        if ( semicolonIndex != bitmap_path.npos )
+        {
+			bitmap_path = bitmap_path.substr( 0, semicolonIndex );
+        }
+
+        xrc.AddPropertyValue(_("bitmap"), bitmap_path);
 		return xrc.GetXrcObject();
 	}
 
