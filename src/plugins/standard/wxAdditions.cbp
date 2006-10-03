@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
-		<Option title="Contributed Components Plugin" />
+		<Option title="wxAdditions Plugin" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
+		<Option default_target="Debug (Unicode)" />
 		<Option compiler="gcc" />
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="..\..\..\bin\xml\libcontribd.dll" />
+				<Option output="..\..\..\bin\plugins\wxAdditions\libwxadditionsd.dll" />
 				<Option object_output=".objsd" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -29,10 +29,11 @@
 				</Environment>
 			</Target>
 			<Target title="Debug (Unicode)">
-				<Option output="..\..\..\bin\xml\libcontribd.dll" />
+				<Option output="..\..\..\bin\plugins\wxAdditions\libwxadditionsd.dll" />
 				<Option object_output=".objsud" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="..\..\..\bin\wxFormBuilderd.exe" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-O0" />
@@ -50,7 +51,7 @@
 				</Environment>
 			</Target>
 			<Target title="Release">
-				<Option output="..\..\..\bin\xml\libcontrib.dll" />
+				<Option output="..\..\..\bin\plugins\wxAdditions\libwxadditions.dll" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -64,7 +65,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release (Unicode)">
-				<Option output="..\..\..\bin\xml\libcontrib.dll" />
+				<Option output="..\..\..\bin\plugins\wxAdditions\libwxadditions.dll" />
 				<Option object_output=".objsu" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -87,7 +88,8 @@
 			<Environment>
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="270" />
-				<Variable name="tinyxml" value="..\..\..\libs\tinyxml" />
+				<Variable name="tinyxml" value="..\..\..\sdk\tinyxml" />
+				<Variable name="plugin_interface" value="..\..\..\sdk\plugin_interface" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -104,6 +106,7 @@
 			<Add directory="$(#wxadditions.include)" />
 			<Add directory="$(tinyxml)" />
 			<Add directory="..\.." />
+			<Add directory="$(plugin_interface)" />
 		</Compiler>
 		<Linker>
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_gcc" />
@@ -116,46 +119,13 @@
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#wxadditions.lib)\gcc_dll" />
 			<Add directory="$(tinyxml)\lib" />
+			<Add directory="$(plugin_interface)\lib" />
 		</Linker>
-		<Unit filename="..\component.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-		</Unit>
-		<Unit filename="..\plugin.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-		</Unit>
-		<Unit filename="contrib.cpp">
+		<Unit filename="wxAdditions.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug" />
-			<Option target="Release" />
 			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-		</Unit>
-		<Unit filename="..\..\utils\xrcconv.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
 			<Option target="Release" />
-			<Option target="Debug (Unicode)" />
-			<Option target="Release (Unicode)" />
-		</Unit>
-		<Unit filename="..\..\utils\xrcconv.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="Debug (Unicode)" />
 			<Option target="Release (Unicode)" />
 		</Unit>
 		<Extensions />

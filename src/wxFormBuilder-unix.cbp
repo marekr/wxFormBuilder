@@ -12,12 +12,13 @@
 				<Option output="../bin/wxformbuilderd" />
 				<Option working_dir="../bin" />
 				<Option object_output="_objsd" />
-				<Option type="0" />
+				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
+					<Add option="-D__WXDEBUG__" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --debug=yes`" />
@@ -46,9 +47,6 @@
 				<Variable name="plugin_interface" value="../sdk/plugin_interface" />
 			</Environment>
 		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="default;" />
-		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="`wx-config --debug=$(DEBUG) --cflags`" />
@@ -386,6 +384,18 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="rad/wxfbevent.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="rad/wxfbmanager.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="rad/wxfbmanager.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

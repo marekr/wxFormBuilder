@@ -30,6 +30,7 @@
 #include "utils/typeconv.h"
 #include "utils/debug.h"
 #include "utils/wxfbexception.h"
+#include "rad/appdata.h"
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/dir.h>
@@ -440,7 +441,7 @@ bool IncludeInPalette(wxString type)
 	return true;
 }
 
-void ObjectDatabase::LoadPlugins()
+void ObjectDatabase::LoadPlugins( shared_ptr< wxFBManager > manager )
 {
 	// Load some default templates
 	LoadPackage( m_xmlPath + "default.xml", _WXSTR(m_iconPath) );
@@ -485,7 +486,7 @@ void ObjectDatabase::LoadPlugins()
 							try
 							{
 								// Setup the inheritance for base classes
-								SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath );
+								SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath, manager );
 
 								// Load the C++ code tempates
 								nextXmlFile.SetExt( wxT("cppcode") );
@@ -508,7 +509,7 @@ void ObjectDatabase::LoadPlugins()
 
 }
 
-void ObjectDatabase::SetupPackage( std::string file, wxString libPath )
+void ObjectDatabase::SetupPackage( std::string file, wxString libPath, shared_ptr< wxFBManager > manager )
 {
 	try
 	{
@@ -526,7 +527,7 @@ void ObjectDatabase::SetupPackage( std::string file, wxString libPath )
 			wxString workingDir = ::wxGetCwd();
 			wxFileName::SetCwd( libPath );
 
-			ImportComponentLibrary( libPath + wxFILE_SEP_PATH + _WXSTR(lib) );
+			ImportComponentLibrary( libPath + wxFILE_SEP_PATH + _WXSTR(lib), manager );
 
 			// Put Cwd back
 			wxFileName::SetCwd( workingDir );
@@ -861,9 +862,8 @@ bool ObjectDatabase::ShowInPalette(wxString type)
 }
 
 
-void ObjectDatabase::ImportComponentLibrary( wxString libfile )
+void ObjectDatabase::ImportComponentLibrary( wxString libfile, shared_ptr< wxFBManager > manager )
 {
-	typedef IComponentLibrary* (*PFGetComponentLibrary)();
 	wxString path = libfile;
 
 	// This will prevent loading debug libraries in release and vice versa
@@ -872,64 +872,60 @@ void ObjectDatabase::ImportComponentLibrary( wxString libfile )
 		path += wxT("d");
 	#endif
 
-	// intentamos cargar la DLL
-	wxDynamicLibrary *library = new wxDynamicLibrary( path );
+	// Attempt to load the DLL
+	wxDynamicLibrary* library = new wxDynamicLibrary( path );
 
-	if (library->IsLoaded())
+	if ( !library->IsLoaded() )
 	{
-		m_libs.push_back(library);
-		PFGetComponentLibrary GetComponentLibrary =
-			(PFGetComponentLibrary)library->GetSymbol(wxT("GetComponentLibrary"));
+		THROW_WXFBEX( wxT("Error loading library ") << path )
+	}
 
-		if (GetComponentLibrary)
+	m_libs.push_back( library );
+
+	// Find the GetComponentLibrary function - all plugins must implement this
+	typedef IComponentLibrary* (*PFGetComponentLibrary)( IManager* manager );
+	PFGetComponentLibrary GetComponentLibrary =	(PFGetComponentLibrary)library->GetSymbol( wxT("GetComponentLibrary") );
+
+	if ( !GetComponentLibrary )
+	{
+		THROW_WXFBEX( path << wxT(" is not a valid component library") )
+	}
+
+	Debug::Print( wxT("[Database::ImportComponentLibrary] Importing %s library"), path.c_str() );
+
+	// Get the component library
+	IComponentLibrary* comp_lib = GetComponentLibrary( (IManager*)manager.get() );
+
+	// Import all of the components
+	for ( unsigned int i = 0; i < comp_lib->GetComponentCount(); i++ )
+	{
+		wxString class_name = comp_lib->GetComponentName( i );
+		IComponent* comp = comp_lib->GetComponent( i );
+
+		// Look for the class in the data read from the .xml files
+		shared_ptr< ObjectInfo > class_info = GetObjectInfo( class_name );
+		if ( class_info )
 		{
-			Debug::Print( wxT("[Database::ImportComponentLibrary] Importing %s library"),
-				path.c_str());
-
-			IComponentLibrary *comp_lib = GetComponentLibrary();
-
-			// importamos todos los componentes
-			for (unsigned int i=0; i<comp_lib->GetComponentCount(); i++)
-			{
-				wxString class_name = comp_lib->GetComponentName(i);
-				IComponent *comp = comp_lib->GetComponent(i);
-
-				// buscamos la clase
-				shared_ptr<ObjectInfo> class_info = GetObjectInfo( class_name );
-				if (class_info)
-					class_info->SetComponent(comp);
-				else
-					Debug::Print( wxT("ObjectInfo for <%s> not found while loading library <%s>"), class_name.c_str(), path.c_str() );
-			}
-
-			// Añadimos al diccionario de macros todas las macros definidas en la
-			// biblioteca
-			for (unsigned int i=0; i<comp_lib->GetMacroCount(); i++)
-			{
-				PMacroDictionary dic = MacroDictionary::GetInstance();
-				wxString name = comp_lib->GetMacroName(i);
-				int value = comp_lib->GetMacroValue(i);
-				dic->AddMacro( name, value );
-				m_macroSet.erase( name );
-			}
-
-			/*for (unsigned int i = 0; i < comp_lib->GetSynonymousCount(); i++)
-			{
-			PMacroDictionary dic = MacroDictionary::GetInstance();
-			wxString syn = comp_lib->GetMacroSynonymous(i);
-			wxString name = comp_lib->GetSynonymousName(i);
-			dic->AddSynonymous(_STDSTR(syn), _STDSTR(name));
-			}*/
+			class_info->SetComponent(comp);
 		}
 		else
-			THROW_WXFBEX( path << wxT(" is not a valid component library") )
-
+		{
+			Debug::Print( wxT("ObjectInfo for <%s> not found while loading library <%s>"), class_name.c_str(), path.c_str() );
+		}
 	}
-	else
-		THROW_WXFBEX( wxT("Error loading library ") << path )
+
+	// Add all of the macros in the library to the macro dictionary
+	for ( unsigned int i = 0; i < comp_lib->GetMacroCount(); i++ )
+	{
+		PMacroDictionary dic = MacroDictionary::GetInstance();
+		wxString name = comp_lib->GetMacroName( i );
+		int value = comp_lib->GetMacroValue( i );
+		dic->AddMacro( name, value );
+		m_macroSet.erase( name );
+	}
 }
 
-PropertyType ObjectDatabase::ParsePropertyType (wxString str)
+PropertyType ObjectDatabase::ParsePropertyType( wxString str )
 {
 	PropertyType result;
 	PTMap::iterator it = m_propTypes.find(str);
@@ -942,10 +938,9 @@ PropertyType ObjectDatabase::ParsePropertyType (wxString str)
 	}
 
 	return result;
-
 }
 
-wxString  ObjectDatabase::ParseObjectType   (wxString str)
+wxString  ObjectDatabase::ParseObjectType( wxString str )
 {
 	return str;
 }

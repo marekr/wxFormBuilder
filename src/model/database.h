@@ -106,6 +106,8 @@ class ObjectPackage
 
 
 
+class wxFBManager;
+
 /**
  * Base de datos de objetos.
  * Todos las informaciones de objetos importadas de los archivos XML, serán
@@ -161,13 +163,13 @@ class ObjectDatabase
    * Importa una librería de componentes y lo asocia a cada clase.
    * @throw wxFBException If the library could not be imported.
    */
-  void ImportComponentLibrary(wxString libfile);
+  void ImportComponentLibrary( wxString libfile, shared_ptr< wxFBManager > manager );
 
   /**
    * Incluye la información heredada de los objetos de un paquete.
    * En la segunda pasada configura cada paquete con sus objetos base.
    */
-  void SetupPackage( std::string file, wxString libPath );
+  void SetupPackage( std::string file, wxString libPath, shared_ptr< wxFBManager > manager );
 
   /**
    * Determina si el tipo de objeto hay que incluirlo en la paleta de
@@ -224,7 +226,7 @@ class ObjectDatabase
   /**
    * Find and load plugins from the plugins directory
    */
-  void LoadPlugins();
+  void LoadPlugins( shared_ptr< wxFBManager > manager );
 
   /**
    * Fabrica de objetos.

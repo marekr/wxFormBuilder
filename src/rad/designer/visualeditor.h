@@ -34,10 +34,9 @@
 #include <wx/sashwin.h>
 
 /**
- * Redefine el manjedor OnPaint para dibujar una rejilla.
+ * Draws a grid in the Paint event handler
  */
-
-class GridPanel : public ResizablePanel //wxSashWindow //wxPanel
+class GridPanel : public ResizablePanel
 {
  private:
    int m_x;
@@ -71,7 +70,6 @@ class GridPanel : public ResizablePanel //wxSashWindow //wxPanel
    void SetFrameWidgets(shared_ptr<ObjectBase> menubar, wxWindow *toolbar, wxWindow* statusbar);
    void HighlightSelection(wxDC& dc);
    void OnPaint(wxPaintEvent &event);
-//   void OnMouseMove(wxMouseEvent &event);
 };
 
 class wxFBEvent;
@@ -81,31 +79,40 @@ class wxFBObjectEvent;
 class VisualEditor : public wxScrolledWindow
 {
  private:
-  typedef map<shared_ptr<ObjectBase>,PVisualObject> VisualObjectMap;
-  VisualObjectMap m_map;
+  typedef map< wxObject*, shared_ptr< ObjectBase > > wxObjectMap;
+  wxObjectMap m_wxobjects;
+
+  typedef map< ObjectBase*, wxObject* > ObjectBaseMap;
+  ObjectBaseMap m_baseobjects;
 
   GridPanel *m_back;
 
-  shared_ptr<ObjectBase> m_form;  // puntero al último form creado
+  shared_ptr<ObjectBase> m_form;  // Pointer to last form created
+
+  // Prevent OnSelected in components
+  bool m_stopSelectedEvent;
 
   DECLARE_EVENT_TABLE()
 
  protected:
-  //PVisualObject Generate(shared_ptr<ObjectBase> obj, wxWindow *parent, wxSizer *sizer,
-  //                       ObjectType parentType);
-  PVisualObject Generate(shared_ptr<ObjectBase> obj, wxWindow *parent, wxSizer *sizer,
-                         PVisualObject vobj_parent);
+  void Generate( shared_ptr< ObjectBase > obj, wxWindow* parent, wxObject* parentObject );
+  void SetupWindow( shared_ptr< ObjectBase > obj, wxWindow* window );
+  void SetupSizer( shared_ptr< ObjectBase > obj, wxSizer* sizer );
   void Create();
+  void DeleteAbstractObjects();
 
  public:
   VisualEditor(wxWindow *parent);
   ~VisualEditor();
-  void OnResizeBackPanel (wxCommandEvent &event); //(wxSashEvent &event)
+  void OnResizeBackPanel (wxCommandEvent &event);
   void OnPaintPanel (wxPaintEvent &event);
-  void DeleteVisualObject(PVisualObject obj);
+  void PreventOnSelected( bool prevent = true ){ m_stopSelectedEvent = prevent; }
 
   void Setup();
   void UpdateVirtualSize();
+
+  shared_ptr< ObjectBase > GetObjectBase( wxObject* wxobject );
+  wxObject* GetWxObject( shared_ptr< ObjectBase > baseobject );
 
   // Events
   void OnProjectLoaded ( wxFBEvent &event );

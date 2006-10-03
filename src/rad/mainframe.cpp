@@ -39,6 +39,7 @@
 #include "model/xrcfilter.h"
 #include "rad/about.h"
 #include "rad/wxfbevent.h"
+#include "wxfbmanager.h"
 
 #include <wx/filename.h>
 
@@ -256,6 +257,7 @@ MainFrame::MainFrame(wxWindow *parent, int id)
 	m_notebook->SetImageList( &m_icons );
 
 	m_visualEdit = new VisualEditor(m_notebook);
+	AppData()->GetManager()->SetVisualEditor( m_visualEdit );
 
 	m_notebook->AddPage( m_visualEdit, wxT("Designer"), false, 0 );
 

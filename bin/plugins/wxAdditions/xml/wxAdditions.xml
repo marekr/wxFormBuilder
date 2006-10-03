@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<package name="contrib" lib="libcontrib" icon="plot16x16.png" desc="wxWidgets contributed controls">
+<package name="wxAdditions" lib="libwxadditions" icon="plot16x16.png" desc="wxWidgets contributed controls">
 
 	<objectinfo class="wxPlotCtrl" icon="plot.xpm" type="expanded_widget">
 		<inherits class="wxWindow" />

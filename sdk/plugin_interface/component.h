@@ -75,18 +75,8 @@ class IObject
   virtual wxArrayInt GetPropertyAsArrayInt(const wxString& pname) = 0;
   virtual wxArrayString GetPropertyAsArrayString(const wxString& pname) = 0;
   virtual double GetPropertyAsFloat(const wxString& pname) = 0;
+  virtual wxString GetClassName() = 0;
   virtual ~IObject(){}
-};
-
-// interfaz para manejar la vista de un objeto
-
-class IObjectView
-{
- public:
-  virtual wxWindow* Window() = 0;
-  virtual wxSizer*  Sizer() = 0;
-  virtual IObject*  Object() = 0;
-  virtual ~IObjectView(){}
 };
 
 // Interfaz para almacenar todos los componentes de un plugin
@@ -116,45 +106,101 @@ class IComponentLibrary
 };
 
 /**
- * Interfaz para componentes
+ * Component Interface
  */
 class IComponent
 {
  public:
   /**
-   * Crea la instancia del objeto-wx, bien sea un wxWindow* o un wxSizer*
+   * Create an instance of the wxObject and return a pointer
    */
-  virtual wxObject* Create(IObject *obj, wxObject *parent) = 0;
+  virtual wxObject* Create( IObject* obj, wxObject* parent ) = 0;
 
   /**
-   * Es llamada una vez creado el objeto y sus respectivos hijos.
-   * Esta función será de utilidad en los objetos "ficticios" tales
-   * como "sizeritem" o "notebookpage", gracias al puntero al primer_hijo
-   * (y único) podremos añadir el objeto al sizer o al notebook.
+   * Allows components to do something after they have been created.
+   * For example, Abstract components like NotebookPage and SizerItem can
+   * add the actual widget to the Notebook or sizer.
    *
-   * @param obj vista del objeto que se ha creado.
-   * @param wxparent widget padre.
-   * @param parent vista del objeto padre
-   * @param first_child vista del primer hijo.
+   * @param wxobject The object which was just created.
+   * @param wxparent The wxWidgets parent - the wxObject that the created object was added to.
    */
-  virtual void OnCreated(IObjectView *obj, wxWindow *wxparent,
-                         IObjectView *parent,
-                         IObjectView *first_child) = 0;
+  virtual void OnCreated( wxObject* wxobject, wxWindow* wxparent ) = 0;
 
   /**
-   * Dada una instancia del objeto obtenemos un nodo XRC.
+   * Allows components to respond when selected in object tree.
+   * For example, when a wxNotebook's page is selected, it can switch to that page
    */
-  virtual TiXmlElement* ExportToXrc(IObject *obj) = 0;
+  virtual void OnSelected( wxObject* wxobject ) = 0;
 
   /**
-   * Dado un objeto XML en formato XRC devuelve otro objeto XML en formato
-   * wxFormBuilder.
+   * Export the object to an XRC node
    */
-  virtual TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj) = 0;
+  virtual TiXmlElement* ExportToXrc( IObject* obj ) = 0;
+
+  /**
+   * Converts from an XRC element to a wxFormBuilder project file XML element
+   */
+  virtual TiXmlElement* ImportFromXrc( TiXmlElement* xrcObj ) = 0;
 
 
   virtual int GetComponentType() = 0;
   virtual ~IComponent(){}
+};
+
+/**
+Interface to the "Manager" class in the application.
+Essentially a collection of utility functions that take a wxObject* and do something useful.
+
+*/
+class IManager
+{
+public:
+	/**
+	Get the count of the children of this object.
+	*/
+	virtual size_t GetChildCount( wxObject* wxobject ) = 0;
+
+	/**
+	Get a child of the object.
+	@param childIndex Index of the child to get.
+	*/
+	virtual wxObject* GetChild( wxObject* wxobject, size_t childIndex ) = 0;
+
+	/**
+	Get the parent of the object.
+	*/
+	virtual wxObject* GetParent( wxObject* wxobject ) = 0;
+
+	/**
+	Get the corresponding object interface pointer for the object.
+	This allows easy read only access to properties.
+	*/
+	virtual IObject* GetIObject( wxObject* wxobject ) = 0;
+
+	/**
+	Modify a property of the object.
+	@param property The name of the property to modify.
+	@param value The new value for the property.
+	@param allowUndo If true, the property change will be placed into the undo stack, if false it will be modified silently.
+	*/
+	virtual void ModifyProperty( wxObject* wxobject, wxString property, wxString value, bool allowUndo = true ) = 0;
+
+	/**
+	Select the object in the object tree
+	*/
+	virtual void SelectObject( wxObject* wxobject ) = 0;
+
+	virtual ~IManager(){}
+};
+
+// Used to identify wxObject* that must be manually deleted
+class wxNoObject : public wxObject
+{
+public:
+	void Destroy()
+	{
+		delete this;
+	}
 };
 
 #ifdef BUILD_DLL
@@ -163,43 +209,39 @@ class IComponent
 	#define DLL_FUNC extern "C"
 #endif
 
-// función que nos devolverá la librería para ser usada dentro de la aplicación
-DLL_FUNC IComponentLibrary * GetComponentLibrary();
+// Function that the application calls to get the library
+DLL_FUNC IComponentLibrary* GetComponentLibrary( IManager* manager );
 
-#define BEGIN_LIBRARY()  \
+#define BEGIN_LIBRARY()  															\
 \
-extern "C" WXEXPORT IComponentLibrary * GetComponentLibrary()  \
-{ \
-  IComponentLibrary * lib = new ComponentLibrary();
+extern "C" WXEXPORT IComponentLibrary* GetComponentLibrary( IManager* manager ) 	\
+{ 																					\
+  IComponentLibrary* lib = new ComponentLibrary();
 
-/*
-#define COMPONENT(name,class)  \
-  lib->RegisterComponent(wxT(name),new class());
-*/
+#define END_LIBRARY()  \
+	return lib; }
 
-#define MACRO(name) \
-  lib->RegisterMacro(wxT(#name),name);
+#define MACRO( name ) \
+  lib->RegisterMacro( wxT(#name), name );
 
-#define SYNONYMOUS(syn,name) \
-  lib->RegisterMacroSynonymous(wxT(#syn),wxT(#name));
+#define SYNONYMOUS( syn, name ) \
+  lib->RegisterMacroSynonymous( wxT(#syn), wxT(#name) );
 
-#define END_LIBRARY()   return lib; }
-
-#define WINDOW_COMPONENT(name,class) \
-  _REGISTER_COMPONENT(name,class,COMPONENT_TYPE_WINDOW)
-
-#define SIZER_COMPONENT(name,class) \
-  _REGISTER_COMPONENT(name,class,COMPONENT_TYPE_SIZER)
-
-#define ABSTRACT_COMPONENT(name,class) \
-  _REGISTER_COMPONENT(name,class,COMPONENT_TYPE_ABSTRACT)
-
-#define _REGISTER_COMPONENT(name,class,type)  \
-  {                                     \
-    ComponentBase *c = new class();     \
-    c->__SetComponentType(type);        \
-    lib->RegisterComponent(wxT(name),c); \
+#define _REGISTER_COMPONENT( name, class, type )\
+  {                                     		\
+    ComponentBase* c = new class();     		\
+    c->__SetComponentType( type );        		\
+    c->__SetManager( manager );					\
+    lib->RegisterComponent( wxT(name), c ); 	\
   }
 
+#define WINDOW_COMPONENT( name, class ) \
+  _REGISTER_COMPONENT( name, class, COMPONENT_TYPE_WINDOW )
+
+#define SIZER_COMPONENT( name,class ) \
+  _REGISTER_COMPONENT( name, class, COMPONENT_TYPE_SIZER )
+
+#define ABSTRACT_COMPONENT( name, class ) \
+  _REGISTER_COMPONENT( name, class, COMPONENT_TYPE_ABSTRACT )
 
 #endif //__COMPONENT_H__

@@ -30,6 +30,7 @@
 #include "codegen/codegen.h"
 #include "bitmaps.h"
 #include "rad/wxfbevent.h"
+#include "wxfbmanager.h"
 
 #include <ticpp.h>
 #include <set>
@@ -346,6 +347,7 @@ ApplicationData::ApplicationData(const wxString &rootdir)
 :
 m_rootDir( rootdir ),
 m_objDb( new ObjectDatabase() ),
+m_manager( new wxFBManager ),
 m_fbpVerMajor( 1 ),
 m_fbpVerMinor( 4 )
 {
@@ -354,7 +356,12 @@ m_fbpVerMinor( 4 )
 	m_objDb->SetIconPath( _STDSTR( m_rootDir + wxFILE_SEP_PATH + wxT("resources") + wxFILE_SEP_PATH + wxT("icons") + wxFILE_SEP_PATH ) );
 	m_objDb->SetPluginPath( m_rootDir + wxFILE_SEP_PATH + wxT("plugins") + wxFILE_SEP_PATH ) ;
 	m_objDb->LoadObjectTypes();
-	m_objDb->LoadPlugins();
+	m_objDb->LoadPlugins( m_manager );
+}
+
+shared_ptr< wxFBManager > ApplicationData::GetManager()
+{
+	return m_manager;
 }
 
 shared_ptr<ObjectBase> ApplicationData::GetSelectedObject()
@@ -1669,7 +1676,7 @@ void ApplicationData::NotifyEvent( wxFBEvent& event )
   }
 
   // Copy queue
-  std::set< wxFBEvent* > queueInProcess = eventQueue;
+ /* std::set< wxFBEvent* > queueInProcess = eventQueue;
   eventQueue.clear();
 
   // Process queue
@@ -1678,7 +1685,7 @@ void ApplicationData::NotifyEvent( wxFBEvent& event )
   {
   	wxFBEvent* temp = *queuedEvent;
 	  NotifyEvent( *temp );
-  }
+  }*/
 }
 
 void ApplicationData::NotifyProjectLoaded()

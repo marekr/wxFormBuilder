@@ -39,6 +39,7 @@ namespace ticpp
 class Property;
 
 class wxFBEvent;
+class wxFBManager;
 
 #define AppData()         (ApplicationData::Get())
 #define AppDataInit(path) (ApplicationData::Get(path))
@@ -67,6 +68,8 @@ class ApplicationData// : public DataObservable
   wxString m_projectPath;
   wxString m_exePath;
 
+  shared_ptr< wxFBManager > m_manager;
+
 
   typedef vector< wxEvtHandler* > HandlerVector;
   HandlerVector m_handlers;
@@ -84,7 +87,6 @@ class ApplicationData// : public DataObservable
   void NotifyPropertyModified(shared_ptr<Property> prop);
   void NotifyProjectRefresh();
   void NotifyCodeGeneration( bool panelOnly = false );
-
 
   /**
    * Comprueba las referencias cruzadas de todos los nodos del árbol
@@ -192,6 +194,9 @@ public:
 
   static ApplicationData* Get(const wxString &rootdir = wxT(".") );
   static void Destroy();
+
+  // Hold a pointer to the wxFBManager
+  shared_ptr< wxFBManager > GetManager();
 
   // Procedures for register/unregister wxEvtHandlers to be notified of wxFBEvents
   void AddHandler( wxEvtHandler* handler );

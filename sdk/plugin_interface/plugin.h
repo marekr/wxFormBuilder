@@ -45,50 +45,57 @@ class ComponentLibrary : public IComponentLibrary
     wxString name;
     IComponent *component;
   }AComponent;
-  
-  typedef struct 
+
+  typedef struct
   {
     wxString name;
     int value;
   } AMacro;
-  
+
   typedef struct
   {
     wxString name, syn;
   } ASynonymous;
 
   vector<AComponent>  m_components;
-  vector<AMacro>      m_macros;  
+  vector<AMacro>      m_macros;
   typedef map<wxString,wxString> SynMap;
   SynMap m_synMap;
-  
- public:
-  virtual ~ComponentLibrary() {};
 
-  void RegisterComponent(const wxString &text, IComponent *c)
+ public:
+  virtual ~ComponentLibrary()
+  {
+	vector< AComponent >::reverse_iterator component;
+	for ( component = m_components.rbegin(); component != m_components.rend(); ++component )
+	{
+		delete component->component;
+	}
+  }
+
+  void RegisterComponent( const wxString& text, IComponent* c )
   {
     AComponent comp;
     comp.component = c;
     comp.name = text;
-    
+
     m_components.push_back(comp);
   }
-  
+
   void RegisterMacro(const wxString &text, const int value)
   {
     AMacro macro;
     macro.name = text;
     macro.value = value;
-    
+
     m_macros.push_back(macro);
   }
-  
+
   void RegisterMacroSynonymous(const wxString &syn, const wxString &name)
   {
     /*ASynonymous asyn;
     asyn.name = name;
     asyn.syn = syn;
-    
+
     m_synonymous.push_back(asyn);*/
     m_synMap.insert(SynMap::value_type(syn, name));
   }
@@ -107,7 +114,7 @@ class ComponentLibrary : public IComponentLibrary
 
     return wxString();
   }
-  
+
   wxString GetMacroName(unsigned int idx)
   {
     if (idx < m_macros.size())
@@ -115,7 +122,7 @@ class ComponentLibrary : public IComponentLibrary
 
     return wxString();
   }
-  
+
   int GetMacroValue(unsigned int idx)
   {
     if (idx < m_macros.size())
@@ -123,23 +130,23 @@ class ComponentLibrary : public IComponentLibrary
 
     return 0;
   }
-  
+
   /*wxString GetMacroSynonymous(unsigned int idx)
   {
     if (idx < m_synonymous.size())
       return m_synonymous[idx].syn;
-      
+
     return wxString();
   }
-  
+
   wxString GetSynonymousName(unsigned int idx)
   {
     if (idx < m_synonymous.size())
       return m_synonymous[idx].name;
-      
+
     return wxString();
   }*/
-  
+
   bool FindSynonymous(const wxString& syn, wxString& trans)
   {
     bool found = false;
@@ -149,20 +156,20 @@ class ComponentLibrary : public IComponentLibrary
       found = true;
       trans = it->second;
     }
-    
+
     return found;
   }
-  
+
   unsigned int GetMacroCount()
   {
     return (unsigned int)m_macros.size();
   }
-  
+
   unsigned int GetComponentCount()
   {
     return (unsigned int)m_components.size();
   }
-  
+
   /*unsigned int GetSynonymousCount()
   {
     return m_synonymous.size();
@@ -170,32 +177,65 @@ class ComponentLibrary : public IComponentLibrary
 };
 
 /**
- * Clase base para componentes.
+ * Base class for components
  */
 class ComponentBase : public IComponent
 {
- private:
-  int m_type;
-  
- public:
- 
-  ComponentBase() : m_type(0) {};
-  
-  void __SetComponentType(int type)
-  {
-    m_type = (type >= 0 && type <= 2 ? type : COMPONENT_TYPE_ABSTRACT);
-  };
+private:
+	int m_type;
+	IManager* m_manager;
 
-  wxObject* Create(IObject *obj, wxObject *parent) { return NULL; }
-  void OnCreated(IObjectView *obj, wxWindow *wxparent,
-                 IObjectView *parent,
-                 IObjectView *first_child) { /* nada */ };
+public:
+	ComponentBase()
+	:
+	m_type( 0 ),
+	m_manager( NULL )
+	{}
 
-  TiXmlElement* ExportToXrc(IObject *obj) { return NULL; };
-  
-  TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj) { return NULL; };
-    
-  int GetComponentType() { return m_type; };
+	void __SetComponentType( int type )
+	{
+		m_type = ( type >= 0 && type <= 2 ? type : COMPONENT_TYPE_ABSTRACT );
+	}
+
+	void __SetManager( IManager* manager )
+	{
+		m_manager = manager;
+	}
+
+	IManager* GetManager()
+	{
+		return m_manager;
+	}
+
+	wxObject* Create( IObject *obj, wxObject *parent )
+	{
+		return new wxNoObject; /* Even components which are not visible must be unique in the map */
+	}
+
+	void OnCreated( wxObject* wxobject, wxWindow* wxparent )
+	{
+
+	}
+
+	void OnSelected( wxObject* wxobject )
+	{
+
+	}
+
+	TiXmlElement* ExportToXrc(IObject *obj)
+	{
+		return NULL;
+	}
+
+	TiXmlElement* ImportFromXrc(TiXmlElement *xrcObj)
+	{
+		return NULL;
+	}
+
+	int GetComponentType()
+	{
+		return m_type;
+	}
 };
 
 #endif // __PLUGIN_H__

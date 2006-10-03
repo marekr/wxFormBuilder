@@ -121,6 +121,15 @@
 			<Option target="Release (Unicode)" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="bookutils.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Debug (Unicode)" />
+			<Option target="Release" />
+			<Option target="Release (Unicode)" />
+		</Unit>
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

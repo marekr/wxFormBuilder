@@ -28,6 +28,7 @@
 #include "utils/typeconv.h"
 #include "wx/wx.h"
 #include <wx/tokenzr.h>
+#include "rad/appdata.h"
 
 void CodeWriter::WriteLn(wxString code)
 {
