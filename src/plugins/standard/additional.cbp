@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="..\..\..\bin\plugins\additional\libadditionald.dll" />
+				<Option output="..\..\..\bin\plugins\additional\libadditionald.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output=".objsd" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -22,14 +22,14 @@
 					<Add directory="$(#WX.lib)\gcc_dll\mswd" />
 				</Compiler>
 				<Linker>
-					<Add library="tinyxmld" />
+					<Add library="ticppd" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="d" />
 				</Environment>
 			</Target>
 			<Target title="Debug (Unicode)">
-				<Option output="..\..\..\bin\plugins\additional\libadditionald.dll" />
+				<Option output="..\..\..\bin\plugins\additional\libadditionald.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output=".objsud" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -43,14 +43,14 @@
 					<Add option="-DUNICODE" />
 				</Compiler>
 				<Linker>
-					<Add library="tinyxmld" />
+					<Add library="ticppd" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="ud" />
 				</Environment>
 			</Target>
 			<Target title="Release">
-				<Option output="..\..\..\bin\plugins\additional\libadditional.dll" />
+				<Option output="..\..\..\bin\plugins\additional\libadditional.dll" prefix_auto="0" extension_auto="0" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="\usr\src\wxfb2\bin\wxformbuilder" />
@@ -61,11 +61,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="tinyxml" />
+					<Add library="ticpp" />
 				</Linker>
 			</Target>
 			<Target title="Release (Unicode)">
-				<Option output="..\..\..\bin\plugins\additional\libadditional.dll" />
+				<Option output="..\..\..\bin\plugins\additional\libadditional.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output=".objsu" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -79,17 +79,16 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="tinyxml" />
+					<Add library="ticpp" />
 				</Linker>
 				<Environment>
 					<Variable name="WX_SUFFIX" value="u" />
 				</Environment>
 			</Target>
 			<Environment>
+				<Variable name="sdk" value="..\..\..\sdk" />
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="27" />
-				<Variable name="tinyxml" value="..\..\..\sdk\tinyxml" />
-				<Variable name="plugin_interface" value="..\..\..\sdk\plugin_interface" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -103,16 +102,15 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DTIXML_USE_TICPP" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(tinyxml)" />
 			<Add directory="..\.." />
-			<Add directory="$(plugin_interface)" />
+			<Add directory="$(sdk)\tinyxml" />
+			<Add directory="$(sdk)\plugin_interface" />
 		</Compiler>
 		<Linker>
-			<Add library="plugin_interface$(WX_SUFFIX)" />
+			<Add library="fbPluginInterface$(WX_SUFFIX)" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
-			<Add directory="$(tinyxml)\lib" />
-			<Add directory="$(plugin_interface)\lib" />
+			<Add directory="$(sdk)\lib" />
 		</Linker>
 		<Unit filename="additional.cpp">
 			<Option compilerVar="CPP" />

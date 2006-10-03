@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="..\bin\wxFormBuilderd.exe" />
+				<Option output="..\bin\wxFormBuilderd.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\bin" />
 				<Option object_output=".objsd" />
 				<Option type="0" />
@@ -22,7 +22,7 @@
 					<Add option="-D__WXDEBUG__" />
 				</Compiler>
 				<Linker>
-					<Add library="tinyxmld" />
+					<Add library="ticppd" />
 					<Add library="wxmsw$(WX_VER)md_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)md_propgrid_gcc" />
 					<Add library="wxmsw$(WX_VER)md_scintilla_gcc" />
@@ -32,7 +32,7 @@
 				</Environment>
 			</Target>
 			<Target title="Debug (Unicode)">
-				<Option output="..\bin\wxFormBuilderd.exe" />
+				<Option output="..\bin\wxFormBuilderd.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\bin" />
 				<Option object_output=".objsud" />
 				<Option type="0" />
@@ -46,7 +46,7 @@
 					<Add option="-DwxUSE_UNICODE" />
 				</Compiler>
 				<Linker>
-					<Add library="tinyxmld" />
+					<Add library="ticppd" />
 					<Add library="wxmsw$(WX_VER)umd_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)umd_propgrid_gcc" />
 					<Add library="wxmsw$(WX_VER)umd_scintilla_gcc" />
@@ -56,7 +56,7 @@
 				</Environment>
 			</Target>
 			<Target title="Release">
-				<Option output="..\bin\wxFformBuilder.exe" />
+				<Option output="..\bin\wxFformBuilder.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\bin" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -69,14 +69,14 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="tinyxml" />
+					<Add library="ticpp" />
 					<Add library="wxmsw$(WX_VER)m_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)m_propgrid_gcc" />
 					<Add library="wxmsw$(WX_VER)m_scintilla_gcc" />
 				</Linker>
 			</Target>
 			<Target title="Release (Unicode)">
-				<Option output="..\bin\wxformbuilder.exe" />
+				<Option output="..\bin\wxformbuilder.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\bin" />
 				<Option object_output=".objsu" />
 				<Option type="0" />
@@ -91,7 +91,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="tinyxml" />
+					<Add library="ticpp" />
 					<Add library="wxmsw$(WX_VER)um_flatnotebook_gcc" />
 					<Add library="wxmsw$(WX_VER)um_propgrid_gcc" />
 					<Add library="wxmsw$(WX_VER)um_scintilla_gcc" />
@@ -102,10 +102,9 @@
 			</Target>
 			<Environment>
 				<Variable name="boost" value="boost" />
+				<Variable name="sdk" value="..\sdk" />
 				<Variable name="WX_SUFFIX" value="" />
 				<Variable name="WX_VER" value="270" />
-				<Variable name="tinyxml" value="..\sdk\tinyxml" />
-				<Variable name="plugin_interface" value="..\sdk\plugin_interface" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -123,16 +122,15 @@
 			<Add option="-DTIXML_USE_TICPP" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wxadditions.include)" />
-			<Add directory="$(tinyxml)" />
 			<Add directory="$(boost)" />
 			<Add directory="..\src" />
-			<Add directory="$(plugin_interface)" />
+			<Add directory="$(sdk)\tinyxml" />
+			<Add directory="$(sdk)\plugin_interface" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#wx.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add library="plugin_interface$(WX_SUFFIX)" />
 			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)_gcc" />
 			<Add library="advapi32" />
 			<Add library="comctl32" />
@@ -155,8 +153,7 @@
 			<Add library="wsock32" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#wxadditions.lib)\gcc_dll" />
-			<Add directory="$(tinyxml)\lib" />
-			<Add directory="$(plugin_interface)\lib" />
+			<Add directory="$(sdk)\lib" />
 		</Linker>
 		<Unit filename="codegen\codegen.cpp">
 			<Option compilerVar="CPP" />
