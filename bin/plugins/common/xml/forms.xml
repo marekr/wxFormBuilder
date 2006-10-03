@@ -61,6 +61,12 @@
 	  <option name="wxDIALOG_EX_CONTEXTHELP"	help="Under Windows, puts a query button on the caption. When pressed, Windows will go into a context-sensitive help mode and wxWidgets will send a wxEVT_HELP event if the user clicked on an application window. Note that this is an extended style and must be set by calling SetExtraStyle before Create is called (two-step construction)."/>
       <option name="wxDIALOG_EX_METAL" 			help="On Mac OS X, frames with this style will be shown with a metallic look. This is an extra style."/>
 	</property>
+	<property name="center" type="option"		help="Centers the dialog box on the display in the chosen direction.">
+	  <option name=""/>
+      <option name="wxHORIZONTAL"/>
+      <option name="wxVERTICAL"/>
+      <option name="wxBOTH"/>
+	</property>
   </objectinfo>
 
 </package>

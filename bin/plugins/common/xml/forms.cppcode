@@ -145,6 +145,9 @@
 
 			#ifnotnull $minimum_size
 			@{ this->SetMinSize( $minimum_size ); #nl @}
+			
+			#ifnotnull $center
+			@{ this->Centre( $center ); @}
 		</template>
 	</templates>
 

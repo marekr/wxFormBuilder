@@ -108,6 +108,10 @@ public:
 		ObjectToXrcFilter xrc(obj, _("wxDialog"), obj->GetPropertyAsString(_("name")));
 		xrc.AddWindowProperties();
 		xrc.AddProperty( _("title"), _("title"), XRC_TYPE_TEXT);
+		if ( !obj->IsNull( _("center") ) )
+		{
+			xrc.AddPropertyValue( _("centered"), _("1") );
+		}
 		return xrc.GetXrcObject();
 	}
 
@@ -116,6 +120,7 @@ public:
 		XrcToXfbFilter filter(xrcObj, _("Dialog"));
 		filter.AddWindowProperties();
 		filter.AddProperty( _("title"), _("title"), XRC_TYPE_TEXT);
+		filter.AddProperty(_("centered"), _("center"), XRC_TYPE_BITLIST);
 		return filter.GetXfbObject();
 	}
 };
@@ -1200,6 +1205,9 @@ MACRO(wxGA_HORIZONTAL)
 MACRO(wxGA_SMOOTH)
 MACRO(wxGA_VERTICAL)
 
+//wxDialog
+MACRO(wxBOTH)
+SYNONYMOUS(1,wxBOTH)
 
 END_LIBRARY()
 

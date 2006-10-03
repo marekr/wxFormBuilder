@@ -8,6 +8,7 @@ date Version 2.00.76
 * Fixed xrc generation of static bitmap using patch supplied by henrique.
   This closes FS#16
 * Added subclassing on forms. This closes FS#21.
++ Added center property for wxDialog. This closes FS#17.
   
 09-13-2006 Version 2.00.75
 + Added subclass and user_headers properties. This closes FS#5.
