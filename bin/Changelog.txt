@@ -7,6 +7,7 @@ date Version 2.00.76
   This closes FS#18.
 * Fixed xrc generation of static bitmap using patch supplied by henrique.
   This closes FS#16
+* Added subclassing on forms. This closes FS#21.
   
 09-13-2006 Version 2.00.75
 + Added subclass and user_headers properties. This closes FS#5.
