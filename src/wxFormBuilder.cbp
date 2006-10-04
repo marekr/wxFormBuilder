@@ -86,6 +86,7 @@
 					<Add option="-march=i486" />
 					<Add option="-O3" />
 					<Add option="-O" />
+					<Add option="-Wno-uninitialized" />
 					<Add option="-DNDEBUG" />
 					<Add option="-DwxUSE_UNICODE" />
 				</Compiler>
