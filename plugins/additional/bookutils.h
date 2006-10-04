@@ -2,8 +2,7 @@
 #define BOOKUTILS
 
 #include <component.h>
-// LOOK AT THIS TO SEE IF IT CAN BE MOVED TO THE PLUGIN
-#include "icons/unknown.xpm"
+#include "default.xpm"
 #include <wx/image.h>
 #include <wx/notebook.h>
 #include <wx/listbook.h>
@@ -18,7 +17,7 @@ namespace BookUtils
 		{
 			wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
 			wxImageList* images = new wxImageList( imageSize.GetWidth(), imageSize.GetHeight() );
-			wxImage image = wxBitmap( unknown_xpm ).ConvertToImage();
+			wxImage image = wxBitmap( default_xpm ).ConvertToImage();
 			images->Add( image.Scale( imageSize.GetWidth(), imageSize.GetHeight() ) );
 			book->AssignImageList( images );
 		}
