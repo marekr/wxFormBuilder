@@ -29,6 +29,7 @@
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 #include "rad/title.h"
+#include "wx/config.h"
 #include <rad/appdata.h>
 
 #define ID_PALETTE_BUTTON 999
@@ -173,4 +174,15 @@ void wxFbPalette::OnButtonClick(wxCommandEvent &event)
       return;
     }
   }
+}
+
+wxFbPalette::~wxFbPalette()
+{
+	wxConfigBase* config = wxConfigBase::Get();
+	wxString pages;
+	for ( size_t i = 0; i < (size_t)m_notebook->GetPageCount(); ++i )
+	{
+		pages << m_notebook->GetPageText( i ) << wxT(",");
+	}
+	config->Write( wxT("/palette/pageOrder"), pages );
 }

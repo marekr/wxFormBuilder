@@ -44,12 +44,14 @@ class wxFbPalette : public wxPanel
   std::vector<int> m_posVector;
   wxNotebookChooserImageList m_icons;
 
+
   void PopulateToolbar(PObjectPackage pkg, wxToolBar *toolbar);
 
   DECLARE_EVENT_TABLE()
 
  public:
   wxFbPalette(wxWindow *parent,int id);
+  ~wxFbPalette();
 
   /**
    * Crea la paleta, previamente se ha debido configurar el objeto

@@ -35,6 +35,8 @@
 #include <wx/image.h>
 #include <wx/dir.h>
 #include <ticpp.h>
+#include <wx/config.h>
+#include <wx/tokenzr.h>
 
 //#define DEBUG_PRINT(x) cout << x
 
@@ -447,6 +449,11 @@ void ObjectDatabase::LoadPlugins( shared_ptr< wxFBManager > manager )
 	LoadPackage( m_xmlPath + "default.xml", _WXSTR(m_iconPath) );
 	LoadCodeGen( m_xmlPath + "default.cppcode" );
 
+	// Map to temporarily hold plugins.
+	// Used to both set page order and to prevent two plugins with the same name.
+	typedef map< wxString, PObjectPackage > PackageMap;
+	PackageMap packages;
+
 	// Open plugins directory for iteration
 	if ( !wxDir::Exists( m_pluginPath ) )
 	{
@@ -491,7 +498,10 @@ void ObjectDatabase::LoadPlugins( shared_ptr< wxFBManager > manager )
 								// Load the C++ code tempates
 								nextXmlFile.SetExt( wxT("cppcode") );
 								LoadCodeGen( _STDSTR(nextXmlFile.GetFullPath()) );
-								m_pkgs.push_back( package );
+								if ( !packages.insert( PackageMap::value_type( package->GetPackageName(), package ) ).second )
+								{
+									wxLogError( _("There are two plugins named \"%s\""), package->GetPackageName().c_str() );
+								}
 							}
 							catch ( wxFBException& ex )
 							{
@@ -507,6 +517,30 @@ void ObjectDatabase::LoadPlugins( shared_ptr< wxFBManager > manager )
         moreDirectories = pluginsDir.GetNext( &pluginDirName );
     }
 
+    // Get previous plugin order
+	wxConfigBase* config = wxConfigBase::Get();
+	wxString pages = config->Read( wxT("/palette/pageOrder"), wxT("common,additional,layout,forms,") );
+
+	// Add packages to the vector in the correct order
+	wxStringTokenizer packageList( pages, wxT(",") );
+	while ( packageList.HasMoreTokens() )
+	{
+		wxString packageName = packageList.GetNextToken();
+		PackageMap::iterator packageIt = packages.find( packageName );
+		if ( packages.end() == packageIt )
+		{
+			// Plugin missing - move on
+			continue;
+		}
+		m_pkgs.push_back( packageIt->second );
+		packages.erase( packageIt );
+	}
+
+    // If any packages remain in the map, they are new plugins and must still be added
+    for ( PackageMap::iterator packageIt = packages.begin(); packageIt != packages.end(); ++packageIt )
+    {
+    	m_pkgs.push_back( packageIt->second );
+    }
 }
 
 void ObjectDatabase::SetupPackage( std::string file, wxString libPath, shared_ptr< wxFBManager > manager )
