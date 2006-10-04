@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="wxFormBuilder workspace">
-		<Project filename="wxFormBuilder.cbp">
+		<Project filename="wxFormBuilder.cbp" active="1">
 			<Depends filename="plugins\standard\layout.cbp" />
 			<Depends filename="plugins\standard\additional.cbp" />
 			<Depends filename="plugins\standard\standard.cbp" />
@@ -20,6 +20,6 @@
 			<Depends filename="..\sdk\tinyxml\TiCPP.cbp" />
 		</Project>
 		<Project filename="..\sdk\plugin_interface\Plugin Interface.cbp" />
-		<Project filename="..\sdk\tinyxml\TiCPP.cbp" active="1" />
+		<Project filename="..\sdk\tinyxml\TiCPP.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
