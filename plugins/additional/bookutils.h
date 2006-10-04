@@ -2,6 +2,7 @@
 #define BOOKUTILS
 
 #include <component.h>
+// LOOK AT THIS TO SEE IF IT CAN BE MOVED TO THE PLUGIN
 #include "icons/unknown.xpm"
 #include <wx/image.h>
 #include <wx/notebook.h>
