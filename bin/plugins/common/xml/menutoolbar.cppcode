@@ -93,4 +93,8 @@
   <templates class="tool">
     <template name="construction">#parent $name->AddTool( $id, $label, $bitmap, wxNullBitmap, wxITEM_NORMAL, $tooltip, $statusbar );</template>
   </templates>
+  
+  <templates class="toolSeparator">
+    <template name="construction">#parent $name->AddSeparator();</template>
+  </templates>
 </codegen>

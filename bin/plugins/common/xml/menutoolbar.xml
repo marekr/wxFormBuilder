@@ -76,4 +76,7 @@
     <property name="statusbar" type="wxString_i18n" help="This string is shown in the statusbar (if any) of the parent frame when the mouse pointer is inside the tool." />
     <property name="id" type="macro">ID_DEFAULT</property>
   </objectinfo>
+  
+  <objectinfo class="toolSeparator" icon="toolSeparator.xpm" type="tool">
+  </objectinfo>
 </package>

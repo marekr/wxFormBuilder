@@ -877,6 +877,10 @@ public:
 								childObj->GetPropertyAsString( _("help") )
 							);
 			}
+			else if ( wxT("toolSeparator") == childObj->GetClassName() )
+			{
+				tb->AddSeparator();
+			}
 			else
 			{
 				wxControl* control = wxDynamicCast( child, wxControl );
@@ -934,6 +938,22 @@ public:
 		filter.AddWindowProperties();
 		filter.AddProperty(_("label"), _("label"), XRC_TYPE_TEXT);
 		filter.AddProperty(_("bitmap"), _("bitmap"), XRC_TYPE_BITMAP);
+		return filter.GetXfbObject();
+	}
+};
+
+class ToolSeparatorComponent : public ComponentBase
+{
+public:
+	TiXmlElement* ExportToXrc(IObject *obj)
+	{
+		ObjectToXrcFilter xrc( obj, _("separator") );
+		return xrc.GetXrcObject();
+	}
+
+	TiXmlElement* ImportFromXrc( TiXmlElement *xrcObj )
+	{
+		XrcToXfbFilter filter( xrcObj, _("separator") );
 		return filter.GetXfbObject();
 	}
 };
@@ -1088,6 +1108,7 @@ WINDOW_COMPONENT("wxListCtrl", ListCtrlComponent)
 WINDOW_COMPONENT("wxStatusBar", StatusBarComponent)
 WINDOW_COMPONENT("wxToolBar", ToolBarComponent)
 ABSTRACT_COMPONENT("tool", ToolComponent)
+ABSTRACT_COMPONENT("toolSeparator", ToolSeparatorComponent)
 WINDOW_COMPONENT("wxChoice", ChoiceComponent)
 WINDOW_COMPONENT("wxSlider", SliderComponent)
 WINDOW_COMPONENT("wxGauge", GaugeComponent)
