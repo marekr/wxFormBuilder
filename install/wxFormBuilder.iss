@@ -9,12 +9,12 @@
 
 #define UNICODE 1
 
-#define MyAppVer "2.0.75"
+#define MyAppVer "3.0.01"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
 #define MyAppExeName "wxFormBuilder.exe"
-#define wxFormBuilderMinVer "2.0.72"
+#define wxFormBuilderMinVer "2.0.75"
 #define Additions "wxAdditions_setup.exe"
 
 [_ISToolDownload]
@@ -66,11 +66,11 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 #if UNICODE
-Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 #else
 Source: files9x\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 #endif
-Source: source\*; DestDir: {app}\source; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main\srccode
+;Source: source\*; DestDir: {app}\source; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main\srccode
 Source: support\contrib.bmp; Flags: dontcopy
 
 [Icons]
@@ -95,7 +95,7 @@ Root: HKCR; SubKey: {#MyAppName}.Project; ValueType: string; ValueData: {#MyAppN
 Root: HKCR; SubKey: {#MyAppName}.Project\Shell\Open\Command; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletevalue
 
 [_ISToolPreCompile]
-Name: create_source_package.bat; Parameters: ; Flags: runminimized
+;Name: create_source_package.bat; Parameters: ; Flags: runminimized
 
 [Code]
 // -- Version checking functions
