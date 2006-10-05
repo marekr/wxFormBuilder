@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<package name="additional" lib="libadditional" icon="calendar16x16.xpm" desc="wxWidgets additional controls">
+<package name="Additional" lib="libadditional" icon="calendar16x16.xpm" desc="wxWidgets additional controls">
   <objectinfo class="wxCalendarCtrl" icon="calendar.xpm" type="widget">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_calendar</property>
