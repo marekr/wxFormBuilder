@@ -526,7 +526,7 @@ public:
 	/**
 	* Constructor.
 	*/
-	ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPackage> package );
+	ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPackage> package, bool startGroup = false );
 
 	virtual ~ObjectInfo() {};
 
@@ -618,6 +618,8 @@ public:
 
 	shared_ptr<ObjectPackage> GetPackage();
 
+	bool IsStartOfGroup() { return m_startGroup; }
+
 	/**
 	* Le asigna un componente a la clase.
 	*/
@@ -634,6 +636,7 @@ private:
 
 	wxBitmap m_icon;
 	wxBitmap m_smallIcon; // The icon for the property grid toolbar
+	bool m_startGroup; // Place a separator in the palette toolbar just before this widget
 
 	map< wxString, shared_ptr< CodeInfo > > m_codeTemp;  // plantillas de codigo K=language_name T=shared_ptr<CodeInfo>
 

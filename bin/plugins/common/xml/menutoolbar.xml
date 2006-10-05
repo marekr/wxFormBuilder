@@ -8,7 +8,7 @@
       <option name="wxST_SIZEGRIP"       help="On Windows, displays a gripper at right-hand side of the status bar." />wxST_SIZEGRIP</property>
   </objectinfo>
   
-  <objectinfo class="wxMenuBar" icon="menubar.xpm" type="menubar">
+  <objectinfo class="wxMenuBar" icon="menubar.xpm" type="menubar" startgroup="1">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_menubar</property>
     <property name="label" type="wxString_i18n">MyMenuBar</property>
@@ -48,7 +48,7 @@
   <objectinfo class="separator" icon="separator.xpm" type="menuitem">
   </objectinfo>
 
-  <objectinfo class="wxToolBar" icon="toolbar.xpm" type="toolbar">
+  <objectinfo class="wxToolBar" icon="toolbar.xpm" type="toolbar" startgroup="1">
     <inherits class="wxWindow" />
     <property name="name" type="text">m_toolBar</property>
     <property name="bitmapsize" type="wxSize" help="Default size of each tool bitmap. The default bitmap size is 16 by 15 pixels." />

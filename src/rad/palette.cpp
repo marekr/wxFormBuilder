@@ -54,10 +54,16 @@ void wxFbPalette::PopulateToolbar(PObjectPackage pkg, wxToolBar *toolbar)
   unsigned int j = 0;
   while (j < pkg->GetObjectCount())
   {
-    wxString widget( pkg->GetObjectInfo(j)->GetClassName() );
+  	shared_ptr< ObjectInfo > info = pkg->GetObjectInfo(j);
+    if ( info->IsStartOfGroup() )
+    {
+    	toolbar->AddSeparator();
+    }
+    wxString widget( info->GetClassName() );
 
-    wxBitmap icon = pkg->GetObjectInfo(j)->GetIconFile();
+    wxBitmap icon = info->GetIconFile();
     toolbar->AddTool(nextId++, widget, icon, widget);
+
     toolbar->Realize();
     j++;
   }

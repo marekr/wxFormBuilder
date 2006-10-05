@@ -486,27 +486,28 @@ void ObjectDatabase::LoadPlugins( shared_ptr< wxFBManager > manager )
 					bool moreXmlFiles = pluginXmlDir.GetFirst( &packageXmlFile, wxT("*.xml"), wxDIR_FILES | wxDIR_HIDDEN );
 					while ( moreXmlFiles )
 					{
-						wxFileName nextXmlFile( nextPluginXmlPath + wxFILE_SEP_PATH + packageXmlFile );
-						PObjectPackage package = LoadPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginIconPath );
-						if ( package )
+						try
 						{
-							try
+							wxFileName nextXmlFile( nextPluginXmlPath + wxFILE_SEP_PATH + packageXmlFile );
+							PObjectPackage package = LoadPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginIconPath );
+							if ( package )
 							{
-								// Setup the inheritance for base classes
-								SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath, manager );
 
-								// Load the C++ code tempates
-								nextXmlFile.SetExt( wxT("cppcode") );
-								LoadCodeGen( _STDSTR(nextXmlFile.GetFullPath()) );
-								if ( !packages.insert( PackageMap::value_type( package->GetPackageName(), package ) ).second )
-								{
-									wxLogError( _("There are two plugins named \"%s\""), package->GetPackageName().c_str() );
-								}
+									// Setup the inheritance for base classes
+									SetupPackage( _STDSTR(nextXmlFile.GetFullPath()), nextPluginPath, manager );
+
+									// Load the C++ code tempates
+									nextXmlFile.SetExt( wxT("cppcode") );
+									LoadCodeGen( _STDSTR(nextXmlFile.GetFullPath()) );
+									if ( !packages.insert( PackageMap::value_type( package->GetPackageName(), package ) ).second )
+									{
+										wxLogError( _("There are two plugins named \"%s\""), package->GetPackageName().c_str() );
+									}
 							}
-							catch ( wxFBException& ex )
-							{
-								wxLogError( ex.what() );
-							}
+						}
+						catch ( wxFBException& ex )
+						{
+							wxLogError( ex.what() );
 						}
 						moreXmlFiles = pluginXmlDir.GetNext( &packageXmlFile );
 					}
@@ -615,7 +616,7 @@ void ObjectDatabase::SetupPackage( std::string file, wxString libPath, shared_pt
 	}
 	catch ( ticpp::Exception& ex )
 	{
-		wxLogError( _WXSTR(ex.m_details) );
+		THROW_WXFBEX( _WXSTR(ex.m_details) );
 	}
 }
 
@@ -744,7 +745,10 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file, wxString iconPath 
 			elem_obj->GetAttributeOrDefault( "smallIcon", &smallIcon, "" );
 			wxString smallIconFullPath = iconPath + wxFILE_SEP_PATH + _WXSTR(smallIcon);
 
-			shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ), package ) );
+			bool startGroup;
+			elem_obj->GetAttributeOrDefault( "startgroup", &startGroup, false );
+
+			shared_ptr<ObjectInfo> obj_info( new ObjectInfo( _WXSTR(class_name), GetObjectType( _WXSTR(type) ), package, startGroup ) );
 
 			if ( !icon.empty() && wxFileName::FileExists( iconFullPath ) )
 			{
@@ -784,7 +788,7 @@ PObjectPackage ObjectDatabase::LoadPackage( std::string file, wxString iconPath 
 	}
 	catch ( ticpp::Exception& ex )
 	{
-		wxLogError( _WXSTR(ex.m_details) );
+		THROW_WXFBEX( _WXSTR(ex.m_details) );
 	}
 
 	return package;

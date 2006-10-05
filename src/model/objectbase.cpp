@@ -641,7 +641,7 @@ wxArrayString ObjectBase::GetPropertyAsArrayString(const wxString& pname)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ObjectInfo::ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPackage> package )
+ObjectInfo::ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPackage> package, bool startGroup )
 {
 	m_class = class_name;
 	m_type = type;
@@ -649,6 +649,7 @@ ObjectInfo::ObjectInfo(wxString class_name, PObjectType type, weak_ptr<ObjectPac
 	m_component = NULL;
 	m_package = package;
 	m_category = shared_ptr< PropertyCategory >( new PropertyCategory( m_class ) );
+	m_startGroup = startGroup;
 }
 
 shared_ptr<ObjectPackage> ObjectInfo::GetPackage()
