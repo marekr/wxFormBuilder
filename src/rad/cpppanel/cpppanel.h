@@ -27,7 +27,7 @@
 #define __CPP_PANEL__
 
 #include <wx/wx.h>
-#include <wx/wxscintilla/wxscintilla.h>
+#include <wx/wxScintilla/wxscintilla.h>
 
 #include "codegen/codegen.h"
 #include "codegen/cppcg.h"

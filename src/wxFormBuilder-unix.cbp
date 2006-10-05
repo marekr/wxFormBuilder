@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../bin/wxformbuilderd" />
+				<Option output="../bin/wxformbuilderd" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="../bin" />
 				<Option object_output="_objsd" />
 				<Option type="1" />
@@ -22,29 +22,28 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --debug=yes`" />
-					<Add library="tinyxmld" />
+					<Add library="ticppd" />
 				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="yes" />
 				</Environment>
 			</Target>
 			<Target title="Release">
-				<Option output="../bin/wxformbuilder" />
+				<Option output="../bin/wxformbuilder" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="../bin" />
 				<Option object_output="_objs" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Linker>
-					<Add library="tinyxml" />
+					<Add library="ticpp" />
 				</Linker>
 				<Environment>
 					<Variable name="DEBUG" value="no" />
 				</Environment>
 			</Target>
 			<Environment>
-				<Variable name="tinyxml" value="../sdk/tinyxml" />
-				<Variable name="plugin_interface" value="../sdk/plugin_interface" />
+				<Variable name="sdk" value="../sdk" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -58,9 +57,9 @@
 			<Add option="-D_UNICODE" />
 			<Add directory="../sdk/boost_1_31_0_smart_ptr" />
 			<Add directory="../src" />
-			<Add directory="$(#wxadditions.include)" />
-			<Add directory="$(tinyxml)" />
-			<Add directory="$(plugin_interface)" />
+			<Add directory="controls/include" />
+			<Add directory="$(sdk)/tinyxml" />
+			<Add directory="$(sdk)/plugin_interface" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --debug=$(DEBUG)`" />
@@ -68,8 +67,8 @@
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_flatnotebook-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_propgrid-`wx-config --release`" />
 			<Add library="`wx-config --debug=$(DEBUG) --basename`_scintilla-`wx-config --release`" />
-			<Add directory="$(tinyxml)/lib" />
-			<Add directory="$(#wxadditions.lib)" />
+			<Add directory="$(sdk)/lib" />
+			<Add directory="controls/lib" />
 		</Linker>
 		<Unit filename="codegen/codegen.cpp">
 			<Option compilerVar="CPP" />
