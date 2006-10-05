@@ -9,7 +9,7 @@ date Version 2.00.76 (3.0 Beta 1)
 * Fixed xrc generation of static bitmap using patch supplied by henrique.
   This closes FS#16
 * Added subclassing on forms. This closes FS#21.
-+ Added center property for wxDialog. This closes FS#17.
++ Added center property for wxDialog and wxFrame. This closes FS#17.
 + Individual directoryies for each plug-in.
 + Toolbar seperators. This closes FS#11.
 + Possiblity to group plugin components with toolbar separators.

@@ -48,6 +48,9 @@
 
 			#ifnotnull $minimum_size
 			@{ this->SetMinSize( $minimum_size ); #nl @}
+			
+			#ifnotnull $center
+			@{ this->Centre( $center ); #nl @}
 		</template>
 	</templates>
 
@@ -147,7 +150,7 @@
 			@{ this->SetMinSize( $minimum_size ); #nl @}
 			
 			#ifnotnull $center
-			@{ this->Centre( $center ); @}
+			@{ this->Centre( $center ); #nl @}
 		</template>
 	</templates>
 

@@ -83,8 +83,12 @@ public:
 	TiXmlElement* ExportToXrc(IObject *obj)
 	{
 		ObjectToXrcFilter xrc(obj, _("wxFrame"), obj->GetPropertyAsString(_("name")));
-//		xrc.AddWindowProperties();
+		xrc.AddWindowProperties();
 		xrc.AddProperty( _("title"), _("title"), XRC_TYPE_TEXT);
+		if ( !obj->IsNull( _("center") ) )
+		{
+			xrc.AddPropertyValue( _("centered"), _("1") );
+		}
 		return xrc.GetXrcObject();
 	}
 
@@ -93,6 +97,7 @@ public:
 		XrcToXfbFilter filter(xrcObj, _("Frame"));
 		filter.AddWindowProperties();
 		filter.AddProperty( _("title"), _("title"), XRC_TYPE_TEXT);
+		filter.AddProperty(_("centered"), _("center"), XRC_TYPE_BITLIST);
 		return filter.GetXfbObject();
 	}
 };
@@ -953,7 +958,7 @@ public:
 
 	TiXmlElement* ImportFromXrc( TiXmlElement *xrcObj )
 	{
-		XrcToXfbFilter filter( xrcObj, _("separator") );
+		XrcToXfbFilter filter( xrcObj, _("toolSeparator") );
 		return filter.GetXfbObject();
 	}
 };

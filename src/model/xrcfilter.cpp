@@ -584,9 +584,19 @@ shared_ptr<ObjectBase> XrcLoader::GetObject(TiXmlElement *xrcObj, shared_ptr<Obj
   // Well, this is not nice. wxMenu class name is ambiguous, so we'll get the
   // correct class by the context. If the parent of a wxMenu is another wxMenu
   // then the class name will be "submenu"
-  else if (className == "wxMenu" &&
-    (parent->GetClassName() == wxT("wxMenu") || parent->GetClassName() == wxT("submenu")))
-    className = "submenu";
+  else if ( className == "wxMenu" && (parent->GetClassName() == wxT("wxMenu") || parent->GetClassName() == wxT("submenu")) )
+  {
+	className = "submenu";
+  }
+
+  // "separator" is also ambiguous - could be a toolbar separator or a menu separator
+  else if (className == "separator")
+  {
+	if ( parent->GetClassName() == wxT("wxToolBar") )
+	{
+		className = "toolSeparator";
+	}
+  }
 
   shared_ptr<ObjectBase> object;
   shared_ptr<ObjectInfo> objInfo = m_objDb->GetObjectInfo(_WXSTR(className));
