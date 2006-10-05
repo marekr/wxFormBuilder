@@ -16,6 +16,7 @@ date Version 2.00.76 (3.0 Beta 1)
 ^ Premake script for sdk projects.
 ^ Renamed contrib to wxAddition plug-in.
 ^ Palette now remembers tab order.
+^ Major ripup/redesign of the plugin interface.
 ~ Plugin directory out of src.
 ~ wxAdditions plug-in to the wxAdditions repository.
 
