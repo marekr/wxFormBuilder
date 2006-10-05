@@ -1,34 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="C++">
 
-  <templates class="wxWindow">
-	<template name="settings">
-		#ifnotnull $window_extra_style
-		@{ $name->SetExtraStyle( $window_extra_style ); #nl @}
-
-		#ifnotnull $font
-		@{ $name->SetFont( $font ); #nl @}
-
-		#ifnotnull $fg
-		@{ $name->SetForegroundColour( $fg ); #nl @}
-
-		#ifnotnull $bg
-		@{ $name->SetBackgroundColour( $bg ); #nl @}
-
-		#ifequal $enabled "0"
-		@{ $name->Enable( $enabled ); #nl @}
-
-		#ifequal $hidden "1"
-		@{ $name->Hide(); #nl @}
-
-		#ifnotnull $tooltip
-		@{ $name->SetToolTip( $tooltip ); #nl @}
-
-		#ifnotnull $minimum_size
-		@{ $name->SetMinSize( $minimum_size ); #nl @}
-	</template>
-  </templates>
-
   <templates class="wxButton">
     <template name="declaration">#class* $name;</template>
     <template name="construction">$name = new #class( #wxparent $name, $id, $label, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>

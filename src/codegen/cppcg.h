@@ -132,11 +132,7 @@ private:
 	*/
 	void GenIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes);
 	void GenObjectIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes);
-
-	/**
-	* Determine if this object or any of its children are from the contrib package
-	*/
-	bool UsingContrib( shared_ptr<ObjectBase> object );
+	void GenBaseIncludes( shared_ptr< ObjectInfo > info, shared_ptr< ObjectBase > obj, set< wxString >* includes );
 
 	/**
 	* Genera la sección de '#include' para las propiedades XPM.

@@ -27,14 +27,37 @@
       @#include &lt;wx/wx.h&gt; #nl
       @#endif //WX_PRECOMP
 	</template>
-	<template name="link_contrib">
-      @#ifdef __VISUALC__		#nl
-      @#include &lt;wx/link_additions.h&gt; #nl
-      @#endif //__VISUALC__
-    </template>
     <template name="cpp_epilogue">
       ///////////////////////////////////////////////////////////////////////////
     </template>
+	<templates class="wxWindow">
+		<template name="settings">
+			#ifnotnull $window_extra_style
+			@{ $name->SetExtraStyle( $window_extra_style ); #nl @}
+
+			#ifnotnull $font
+			@{ $name->SetFont( $font ); #nl @}
+
+			#ifnotnull $fg
+			@{ $name->SetForegroundColour( $fg ); #nl @}
+
+			#ifnotnull $bg
+			@{ $name->SetBackgroundColour( $bg ); #nl @}
+
+			#ifequal $enabled "0"
+			@{ $name->Enable( $enabled ); #nl @}
+
+			#ifequal $hidden "1"
+			@{ $name->Hide(); #nl @}
+
+			#ifnotnull $tooltip
+			@{ $name->SetToolTip( $tooltip ); #nl @}
+
+			#ifnotnull $minimum_size
+			@{ $name->SetMinSize( $minimum_size ); #nl @}
+		</template>
+	<template name="toolbar_add">#parent $name->AddControl( $name );</template>
+  </templates>
   </templates>
 </codegen>
 

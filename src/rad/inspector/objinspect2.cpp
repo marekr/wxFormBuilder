@@ -654,6 +654,19 @@ void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase
 {
 	Debug::Print( wxT("[ObjectInspector::CreatePropertyPanel] Creating Property Editor") );
 
+	// Get Category
+	shared_ptr< PropertyCategory > category = obj_info->GetCategory();
+	if ( !category )
+	{
+		return;
+	}
+
+	// Prevent page creation if there are no properties
+	if ( 0 == category->GetCategoryCount() && 0 == category->GetPropertyCount() )
+	{
+		return;
+	}
+
 	int pageIndex = m_pg->GetPageByName( name );
 	if ( wxNOT_FOUND == pageIndex )
 	{
@@ -661,9 +674,9 @@ void ObjectInspector::CreateCategory(const wxString& name, shared_ptr<ObjectBase
 	}
 	m_pg->SelectPage( name );
 
-	m_pg->AppendCategory( obj_info->GetCategory()->GetName() );
-	AddProperties( name, obj, obj_info, obj_info->GetCategory(), properties );
-	m_pg->SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
+	m_pg->AppendCategory( category->GetName() );
+	AddProperties( name, obj, obj_info, category, properties );
+	m_pg->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, (long)1 );
 }
 
 void ObjectInspector::AddProperties( const wxString& name, shared_ptr< ObjectBase > obj, shared_ptr< ObjectInfo > obj_info, shared_ptr< PropertyCategory > category, map< wxString, shared_ptr< Property > >& properties )

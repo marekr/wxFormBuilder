@@ -387,14 +387,6 @@ bool CppCodeGenerator::GenerateCode( shared_ptr<ObjectBase> project )
 	m_source->WriteLn( code );
 	m_source->WriteLn( wxT("") );
 
-	// Generate linker instructions for contrib libraries
-	if ( UsingContrib( project ) )
-	{
-		code = GetCode( project, wxT("link_contrib") );
-		m_source->WriteLn( code );
-		m_source->WriteLn( wxT("") );
-	}
-
 	m_source->WriteLn( wxT("#include \"") + file + wxT(".h\""));
 	m_source->WriteLn( wxT("") );
 	GenXpmIncludes( project );
@@ -579,7 +571,7 @@ void CppCodeGenerator::GenIncludes( shared_ptr<ObjectBase> project, set<wxString
 	}
 }
 
-void CppCodeGenerator::GenObjectIncludes( shared_ptr<ObjectBase> project, set<wxString>* includes)
+void CppCodeGenerator::GenObjectIncludes( shared_ptr< ObjectBase > project, set< wxString >* includes )
 {
 	// Call GenIncludes on all children as well
 	for ( unsigned int i = 0; i < project->GetChildCount(); i++ )
@@ -588,7 +580,7 @@ void CppCodeGenerator::GenObjectIncludes( shared_ptr<ObjectBase> project, set<wx
 	}
 
 	// Fill the set
-	shared_ptr<CodeInfo> code_info = project->GetObjectInfo()->GetCodeInfo( wxT("C++") );
+	shared_ptr< CodeInfo > code_info = project->GetObjectInfo()->GetCodeInfo( wxT("C++") );
 	if (code_info)
 	{
 		CppTemplateParser parser(project,code_info->GetTemplate( wxT("include") ) );
@@ -598,35 +590,36 @@ void CppCodeGenerator::GenObjectIncludes( shared_ptr<ObjectBase> project, set<wx
 			includes->insert( include );
 		}
 	}
+
+	// Generate includes for base classes
+	GenBaseIncludes( project->GetObjectInfo(), project, includes );
 }
 
-bool CppCodeGenerator::UsingContrib( shared_ptr<ObjectBase> object )
+void CppCodeGenerator::GenBaseIncludes( shared_ptr< ObjectInfo > info, shared_ptr< ObjectBase > obj, set< wxString >* includes )
 {
-	shared_ptr<ObjectInfo> info = object->GetObjectInfo();
-	if ( info )
+	if ( !info )
 	{
-		shared_ptr<ObjectPackage> package = info->GetPackage();
-		if ( package )
-		{
-			if ( package->GetPackageName() == wxT("contrib") )
-			{
-				return true;
-			}
-		}
+		return;
 	}
 
-	// Call UsingContrib on all children as well
-	for ( unsigned int i = 0; i < object->GetChildCount(); i++ )
+	// Process all the base classes recursively
+	for ( unsigned int i = 0; i < info->GetBaseClassCount(); i++ )
 	{
-		if ( UsingContrib( object->GetChild(i) ) )
-		{
-			return true;
-		}
+		shared_ptr< ObjectInfo > base_info = info->GetBaseClass( i );
+		GenBaseIncludes( base_info, obj, includes );
 	}
 
-	return false;
+	shared_ptr< CodeInfo > code_info = info->GetCodeInfo( wxT("C++") );
+	if ( code_info )
+	{
+		CppTemplateParser parser( obj, code_info->GetTemplate( wxT("include") ) );
+		wxString include = parser.ParseTemplate();
+		if ( !include.empty() )
+		{
+			includes->insert( include );
+		}
+	}
 }
-
 
 void CppCodeGenerator::FindDependencies( shared_ptr< ObjectBase > obj, set< shared_ptr< ObjectInfo > >& info_set )
 {
