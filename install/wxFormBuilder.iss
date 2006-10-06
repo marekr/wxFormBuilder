@@ -9,7 +9,7 @@
 
 #define UNICODE 1
 
-#define MyAppVer "3.0.01"
+#define MyAppVer "3.0.03"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
@@ -18,7 +18,7 @@
 #define Additions "wxAdditions_setup.exe"
 
 [_ISToolDownload]
-Source: http://wxformbuilder.sourceforge.net/wxAdditions27_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
+Source: http://wxformbuilder.sourceforge.net/beta/wxAdditions27_setup.exe; DestDir: {tmp}; DestName: wxAdditions_setup.exe
 
 [Setup]
 AppName={#MyAppName}
@@ -32,7 +32,7 @@ DisableDirPage=false
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=false
 #if UNICODE
-OutputBaseFilename={#MyAppName}_v{#MyAppVer}
+OutputBaseFilename={#MyAppName}_v{#MyAppVer}-beta1
 #else
 OutputBaseFilename={#MyAppName}_v{#MyAppVer}-9xME
 #endif
@@ -59,19 +59,18 @@ MinVersion=0,4.0.1381sp6
 
 
 [Messages]
-BeveledLabel={#MyAppName} v{#MyAppVer}
+BeveledLabel={#MyAppName} v{#MyAppVer} Beta 1
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
 #if UNICODE
-;Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 #else
 Source: files9x\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 #endif
-;Source: source\*; DestDir: {app}\source; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main\srccode
-Source: support\contrib.bmp; Flags: dontcopy
+Source: source\*; DestDir: {app}\source; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main\srccode
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
@@ -81,7 +80,7 @@ Name: {userdesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: deskto
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-Filename: {tmp}\{#additions}; WorkingDir: {tmp}; StatusMsg: Installing wxAdditions ...; Flags: hidewizard; Check: wxAdditionsCheck
+Filename: {tmp}\{#additions}; WorkingDir: {tmp}; StatusMsg: Installing wxAdditions ...; Flags: hidewizard; Check: wxAdditionsCheck; Parameters: /wxfbpath={app}
 
 [Components]
 Name: main; Description: wxFormBuilder (required); Flags: fixed dontinheritcheck checkablealone; Types: custom compact full
@@ -95,7 +94,7 @@ Root: HKCR; SubKey: {#MyAppName}.Project; ValueType: string; ValueData: {#MyAppN
 Root: HKCR; SubKey: {#MyAppName}.Project\Shell\Open\Command; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletevalue
 
 [_ISToolPreCompile]
-;Name: create_source_package.bat; Parameters: ; Flags: runminimized
+Name: create_source_package.bat; Parameters: ; Flags: runminimized
 
 [Code]
 // -- Version checking functions
@@ -201,63 +200,101 @@ end;
 
 // -- Functions for custom page and downloading
 var
-  wxAdditionsPage: TWizardPage;
+  plugins_page: TWizardPage;
+  { Plug-in global variables. In this section you need to create a TCheckBox
+    for each plugin you want to display in the plugins page. }
+  // wxAdditions plugin.
   wxAdditionsCheckBox: TCheckBox;
+  // Sample plugin.
+  sampleCheckBox: TCheckBox;
 
-function CreateCustomOptionPage(AAfterId: Integer; ACaption, ASubCaption, AImageFileName, ALabel1Caption, ALabel2Caption,
-  ALabel3Caption, ACheckCaption: String; var CheckBox: TCheckBox): TWizardPage;
+function CreateCustomOptionPage(AfterId: Integer; Caption, SubCaption, {AImageFileName,}
+	wxFBPluginDescCaption, InstructionsCaption, TipCaption,
+	Plugin1Caption, Plugin1Hint,
+	Plugin2Caption, Plugin2Hint: String;
+	var Plugin1, Plugin2: TCheckBox
+  ): TWizardPage;
 var
   Page: TWizardPage;
-  Bitmap1: TBitmapImage;
-  Label1, Label2, Label3: TNewStaticText;
+  Label1, Label2: TNewStaticText;
+  Label3: TLabel;
+  Bevel1: TBevel;
+
 begin
-  Page := CreateCustomPage(AAfterID, ACaption, ASubCaption);
+  Page := CreateCustomPage(AfterID, Caption, SubCaption);
 
-  AImageFileName := ExpandConstant('{tmp}\' + AImageFileName);
-  if not FileExists(AImageFileName) then
-    ExtractTemporaryFile(ExtractFileName(AImageFileName));
-
+  { wxFormBuilder Plug-in Description }
   Label1 := TNewStaticText.Create(Page);
   with Label1 do begin
     AutoSize := False;
     Width := Page.SurfaceWidth - Left;
     WordWrap := True;
-    Caption := ALabel1Caption;
+    Caption := wxFBPluginDescCaption;
     Parent := Page.Surface;
   end;
   WizardForm.AdjustLabelHeight(Label1);
 
+  { User instructions }
   Label2 := TNewStaticText.Create(Page);
   with Label2 do begin
+    AutoSize := False;
+    //Top := Page.SurfaceHeight - ScaleY(32);
     Top := Label1.Top + Label1.Height + ScaleY(12);
+    Width := Page.SurfaceWidth - Left;
     Font.Style := [fsBold];
-    Caption := ALabel2Caption;
+    Caption := InstructionsCaption;
+    WordWrap := True;
     Parent := Page.Surface;
   end;
   WizardForm.AdjustLabelHeight(Label2);
 
-  Bitmap1 := TBitmapImage.Create(Page);
-  with Bitmap1 do begin
-    AutoSize := True;
-    Top := Label2.Top + Label2.Height + ScaleY(12);
-    Bitmap.LoadFromFile(ExpandConstant(AImageFileName));
+  { Bevel1 }
+  Bevel1 := TBevel.Create(Page);
+  with Bevel1 do
+  begin
     Parent := Page.Surface;
-  end;
-
-  Label3 := TNewStaticText.Create(Page);
-  with Label3 do begin
-    Top := Bitmap1.Top + Bitmap1.Height + ScaleY(12);
-    Caption := ALabel3Caption;
-    Parent := Page.Surface;
-  end;
-  WizardForm.AdjustLabelHeight(Label3);
-
-  CheckBox := TCheckBox.Create(Page);
-  with CheckBox do begin
-    Top := Label3.Top + Label3.Height + ScaleY(12);
+    Top := Label2.Top + Label2.Height + ScaleY(2);
     Width := Page.SurfaceWidth;
-    Caption := ACheckCaption;
+    Height := Page.SurfaceHeight - Label1.Height - Label2.Height - ScaleY(28);
+  end;
+
+  { Tip text }
+  Label3 := TLabel.Create(Page);
+  with Label3 do begin
+    Top := Bevel1.Top + Bevel1.Height;
+    Width := Page.SurfaceWidth;
+    Alignment := taRightJustify;
+    Font.Color := -16777204;
+    Font.Height := ScaleY(-9);
+    Caption := TipCaption;
     Parent := Page.Surface;
+  end;
+
+  { Plugin1 }
+  wxAdditionsCheckBox := TCheckBox.Create(Page);
+  with wxAdditionsCheckBox do begin
+    TabOrder := 0;
+    Parent := Page.Surface;
+    Left := ScaleX(8);
+    Top := Bevel1.Top + ScaleY(4);
+    Width := Page.SurfaceWidth - ScaleX(16);
+    Caption := Plugin1Caption;
+    Hint := Plugin1Hint;
+    ShowHint := True;
+    Checked := True;
+    State := cbChecked;
+  end;
+
+  { Plugin2 }
+  sampleCheckBox := TCheckBox.Create(Page);
+  with sampleCheckBox do begin
+    Parent := Page.Surface;
+    Left := ScaleX(8);
+    Top := Plugin1.Top + Plugin1.Height + ScaleY(4);
+    Width := Page.SurfaceWidth - ScaleX(16);
+    Caption := Plugin2Caption;
+    Hint := Plugin2Hint;
+    ShowHint := True;
   end;
 
   Result := Page;
@@ -265,45 +302,87 @@ end;
 
 procedure CreateCustomPages;
 var
-  Caption, SubCaption1, ImageFileName, Label1Caption, Label2Caption, Label3Caption, CheckCaption: String;
-begin
-  Caption := 'wxAdditions';
-  SubCaption1 := 'Would you like to download and install wxAdditions?';
-  ImageFileName := 'contrib.bmp';
-  Label1Caption :=
-    'wxFormBuilder includes support for some contributed widgets, including ' +
-    'wxScintilla, wxPropGrid, wxFlatNotebook, wxPlot, and AWX. ' +
-    'To facilitate the use of these widgets in applications, the source and ' +
-    'binaries (compiled with MinGW and VC7.1) are provided in the package ' +
-    'wxAdditions (http://wiki.wxformbuilder.org/Main/WxAdditions).';
-  Label2Caption := 'Using wxAdditions is especially recommended to get full functionality from' + #13#10 +
-    'wxFormBuilder.';
-  Label3Caption := 'Select whether you would like to download and install wxAdditions, then click Next.';
-  CheckCaption := '&Download and install wxAdditions (33.2MB)';
+  Caption: String;
+  SubCaption1: String;
+  Description: String;
+  Instructions: String;
+  Tip: String;
 
-  wxAdditionsPage := CreateCustomOptionPage(wpSelectProgramGroup, Caption, SubCaption1, ImageFileName, Label1Caption, Label2Caption, Label3Caption, CheckCaption, wxAdditionsCheckBox);
+  // Plugins Start Here:
+  p1Caption: String;
+  p1Hint: String;
+  p2Caption: String;
+  p2Hint: String;
+
+begin
+  Caption := 'wxFormBuilder Plug-ins';
+  SubCaption1 := 'Would you like to download and install wxFormBuilder plug-ins?';
+
+  // Plugins descriptions text.
+  Description :=
+    'wxFormBuilder v3.0+ includes support for plug-ins that extend wxFormBuilders ' +
+    'abilities. This makes it easy to add new controls to wxFormBuilder. ' +
+    'Please look and determine what plug-ins you would like to install.';
+
+  // User instructions text.
+  Instructions := 'Select whether you would like to download and install wxFormBuilder ' +
+    'plug-ins, then click Next.';
+
+  // Tip text.
+  Tip := 'Tip: Hover mouse cursor over plug-in to get more information';
+
+  { wxAdditions :Plugin1 }
+  p1Caption := 'wxAdditions plug-in.  Source and binaries (26.5MB)';
+  p1Hint := 'Includes wxScintilla, wxPropGrid, wxFlatNotebook, wxPlotCtrl, and AWX.';
+
+  { Sample2Plugin :Plugin2 }
+  p2Caption := 'Sample wxFormBuilder plug-in. Binary only (456KB)';
+  p2Hint := 'This doesn''t actually install anything. It is just a test.';
+
+  // Create the actual page.
+  plugins_page := CreateCustomOptionPage(wpSelectProgramGroup,
+	Caption, SubCaption1,
+	{ImageFileName,}
+	Description, Instructions, Tip,
+	p1Caption, p1Hint,
+	p2Caption, p2Hint,
+	wxAdditionsCheckBox, sampleCheckBox
+  );
 end;
 
-function wxAdditionsCheck: Boolean;
+function IsCheckBoxChecked( box: TCheckBox ) : Boolean;
 begin
   if WizardSilent() then
   begin
     Result := False;
   end else
   begin
-	Result := wxAdditionsCheckBox.Checked;
+	Result := box.Checked;
   end;
+end;
+
+{ Plugin install check functions. These need to be implimented for each new plugin. }
+function wxAdditionsCheck : Boolean;
+begin
+  Result := IsCheckBoxChecked( wxAdditionsCheckBox );
+end;
+
+function sampleCheck : Boolean;
+begin
+  Result := IsCheckBoxChecked( sampleCheckBox );
 end;
 
 procedure InitializeWizard;
 begin
   CreateCustomPages;
 
+  { Add retrieving previous data for each plugin here: }
   wxAdditionsCheckBox.Checked := GetPreviousData('wxAdditions', '1') = '1';
 end;
 
 procedure RegisterPreviousData(PreviousDataKey: Integer);
 begin
+  { Add setting the data for each plugin here: }
   SetPreviousData(PreviousDataKey, 'wxAdditions', IntToStr(Ord(wxAdditionsCheckBox.Checked)));
 end;
 
@@ -318,3 +397,4 @@ begin
 	end;
 end;
 // -- END -- Functions for custom page and downloading
+
