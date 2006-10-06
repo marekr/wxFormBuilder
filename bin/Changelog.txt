@@ -9,6 +9,7 @@
 * Fixed xrc generation of static bitmap using patch supplied by henrique.
   This closes FS#16
 * Added subclassing on forms. This closes FS#21.
+* Fixed C++ output of value property for wxGauge.
 + Added center property for wxDialog and wxFrame. This closes FS#17.
 + Individual directoryies for each plug-in.
 + Toolbar seperators. This closes FS#11.

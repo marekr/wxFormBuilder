@@ -107,12 +107,16 @@
   <templates class="wxGauge">
     <template name="declaration">#class* $name;</template>
     <template name="construction">$name = new #class( #wxparent $name, $id, $range, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>
-    <template name="include">@#include &lt;wx/gauge.h&gt;</template>
+    <template name="settings">
+		#ifnotnull $value
+		@{ $name->SetValue( $value ); @}
+	</template>
+	<template name="include">@#include &lt;wx/gauge.h&gt;</template>
   </templates>
 
   <templates class="wxSlider">
     <template name="declaration">#class* $name;</template>
-    <template name="construction">$name = new #class(  #wxparent $name, $id, $value, $minValue, $maxValue, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>
+    <template name="construction">$name = new #class( #wxparent $name, $id, $value, $minValue, $maxValue, $pos, $size, $style #ifnotnull $window_style @{ |$window_style @} );</template>
     <template name="include">@#include &lt;wx/slider.h&gt;</template>
   </templates>
 

@@ -184,7 +184,7 @@
     <inherits class="wxWindow" />
     <property name="name" type="text">m_gauge</property>
     <property name="range" type="text" help="Integer range (maximum value) of the gauge.">100</property>
-    <property name="value" type="text" help="Initial position for the gauge.">50</property>
+    <property name="value" type="text" help="Initial position for the gauge."></property>
     <property name="style" type="bitlist">
       <option name="wxGA_HORIZONTAL"   help="Creates a horizontal gauge. "/>
       <option name="wxGA_VERTICAL"     help="Creates a vertical gauge."/>
