@@ -1,6 +1,8 @@
-project.name = "wxFormBuilder SDK"
 if ( OS == "windows" ) then
+	project.name = "wxFormBuilder SDK"
 	project.configs = { "Debug", "Debug (Unicode)", "Release", "Release (Unicode)" }
+else
+	project.name = "wxFormBuilder SDK-unix"
 end
 project.libdir = "lib"
 

@@ -1,13 +1,11 @@
-package.name = "Plugin Interface"
+if ( OS == "windows") then
+	package.name = "Plugin Interface"
+else
+	package.name = "plugin_interface-unix"
+end
 package.kind = "lib"
 package.language = "c++"
 package.files = { matchfiles( "*.h", "*.cpp" ) }
-
--- Not needed soon brcause of a bug fix.
---if ( options[target] == "cb-gcc" ) then
-    -- Change the default lib extention to .a instead of .lib
-    --package.targetextension = "a"
---end
 
 -- Set object output directory.
 package.config["Debug"].objdir = ".objsd"

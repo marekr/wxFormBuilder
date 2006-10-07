@@ -6,7 +6,7 @@ Introduction:
 	a wxFormBuilder plug-in. The SDK uses a simple but effective build tool called
 	Premake. You use premake to build makefiles, Visual Studio 7.1/2005 projects,
 	and Code::Blocks projects. Now makefile and Code::Blocks are the supported
-	types that the wxFormBuilder team tests and uses, so your millage may vary
+	types that the wxFormBuilder team tests and uses, so your mileage may vary
 	with the other build types. 
 	
 	To create the needed build types navigate to the 'sdk' directory under the
@@ -28,7 +28,7 @@ Includes:
 		You can build it use the included Code::Blocks project (.cbp). 
 		There will be makefile support soon.
     
-	2. Tinyxml++ 2.4.2
+	2. Tinyxml++ 2.4.2 (TiCPP)
 		wxFormBuilder uses TinyXML++ for writing and reading xml. For building TinyXML++
 		use the included Code::Blocks project (.cbp). There will be makefile support soon.
 		
@@ -44,6 +44,9 @@ Notes:
 	- Subversion is a great free cross-platform version control manager.
 	  It can be found here:
 	  http://subversion.tigris.org
+	  
+	- TinyXML++ (TiCPP) is a great small xml parser. It can be found here:
+	  http://code.google.com/p/ticpp/
 
 	- I suggest you use the Code::Blocks workspace because it will place everything where
 	  it belongs. No need to worry about the files being located in the proper location.
