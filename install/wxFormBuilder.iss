@@ -80,7 +80,7 @@ Name: {userdesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: deskto
 
 [Run]
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-Filename: {tmp}\{#additions}; WorkingDir: {tmp}; StatusMsg: Installing wxAdditions ...; Flags: hidewizard; Check: wxAdditionsCheck; Parameters: "/wxfbpath=""""{app}"""""
+Filename: {tmp}\{#additions}; WorkingDir: {tmp}; StatusMsg: Installing wxAdditions ...; Flags: hidewizard; Check: wxAdditionsCheck; Parameters: "/wxfbpath=""{app}"""
 
 [Components]
 Name: main; Description: wxFormBuilder (required); Flags: fixed dontinheritcheck checkablealone; Types: custom compact full
