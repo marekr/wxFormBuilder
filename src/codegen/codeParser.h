@@ -60,9 +60,9 @@ class CodeParser
 
 		//constructor that calls ParseFiles()
 		CodeParser(wxString headerFileName, wxString sourceFileName, wxString className)
-{
-	ParseFiles(headerFileName, sourceFileName, className);
-}
+		{
+			ParseFiles(headerFileName, sourceFileName, className);
+		}
 
 		~CodeParser()
 		{}
@@ -99,7 +99,10 @@ class CodeParser
 		{
 			return m_userMemebers;
 		}
-
+		
+          //returns the Documantation of a function by name
+		wxString GetFunctionDocumentation( wxString function );
+          
 		//returns the contents of a function by name and then removes it from the list of remaining functions
 		wxString GetFunctionContents(wxString function);
 

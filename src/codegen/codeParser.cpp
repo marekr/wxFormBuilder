@@ -3,6 +3,7 @@
 
 void Function::SetHeading( wxString heading )
 {
+	wxMessageBox(heading);
 	m_functionHeading = heading;
 }
 
@@ -13,7 +14,16 @@ void Function::SetContents( wxString contents )
 
 wxString Function::GetFunction()
 {
-	return m_documentation + wxT( "\n" ) + m_functionHeading + wxT( "\n{\n" ) + m_functionContents + wxT( "\n}" );
+	wxString Str;
+	Str << m_documentation;
+	Str << wxT( "\n" );
+	Str << m_functionHeading;
+	Str << wxT( "\n{\n" );
+	Str << m_functionContents;
+	Str << wxT( "\n}" );
+	wxMessageBox(Str);
+	
+	return  Str;
 }
 
 
@@ -147,8 +157,9 @@ wxString CodeParser::ParseSourceFunctions( wxString code )
 		int loopcheck = 0;
 	int functionStart = 0;
 	int functionEnd = 0;
+	int previousFunctionEnd = 0;
 	int contentSize;
-	wxString funcName;
+	wxString funcName, funcArg;
 	Function *func;
 	wxString Str;
 
@@ -161,23 +172,25 @@ wxString CodeParser::ParseSourceFunctions( wxString code )
 		{
 			return wxT( "" );
 		}
-
+		//found a function now creat a new function class
 		func = new Function();
 
 		//find end of function name
-		functionEnd = code.find_first_of( wxT( " (" ), functionStart );
+		functionEnd = code.find_first_of( wxT( "(" ), functionStart );
 		functionStart += m_className.Len() + 2;
 		funcName = code.Mid( functionStart, functionEnd - functionStart );
 
 		m_functions[funcName] = func;
+		
+		//Find function Arguments
 
 		//find the begining of the line on which the function name resides
 		functionStart = code.rfind( '\n', functionStart );
-		func->SetDocumentation( code.Mid( functionEnd, functionEnd - functionStart ) );
+		func->SetDocumentation( code.Mid( previousFunctionEnd, functionStart - previousFunctionEnd ) );
 		functionStart++;
 
 		functionEnd = code.find( '\n', functionStart );
-		func->SetHeading( code.Mid( functionEnd, functionEnd - functionStart ) );
+		func->SetHeading( code.Mid( functionStart, functionEnd - functionStart ) );
 
 		//find the opening brackets of the function
 		functionStart = code.find( '{', functionStart );
@@ -186,7 +199,7 @@ wxString CodeParser::ParseSourceFunctions( wxString code )
 		{
 			functionStart += 2;
 			functionEnd = functionStart + contentSize;
-			func->SetContents( code.Mid( functionStart, functionEnd - functionStart ) );
+			func->SetContents( code.Mid( functionStart, contentSize ) );
 			functionEnd += 2;
 		}
 		else
@@ -194,7 +207,8 @@ wxString CodeParser::ParseSourceFunctions( wxString code )
 			func->SetContents( wxT( "" ) );
 			return wxT( "" );
 		}
-
+		
+		previousFunctionEnd = functionEnd + 1;
 		loopcheck++;
 		if ( loopcheck == 1000 )
 		{
@@ -241,6 +255,20 @@ int CodeParser::ParseBrackets( wxString code )
 	return index;
 }
 
+wxString CodeParser::GetFunctionDocumentation( wxString function )
+{
+	wxString contents = wxT( "" );
+	Function *func;
+
+	m_functionIter = m_functions.find( function );
+	if ( m_functionIter != m_functions.end() )
+	{
+		func = m_functionIter->second;
+		contents = func->GetDocumentation();
+	}
+	return contents;
+}
+
 wxString CodeParser::GetFunctionContents( wxString function )
 {
 	wxString contents = wxT( "" );
@@ -263,6 +291,7 @@ wxString CodeParser::GetRemainingFunctions()
 	m_functionIter = m_functions.begin();
 	while ( m_functionIter != m_functions.end() )
 	{
+		wxMessageBox(m_functionIter->second->GetFunction());
 		functions +=  m_functionIter->second->GetFunction();
 		m_functionIter++;
 	}

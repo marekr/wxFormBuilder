@@ -440,7 +440,15 @@ void CppCodeGenerator::GenerateInheritedClass( PObjectBase userClasses, PObjectB
 			{
 				prototype = wxString::Format( wxT("%s( %s& event )"), event->GetValue().c_str(), event->GetEventInfo()->GetEventClassName().c_str() );
 				m_header->WriteLn( wxString::Format( wxT("void %s;"), prototype.c_str() ) );
-				m_source->WriteLn();
+				userCode = m_inheritedCodeParser.GetFunctionDocumentation( event->GetValue() );
+				if ( !userCode.IsEmpty() )
+				{
+					m_source->WriteLn( userCode, true );
+				}
+				else
+				{
+					m_source->WriteLn();
+				}
 				m_source->WriteLn( wxString::Format( wxT("void %s::%s"), className.c_str(), prototype.c_str() ) );
 				m_source->WriteLn( wxT("{") );
 				userCode = m_inheritedCodeParser.GetFunctionContents( event->GetValue() );
@@ -458,7 +466,6 @@ void CppCodeGenerator::GenerateInheritedClass( PObjectBase userClasses, PObjectB
 				generatedHandlers.insert( event->GetValue() );
 			}
 		}
-		m_header->WriteLn( wxEmptyString );
 
 		m_header->Unindent();
 	}
@@ -475,7 +482,7 @@ void CppCodeGenerator::GenerateInheritedClass( PObjectBase userClasses, PObjectB
 	userCode = m_inheritedCodeParser.GetUserMembers();
 	if ( !userCode.IsEmpty() )
 	{
-		m_header->WriteLn( userCode, true );
+		m_header->Write( userCode);
 	}
 
 	m_header->Unindent();
@@ -488,9 +495,9 @@ void CppCodeGenerator::GenerateInheritedClass( PObjectBase userClasses, PObjectB
 	userCode = m_inheritedCodeParser.GetRemainingFunctions();
 	if ( !userCode.IsEmpty() )
 	{
-		m_source->Indent();
+		//m_source->Indent();
 		m_source->WriteLn( userCode, true );
-		m_source->Unindent();
+		//m_source->Unindent();
 	}
 }
 
