@@ -3,6 +3,7 @@
 
 #include <wx/textfile.h>
 #include <wx/string.h>
+#include <wx/hashmap.h>
 
 // Stores all of the information for all of the parsed funtions
 class Function
@@ -118,7 +119,6 @@ class CodeParser
 
 		FunctionMap m_functions;
 		funcIterator m_functionIter;
-
 
 };
 

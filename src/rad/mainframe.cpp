@@ -142,8 +142,6 @@ EVT_MENU( ID_PREVIEW_XRC, MainFrame::OnXrcPreview )
 EVT_MENU( ID_GEN_INHERIT_CLS, MainFrame::OnGenInhertedClass )
 EVT_MENU( ID_CLIPBOARD_COPY, MainFrame::OnClipboardCopy )
 EVT_MENU( ID_CLIPBOARD_PASTE, MainFrame::OnClipboardPaste )
-EVT_MENU( ID_FB_SETTINGS, MainFrame::OnFBSettings )
-EVT_MENU( ID_PROJECT_SETTINGS, MainFrame::OnProjectSettings )
 EVT_UPDATE_UI( ID_CLIPBOARD_PASTE, MainFrame::OnClipboardPasteUpdateUI )
 EVT_CLOSE( MainFrame::OnClose )
 
@@ -212,9 +210,6 @@ m_autoSash( true ),
 m_findData( wxFR_DOWN ),
 m_findDialog( NULL )
 {
-
-	m_fbSettingsDialog = new wxFBDialogsFBSettings( this );
-	m_projectSettindDialog = new wxFBDialogsProjectSettings( this );
 	// initialize the splitters, wxAUI doesn't use them
 	m_leftSplitter = m_rightSplitter = NULL;
 
@@ -1376,22 +1371,6 @@ void MainFrame::OnFind( wxFindDialogEvent& event )
 		event.StopPropagation();
 		event.SetClientData( m_findDialog );
 		m_notebook->GetPage( page )->GetEventHandler()->ProcessEvent( event );
-	}
-}
-
-void MainFrame::OnProjectSettings(wxCommandEvent& e)
-{
-	if(m_projectSettindDialog->ShowModal() == wxID_OK)
-	{
-
-	}
-}
-
-void MainFrame::OnFBSettings(wxCommandEvent& e)
-{
-	if(m_fbSettingsDialog->ShowModal() == wxID_OK)
-	{
-
 	}
 }
 

@@ -3,7 +3,6 @@
 
 void Function::SetHeading( wxString heading )
 {
-	wxMessageBox(heading);
 	m_functionHeading = heading;
 }
 
@@ -154,7 +153,6 @@ void CodeParser::ParseUserMembers( wxString code )
 
 wxString CodeParser::ParseSourceFunctions( wxString code )
 {
-		int loopcheck = 0;
 	int functionStart = 0;
 	int functionEnd = 0;
 	int previousFunctionEnd = 0;
@@ -209,19 +207,12 @@ wxString CodeParser::ParseSourceFunctions( wxString code )
 		}
 		
 		previousFunctionEnd = functionEnd + 1;
-		loopcheck++;
-		if ( loopcheck == 1000 )
-		{
-			return wxT( "" );
-		}
 	}
 	return wxT( "" );
 }
 
 int CodeParser::ParseBrackets( wxString code )
 {
-
-		int loopcheck = 0;
 	int openingBrackets = 1;
 	int closingBrackets = 0;
 	int index = 1;
@@ -243,12 +234,6 @@ int CodeParser::ParseBrackets( wxString code )
 		{
 			index++;
 			closingBrackets++;
-		}
-
-		loopcheck++;
-		if ( loopcheck == 100 )
-		{
-			return wxNOT_FOUND;
 		}
 	}
 	index -= 1 ;
@@ -291,7 +276,6 @@ wxString CodeParser::GetRemainingFunctions()
 	m_functionIter = m_functions.begin();
 	while ( m_functionIter != m_functions.end() )
 	{
-		wxMessageBox(m_functionIter->second->GetFunction());
 		functions +=  m_functionIter->second->GetFunction();
 		m_functionIter++;
 	}

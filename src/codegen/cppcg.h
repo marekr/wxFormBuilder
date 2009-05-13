@@ -38,7 +38,7 @@ The value of all properties that are file or a directory paths must be absolute,
 #include <set>
 #include "codegen.h"
 #include <wx/string.h>
-#include "codeParser.h"
+#include "codeparser.h"
 
 /**
 * Parse the C++ templates.
