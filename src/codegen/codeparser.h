@@ -87,7 +87,7 @@ class CodeParser
 		wxString ParseSourceFunctions(wxString code);
 
 		//extracts the contents of a codes block
-		int ParseBrackets(wxString code);
+		int ParseBrackets(wxString code, int& functionStart );
 
 		//returns all user header include code before the class declaration
 		wxString GetUserHeaderIncludes()
@@ -110,12 +110,18 @@ class CodeParser
 		//returns all ramaining functions including documentation as one string.
 		// this may rearange functions, but should keep them intact
 		wxString GetRemainingFunctions();
+		
+		wxString GetTrailingCode()
+		{
+			return m_trailingCode;
+		}
 
 	private:
 		wxString m_userHInclude;
 		wxString m_userSInclude;
 		wxString m_className;
 		wxString m_userMemebers;
+		wxString m_trailingCode;
 
 		FunctionMap m_functions;
 		funcIterator m_functionIter;
