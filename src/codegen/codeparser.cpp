@@ -14,6 +14,8 @@ void Function::SetContents(wxString contents)
 wxString Function::GetFunction()
 {
 	wxString Str;
+	
+	Str << wxT("\n");
 	Str << m_documentation;
 	Str << wxT("\n");
 	Str << m_functionHeading;
