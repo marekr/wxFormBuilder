@@ -21,37 +21,56 @@
 //   José Antonio Hurtado - joseantonio.hurtado@gmail.com
 //   Juan Antonio Ortega  - jortegalalmolda@gmail.com
 //
+// Python code generation writen by
+//   Michal Bližňak - michal.bliznak@gmail.com
+//
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _XRC_CODE_GEN_
-#define _XRC_CODE_GEN_
+/**
+@file
+@author Michal Bližňák - michal.bliznak@gmail.com
+@note
+*/
 
-#include "codegen.h"
+#ifndef __PYTHON_PANEL__
+#define __PYTHON_PANEL__
+
+#include <wx/panel.h>
+
 #include "utils/wxfbdefs.h"
-#include <vector>
 
-namespace ticpp
-{
-	class Element;
-}
+class CodeEditor;
 
-/// XRC code generator.
+class wxScintilla;
 
-class XrcCodeGenerator : public CodeGenerator
+class wxFindDialogEvent;
+
+class wxFBEvent;
+class wxFBPropertyEvent;
+class wxFBObjectEvent;
+class wxFBEventHandlerEvent;
+
+class PythonPanel : public wxPanel
 {
 private:
-	PCodeWriter m_cw;
-	std::vector<ticpp::Element*> m_contextMenus;
+	CodeEditor* m_pythonPanel;
+	PTCCodeWriter m_pythonCW;
 
-	ticpp::Element* GetElement( PObjectBase obj, ticpp::Element* parent = NULL );
+	void InitStyledTextCtrl( wxScintilla* stc );
 
 public:
-	/// Configures the code writer for the XML file.
-	void SetWriter( PCodeWriter cw );
+	PythonPanel( wxWindow *parent, int id );
+	~PythonPanel();
 
-	/// Generates the XRC code for the project.
-	bool GenerateCode( PObjectBase project );
+	void OnPropertyModified( wxFBPropertyEvent& event );
+	void OnProjectRefresh( wxFBEvent& event );
+	void OnCodeGeneration( wxFBEvent& event );
+	void OnObjectChange( wxFBObjectEvent& event );
+	void OnEventHandlerModified( wxFBEventHandlerEvent& event );
+
+	void OnFind( wxFindDialogEvent& event );
+
+	DECLARE_EVENT_TABLE()
 };
 
-
-#endif //_XRC_CODE_GEN_
+#endif //__PYTHON_PANEL__

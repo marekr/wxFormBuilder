@@ -42,6 +42,8 @@
   -->
   <objtype name="project">
     <childtype name="form" />
+    <childtype name="menubar_form" />
+    <childtype name="toolbar_form" />
   </objtype>
 
   <objtype name="interface" />
@@ -49,11 +51,22 @@
   <objtype name="form">
     <childtype name="sizer" nmax="1" />
     <childtype name="menubar" nmax="1" />
+    <childtype name="menu" nmax="1" />
     <childtype name="statusbar" nmax="1" />
     <childtype name="toolbar" nmax="1" />
   </objtype>
 
-  <objtype name="widget" />
+  <objtype name="menubar_form">
+    <childtype name="menu" />
+  </objtype>
+
+  <objtype name="toolbar_form">
+    <childtype name="tool" />
+  </objtype>
+
+  <objtype name="widget">
+	<childtype name="menu" nmax="1"/>
+  </objtype>
   <objtype name="expanded_widget" />
 
   <objtype name="sizer">
@@ -66,11 +79,12 @@
 
   <objtype name="container">
     <childtype name="sizer" nmax="1" />
+    <childtype name="menu" nmax="1" />
   </objtype>
 
   <objtype name="sizeritem" item="1">
     <childtype name="widget" nmax="1" />
-	<childtype name="expanded_widget" nmax="1" />
+    <childtype name="expanded_widget" nmax="1" />
     <childtype name="container" nmax="1" />
     <childtype name="sizer" nmax="1" />
     <childtype name="gbsizer" nmax="1" />
@@ -86,7 +100,7 @@
 
   <objtype name="gbsizeritem" item="1">
     <childtype name="widget" nmax="1" />
-	<childtype name="expanded_widget" nmax="1" />
+    <childtype name="expanded_widget" nmax="1" />
     <childtype name="container" nmax="1" />
     <childtype name="sizer" nmax="1" />
     <childtype name="gbsizer" nmax="1" />

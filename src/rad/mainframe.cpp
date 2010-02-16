@@ -1,7 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // wxFormBuilder - A Visual Dialog Editor for wxWidgets.
-// Copyright (C) 2005 José Antonio Hurtado
+// Copyright (C) 2005 JosÃ© Antonio Hurtado
+// Copyright (C) 2005 JosÃ© Antonio Hurtado
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // Written by
-//   José Antonio Hurtado - joseantonio.hurtado@gmail.com
+//   JosÃ© Antonio Hurtado - joseantonio.hurtado@gmail.com
 //   Juan Antonio Ortega  - jortegalalmolda@gmail.com
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +31,7 @@
 #include "rad/title.h"
 #include "rad/bitmaps.h"
 #include "rad/cpppanel/cpppanel.h"
+#include "rad/pythonpanel/pythonpanel.h"
 #include "rad/xrcpanel/xrcpanel.h"
 #include "rad/geninheritclass/geninhertclass.h"
 #include "inspector/objinspect.h"
@@ -100,8 +102,6 @@
 #define ID_CLIPBOARD_COPY 143
 #define ID_CLIPBOARD_PASTE 144
 
-#define ID_FB_SETTINGS 145
-#define ID_PROJECT_SETTINGS 146
 
 #define STATUS_FIELD_OBJECT 2
 #define STATUS_FIELD_PATH 1
@@ -206,10 +206,11 @@ m_rightSplitterWidth( -300 ),
 m_style( style ),
 m_page_selection( 0 ),
 m_rightSplitter_sash_pos( 300 ),
-m_autoSash( true ),
+m_autoSash( false ), // autosash function is temporarily disabled due to possible bug(?) in wxMSW event system (workaround is needed)
 m_findData( wxFR_DOWN ),
 m_findDialog( NULL )
 {
+	
 	// initialize the splitters, wxAUI doesn't use them
 	m_leftSplitter = m_rightSplitter = NULL;
 
@@ -285,6 +286,7 @@ m_findDialog( NULL )
 	// Init. m_cpp and m_xrc first
 	m_cpp = NULL;
 	m_xrc = NULL;
+	m_python = NULL;
 
 	switch ( style )
 	{
@@ -400,7 +402,7 @@ void MainFrame::RestorePosition( const wxString &name )
 
 	config->Read( wxT( "LeftSplitterWidth" ), &m_leftSplitterWidth, 300 );
 	config->Read( wxT( "RightSplitterWidth" ), &m_rightSplitterWidth, -300 );
-	config->Read( wxT( "AutoSash" ), &m_autoSash, true );
+	config->Read( wxT( "AutoSash" ), &m_autoSash, false ); // disabled in default due to possible bug(?) in wxMSW
 
 	config->Read( wxT( "CurrentDirectory" ), &m_currentDir );
 
@@ -706,7 +708,10 @@ void MainFrame::OnObjectSelected( wxFBObjectEvent& event )
 			case 1: // CPP panel
 				break;
 
-			case 2: // XRC panel
+			case 2: // Python panel
+			   break;
+			   
+			case 3: // XRC panel
 			   break;
 
 			default:
@@ -715,7 +720,9 @@ void MainFrame::OnObjectSelected( wxFBObjectEvent& event )
 
 					// If selected object is not a Frame or a Panel or a dialog, we won't
 					// adjust the sash position
-					if ( obj->GetObjectTypeName() == wxT("form") )
+					if ( obj->GetObjectTypeName() == wxT("form") ||
+						 obj->GetObjectTypeName() == wxT("menubar_form") ||
+					     obj->GetObjectTypeName() == wxT("toolbar_form") )
 					{
 						sash_pos = m_rightSplitter->GetSashPosition();
 						panel_size = m_visualEdit->GetVirtualSize();
@@ -767,8 +774,11 @@ void MainFrame::OnObjectCreated( wxFBObjectEvent& event )
 		                event.GetFBObject()->GetClassName().c_str() );
 	}
 	else
-		message = wxT( "Impossible to create the object. Did you forget to add a sizer?" );
-
+	{
+		message = wxT( "Impossible to create the object. Did you forget to add a sizer/parent object?" );
+		wxMessageBox( message, wxT("wxFormBuilder"), wxICON_WARNING | wxOK );
+	}
+	
 	GetStatusBar()->SetStatusText( message );
 
 	UpdateFrame();
@@ -1020,9 +1030,9 @@ void MainFrame::InsertRecentProject( const wxString &file )
 	for ( i = 0; i < 4 && !found; i++ )
 		found = ( file == m_recentProjects[i] );
 
-	if ( found ) // en i-1 está la posición encontrada (0 < i < 4)
+	if ( found ) // en i-1 estÃ¡ la posiciÃ³n encontrada (0 < i < 4)
 	{
-		// desplazamos desde 0 hasta i-1 una posición a la derecha
+		// desplazamos desde 0 hasta i-1 una posiciÃ³n a la derecha
 
 		for ( i = i - 1; i > 0; i-- )
 			m_recentProjects[i] = m_recentProjects[i-1];
@@ -1249,6 +1259,8 @@ void MainFrame::OnGenInhertedClass( wxCommandEvent& WXUNUSED( e ) )
 		// Create the class and files.
 		AppData()->GenerateInheritedClass( details.m_form, details.m_className, filePath, details.m_fileName );
 	}
+	
+	wxMessageBox( wxString::Format( wxT( "Class(es) generated to \'%s\'." ), filePath.c_str() ), wxT("wxFormBuilder") );
 }
 
 bool MainFrame::SaveWarning()
@@ -1305,8 +1317,25 @@ void MainFrame::OnFlatNotebookPageChanged( wxFlatNotebookEvent& event )
 					}
 				}
 				break;
+				
+			case 2: // Python panel
+				if( (m_python != NULL) && (m_rightSplitter != NULL) )
+				{
+					panel_size = m_python->GetClientSize();
+					sash_pos = m_rightSplitter->GetSashPosition();
 
-			case 2: // XRC panel
+					Debug::Print(wxT("MainFrame::OnFlatNotebookPageChanged > Python panel: width = %d sash pos = %d"), panel_size.GetWidth(), sash_pos);
+
+					if(panel_size.GetWidth() > sash_pos)
+					{
+						// set the sash position
+						Debug::Print(wxT("MainFrame::OnFlatNotebookPageChanged > reset sash position"));
+						m_rightSplitter->SetSashPosition(panel_size.GetWidth());
+					}
+				}
+				break;
+
+			case 3: // XRC panel
 				if((m_xrc != NULL) && (m_rightSplitter != NULL))
 				{
 					panel_size = m_xrc->GetClientSize();
@@ -1327,11 +1356,11 @@ void MainFrame::OnFlatNotebookPageChanged( wxFlatNotebookEvent& event )
 				if(m_visualEdit != NULL)
 				{
 					sash_pos = m_rightSplitter->GetSashPosition();
-
+					
 					if(m_rightSplitter_sash_pos < sash_pos)
 					{
 						//restore the sash position
-						Debug::Print(wxT("MainFrame::OnFlatNotebookPageChanged > restore sash position"));
+						Debug::Print(wxT("MainFrame::OnFlatNotebookPageChanged > restore sash position: sash pos = %d"), m_rightSplitter_sash_pos);
 						m_rightSplitter->SetSashPosition(m_rightSplitter_sash_pos);
 					}
 					else
@@ -1429,9 +1458,6 @@ wxMenuBar * MainFrame::CreateFBMenuBar()
 	menuHelp->Append( wxID_ABOUT, wxT( "&About...\tF1" ), wxT( "Show about dialog" ) );
 
 
-	wxMenu *menuSettings = new wxMenu;
-	menuSettings->Append( ID_FB_SETTINGS, wxT( "wxFB &Settings" ), wxT( "wxFormbuilder Settings" ) );
-	menuSettings->Append( ID_PROJECT_SETTINGS, wxT( "&Project Settings" ), wxT( "Project Specific Settings" ) );
 
 
 
@@ -1442,7 +1468,6 @@ wxMenuBar * MainFrame::CreateFBMenuBar()
 	menuBar->Append( menuView, wxT( "&View" ) );
 	menuBar->Append( menuTools, wxT( "&Tools" ) );
 	menuBar->Append( menuHelp, wxT( "&Help" ) );
-	menuBar->Append( menuSettings, wxT( "&Settings" ) );
 
 	return menuBar;
 }
@@ -1498,6 +1523,7 @@ wxWindow * MainFrame::CreateDesignerWindow( wxWindow *parent )
 	// Set notebook icons
 	m_icons.Add( AppBitmaps::GetBitmap( wxT( "designer" ), 16 ) );
 	m_icons.Add( AppBitmaps::GetBitmap( wxT( "c++" ), 16 ) );
+	m_icons.Add( AppBitmaps::GetBitmap( wxT( "c++" ), 16 ) );
 	m_icons.Add( AppBitmaps::GetBitmap( wxT( "xrc" ), 16 ) );
 	m_notebook->SetImageList( &m_icons );
 
@@ -1508,9 +1534,12 @@ wxWindow * MainFrame::CreateDesignerWindow( wxWindow *parent )
 
 	m_cpp = new CppPanel( m_notebook, -1 );
 	m_notebook->AddPage( m_cpp, wxT( "C++" ), false, 1 );
+	
+	m_python = new PythonPanel( m_notebook, -1 );
+	m_notebook->AddPage( m_python, wxT( "Python" ), false, 2 );
 
 	m_xrc = new XrcPanel( m_notebook, -1 );
-	m_notebook->AddPage( m_xrc, wxT( "XRC" ), false, 2 );
+	m_notebook->AddPage( m_xrc, wxT( "XRC" ), false, 3 );
 
 	return m_notebook;
 }
@@ -1518,7 +1547,7 @@ wxWindow * MainFrame::CreateDesignerWindow( wxWindow *parent )
 wxWindow * MainFrame::CreateComponentPalette ( wxWindow *parent )
 {
 	// la paleta de componentes, no es un observador propiamente dicho, ya
-	// que no responde ante los eventos de la aplicación
+	// que no responde ante los eventos de la aplicaciÃ³n
 	m_palette = new wxFbPalette( parent, -1 );
 	m_palette->Create();
 	m_palette->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE ) );

@@ -35,6 +35,7 @@
 #include "utils/wxfbipc.h"
 #include "utils/wxfbexception.h"
 #include "codegen/cppcg.h"
+#include "codegen/pythoncg.h"
 #include "codegen/xrccg.h"
 #include "codegen/codewriter.h"
 #include "rad/xrcpreview/xrcpreview.h"
@@ -470,7 +471,7 @@ ApplicationData::ApplicationData( const wxString &rootdir )
 		m_manager( new wxFBManager ),
 		m_ipc( new wxFBIPC ),
 		m_fbpVerMajor( 1 ),
-		m_fbpVerMinor( 9 )
+		m_fbpVerMinor( 10 )
 {
 	#ifdef __WXFB_DEBUG__
 	wxLog* log = wxLog::SetActiveTarget( NULL );
@@ -518,11 +519,13 @@ PObjectBase ApplicationData::GetSelectedObject()
 }
 
 PObjectBase ApplicationData::GetSelectedForm()
-{
-	if ( m_selObj->GetObjectTypeName() == wxT( "form" ) )
+{		
+	if( ( m_selObj->GetObjectTypeName() == wxT( "form" ) ) ||
+		( m_selObj->GetObjectTypeName() == wxT( "menubar_form" ) ) ||
+		( m_selObj->GetObjectTypeName() == wxT( "toolbar_form" ) ) )
 		return m_selObj;
 	else
-		return m_selObj->FindNearAncestor( wxT( "form" ) );
+		return m_selObj->FindParentForm();
 }
 
 
@@ -546,7 +549,6 @@ void ApplicationData::BuildNameSet( PObjectBase obj, PObjectBase top, std::set< 
 }
 
 void ApplicationData::ResolveNameConflict( PObjectBase obj )
-
 {
 	while ( obj && obj->GetObjectInfo()->GetObjectType()->IsItem() )
 	{
@@ -565,7 +567,8 @@ void ApplicationData::ResolveNameConflict( PObjectBase obj )
 	wxString originalName = nameProp->GetValue();
 
 	// el nombre no puede estar repetido dentro del mismo form
-	PObjectBase top = obj->FindNearAncestor( wxT( "form" ) );
+	/*PObjectBase top = obj->FindNearAncestor( wxT( "form" ) );*/
+	PObjectBase top = obj->FindParentForm();
 
 	if ( !top )
 		top = m_project; // el objeto es un form.
@@ -596,7 +599,8 @@ void ApplicationData::ResolveSubtreeNameConflicts( PObjectBase obj, PObjectBase 
 {
 	if ( !topObj )
 	{
-		topObj = obj->FindNearAncestor( wxT( "form" ) );
+		/*topObj = obj->FindNearAncestor( wxT( "form" ) );*/
+		topObj = obj->FindParentForm();
 
 		if ( !topObj )
 			topObj = m_project; // object is the project
@@ -696,7 +700,39 @@ void ApplicationData::ExpandObject( PObjectBase obj, bool expand )
 {
 	PCommand command( new ExpandObjectCmd( obj, expand ) );
 	Execute( command );
+	
+	// collapse also all children ...
+	PropagateExpansion( obj, expand, !expand );
+	
 	NotifyObjectExpanded( obj );
+}
+
+void ApplicationData::PropagateExpansion( PObjectBase obj, bool expand, bool up )
+{
+	if( obj )
+	{
+		if( up )
+		{
+			PObjectBase child;
+			
+			for( size_t i = 0; i < obj->GetChildCount(); i++ )
+			{
+				child = obj->GetChild(i);
+				
+				PCommand command( new ExpandObjectCmd( child, expand ) );
+				Execute( command );
+				
+				PropagateExpansion( child, expand, up );
+			}
+		}
+		else
+		{
+			PropagateExpansion( obj->GetParent(), expand, up );
+			
+			PCommand command( new ExpandObjectCmd( obj, expand ) );
+			Execute( command );
+		}
+	}
 }
 
 bool ApplicationData::SelectObject( PObjectBase obj, bool force /*= false*/, bool notify /*= true */ )
@@ -709,7 +745,7 @@ bool ApplicationData::SelectObject( PObjectBase obj, bool force /*= false*/, boo
 	m_selObj = obj;
 
 	if ( notify )
-	{
+	{		
 		NotifyObjectSelected( obj );
 	}
 	return true;
@@ -759,14 +795,14 @@ void ApplicationData::CreateObject( wxString name )
 			}
 		}
 
-		NotifyObjectCreated( obj );
-
 		// Seleccionamos el objeto, si este es un item entonces se selecciona
 		// el objeto contenido. ¿Tiene sentido tener un item debajo de un item?
 
 		while ( obj && obj->GetObjectInfo()->GetObjectType()->IsItem() )
 			obj = ( obj->GetChildCount() > 0 ? obj->GetChild( 0 ) : PObjectBase() );
-
+			
+		NotifyObjectCreated( obj );
+			
 		if ( obj )
 		{
 			SelectObject( obj, true, true );
@@ -798,6 +834,7 @@ void ApplicationData::DoRemoveObject( PObjectBase obj, bool cutObject )
 	//  When removing an object it is important that the "item" objects
 	// are not left behind
 	PObjectBase parent = obj->GetParent();
+	PObjectBase deleted_obj = obj;
 
 	if ( parent )
 	{
@@ -820,7 +857,7 @@ void ApplicationData::DoRemoveObject( PObjectBase obj, bool cutObject )
 			Execute( command );
 		}
 
-		NotifyObjectRemoved( obj );
+		NotifyObjectRemoved( deleted_obj );
 		SelectObject( GetSelectedObject(), true, true );
 	}
 	else
@@ -1337,7 +1374,6 @@ bool ApplicationData::LoadProject( const wxString &file, bool checkSingleInstanc
 }
 
 bool ApplicationData::ConvertProject( const wxString& path, int fileMajor, int fileMinor )
-
 {
 	try
 	{
@@ -1541,6 +1577,27 @@ void ApplicationData::ConvertProjectProperties( ticpp::Element* project, const w
 				wxArrayString array = TypeConv::OldStringToArrayString( _WXSTR( value ) );
 				( *prop )->SetText( _STDSTR( TypeConv::ArrayStringToString( array ) ) );
 			}
+		}
+	}
+	
+	// event_handler moved to the forms in version 1.10
+	if ( fileMajor < 1 || ( 1 == fileMajor && fileMinor < 10 ) )
+	{
+		oldProps.clear();
+		newProps.clear();
+		oldProps.insert( "event_handler" );
+		GetPropertiesToConvert( project, oldProps, &newProps );
+
+
+		if ( !newProps.empty() )
+		{
+			ticpp::Iterator< ticpp::Element > object( "object" );
+			for ( object = project->FirstChildElement( "object", false ); object != object.end(); ++object )
+			{
+				object->LinkEndChild( ( *newProps.begin() )->Clone().get() );
+			}
+			
+			project->RemoveChild( *newProps.begin() );
 		}
 	}
 }
@@ -1973,9 +2030,7 @@ void ApplicationData::GenerateInheritedClass( PObjectBase form, wxString classNa
 		fileProp->SetValue( inherFile.GetName() );
 		genfileProp->SetValue( genFile.GetFullPath() );
 		typeProp->SetValue( form->GetClassName() );
-
-		CppCodeGenerator codegen;
-
+		
 		// Determine if Microsoft BOM should be used
 		bool useMicrosoftBOM = false;
 		PProperty pUseMicrosoftBOM = project->GetProperty( _("use_microsoft_bom") );
@@ -1994,18 +2049,32 @@ void ApplicationData::GenerateInheritedClass( PObjectBase form, wxString classNa
 			useUtf8 = ( pUseUtf8->GetValueAsString() != wxT("ANSI") );
 		}
 
-		const wxString& fullPath = inherFile.GetFullPath();
-		codegen.ParseFiles(fullPath + wxT(".h"), fullPath + wxT(".cpp"), obj->GetPropertyAsString( _("name")));
+		PProperty pCodeGen = project->GetProperty( wxT( "code_generation" ) );
+		if ( pCodeGen && TypeConv::FlagSet( wxT("C++"), pCodeGen->GetValue() ) )
+		{
+			CppCodeGenerator codegen;
+			const wxString& fullPath = inherFile.GetFullPath();
+			codegen.ParseFiles(fullPath + wxT(".h"), fullPath + wxT(".cpp"));
+			
+			PCodeWriter h_cw( new FileCodeWriter( fullPath + wxT(".h"), useMicrosoftBOM, useUtf8 ) );
+			PCodeWriter cpp_cw( new FileCodeWriter( fullPath + wxT(".cpp"), useMicrosoftBOM, useUtf8 ) );
 
-		PCodeWriter h_cw( new FileCodeWriter( fullPath + wxT(".h"), useMicrosoftBOM, useUtf8 ) );
-		PCodeWriter cpp_cw( new FileCodeWriter( fullPath + wxT(".cpp"), useMicrosoftBOM, useUtf8 ) );
+			codegen.SetHeaderWriter( h_cw );
+			codegen.SetSourceWriter( cpp_cw );
 
+			codegen.GenerateInheritedClass( obj, form );
+		}
+		else if( pCodeGen && TypeConv::FlagSet( wxT("Python"), pCodeGen->GetValue() ) )
+		{
+			PythonCodeGenerator codegen;
+			
+			const wxString& fullPath = inherFile.GetFullPath();
+			PCodeWriter python_cw( new FileCodeWriter( fullPath + wxT(".py"), useMicrosoftBOM, useUtf8 ) );
 
-		codegen.SetHeaderWriter( h_cw );
-		codegen.SetSourceWriter( cpp_cw );
+			codegen.SetSourceWriter( python_cw );
 
-
-		codegen.GenerateInheritedClass( obj, form );
+			codegen.GenerateInheritedClass( obj, form );
+		}
 
 		wxLogStatus( wxT( "Class generated at \'%s\'." ), path.c_str() );
 	}
@@ -2039,7 +2108,7 @@ void ApplicationData::MovePosition( PObjectBase obj, bool right, unsigned int nu
 		unsigned int children_count = parent->GetChildCount();
 
 		if ( ( right && num + pos < children_count ) ||
-		        !right  && ( num <= pos ) )
+		        ( !right  && ( num <= pos ) ) )
 		{
 			pos = ( right ? pos + num : pos - num );
 

@@ -9,7 +9,7 @@
 
 #define UNICODE 1
 
-#define MyAppVer "3.1.59"
+#define MyAppVer "3.1.67"
 #define MyAppName "wxFormBuilder"
 #define MyAppPublisher "José Antonio Hurtado"
 #define MyAppURL "http://wxformbuilder.org"
@@ -27,7 +27,7 @@ DefaultDirName={pf}\{#MyAppName}
 DisableDirPage=false
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=false
-#if UNICODE
+#if defined UNICODE
 OutputBaseFilename={#MyAppName}_v{#MyAppVer}-beta
 #else
 OutputBaseFilename={#MyAppName}_v{#MyAppVer}-9xME
@@ -47,12 +47,15 @@ UninstallDisplayIcon={app}\wxFormBuilder.exe
 ChangesAssociations=true
 VersionInfoVersion={#MyAppVer}
 VersionInfoDescription={#MyAppName}
-InfoAfterFile=files\Changelog.txt
-LicenseFile=files\license.txt
-#if UNICODE
-MinVersion=0,4.0.1381sp6
+InfoAfterFile=..\..\output\Changelog.txt
+LicenseFile=..\..\output\license.txt
+#if defined UNICODE
+;MinVersion=0,4.0.1381sp6
+MinVersion=0,5.0
 #endif
 
+; -- Pre-Build Step
+#expr Exec( "create_source_package.bat", NULL, NULL, 1, SW_SHOWMINIMIZED )
 
 [Messages]
 BeveledLabel={#MyAppName} v{#MyAppVer}-Beta
@@ -61,10 +64,10 @@ BeveledLabel={#MyAppName} v{#MyAppVer}-Beta
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-#if UNICODE
-Source: files\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+#if defined UNICODE
+Source: ..\..\output\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\*, *d.exe, *d.dll, wxmsw28ud_*, wxmsw28umd_*, Thumbs.db
 #else
-Source: files9x\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: files9x\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\*, *d.exe, *d.dll, wxmsw28ud_*, wxmsw28umd_*, Thumbs.db
 #endif
 Source: source\*; DestDir: {app}\source; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main\srccode
 
@@ -97,10 +100,6 @@ Root: HKCU; SubKey: Software\wxformbuilder\mainframe\editor; ValueType: none; Va
 Root: HKCU; SubKey: Software\wxformbuilder\mainframe\editor\cpp; ValueType: none; ValueName: notebook_style; Flags: deletevalue; Check: ShouldResetLayout
 Root: HKCU; SubKey: Software\wxformbuilder\mainframe\objectInspector; ValueType: none; ValueName: notebook_style; Flags: deletevalue; Check: ShouldResetLayout
 Root: HKCU; SubKey: Software\wxformbuilder\palette; ValueType: none; ValueName: notebook_style; Flags: deletevalue; Check: ShouldResetLayout
-
-[_ISToolPreCompile]
-Name: create_install_files_pkg.bat; Parameters: ; Flags: runminimized
-Name: create_source_package.bat; Parameters: ; Flags: runminimized
 
 [Code]
 // -- Version checking functions
@@ -196,6 +195,8 @@ begin
 						result := true;
 					end;
 				end;
+			end else begin
+				result := true;
 			end;
 		end else begin
 			result := true;
@@ -216,3 +217,9 @@ begin
 	end;
 end;
 // -- END -- Version checking
+
+
+
+
+
+

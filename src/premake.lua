@@ -23,7 +23,12 @@
 --*****************************************************************************
 
 -- wxWidgets version
-local wx_ver = "28"
+local wx_ver = ""
+if( windows ) then
+	wx_ver = "28"
+else
+	wx_ver = "2.8"
+end
 
 --******* Initial Setup ************
 --*	Most of the setting are set here.
@@ -57,7 +62,7 @@ package.links = { "wxFlatNotebook", "wxPropGrid", "wxScintilla", "TiCPP", "plugi
 
 -- Add libraries and build options for stack trace in MinGW
 if ( windows and ( (string.find( target or "", ".*-gcc" )) or (target == "gnu") ) ) then
-	table.insert( package.links, { "bfd", "iberty", "psapi", "imagehlp" } )
+	table.insert( package.links, { "bfd", "intl", "iberty", "psapi", "imagehlp" } )
 	table.insert( package.buildoptions, "-gstabs" )
 end
 
@@ -273,6 +278,7 @@ else
 end
 
 if ( macosx ) then
-	package.postbuildcommands = { "../install/macosx/postbuild.sh" }
+	package.config["Release"].postbuildcommands = { "../install/macosx/postbuild.sh" }
+	package.config["Debug"].postbuildcommands = { "../install/macosx/postbuildd.sh" }
 end
 

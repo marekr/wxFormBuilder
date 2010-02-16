@@ -571,8 +571,10 @@ void ObjectDatabase::LoadPlugins( PwxFBManager manager )
 {
 	// Load some default templates
 	LoadCodeGen( m_xmlPath + wxT("properties.cppcode") );
+	LoadCodeGen( m_xmlPath + wxT("properties.pythoncode") );
 	LoadPackage( m_xmlPath + wxT("default.xml"), m_iconPath );
 	LoadCodeGen( m_xmlPath + wxT("default.cppcode") );
+	LoadCodeGen( m_xmlPath + wxT("default.pythoncode") );
 
 	// Map to temporarily hold plugins.
 	// Used to both set page order and to prevent two plugins with the same name.
@@ -652,12 +654,18 @@ void ObjectDatabase::LoadPlugins( PwxFBManager manager )
 							// Load the C++ code tempates
 							xmlFileName.SetExt( wxT("cppcode") );
 							LoadCodeGen( xmlFileName.GetFullPath() );
+							
+							// Load the Python code tempates
+							xmlFileName.SetExt( wxT("pythoncode") );
+							LoadCodeGen( xmlFileName.GetFullPath() );
+							
 							std::pair< PackageMap::iterator, bool > addedPackage = packages.insert( PackageMap::value_type( packageIt->second->GetPackageName(), packageIt->second ) );
 							if ( !addedPackage.second )
 							{
 								addedPackage.first->second->AppendPackage( packageIt->second );
 								Debug::Print( _("Merged plugins named \"%s\""), packageIt->second->GetPackageName().c_str() );
 							}
+
 						}
 						catch ( wxFBException& ex )
 						{
@@ -1204,6 +1212,8 @@ void ObjectDatabase::ParseEvents( ticpp::Element* elem_obj, PObjectInfo obj_info
 bool ObjectDatabase::ShowInPalette(wxString type)
 {
 	return (type == wxT("form")					||
+			type == wxT("menubar_form")			||
+			type == wxT("toolbar_form")			||
 			type == wxT("sizer")				||
 			type == wxT("gbsizer")				||
 			type == wxT("menu")					||
@@ -1363,6 +1373,7 @@ void ObjectDatabase::InitPropertyTypes()
 	PT( wxT("option"),		PT_OPTION		);
 	PT( wxT("macro"),		PT_MACRO		);
 	PT( wxT("path"),		PT_PATH			);
+	PT( wxT("file"),		PT_FILE			);
 	PT( wxT("wxString"), 	PT_WXSTRING		);
 	PT( wxT("wxPoint"),		PT_WXPOINT		);
 	PT( wxT("wxSize"),		PT_WXSIZE		);

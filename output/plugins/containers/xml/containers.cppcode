@@ -39,26 +39,34 @@ Written by
 				#ifnotequal $sashgravity "0.0"
 			@{ $name->SetSashGravity( $sashgravity ); #nl @}
 			@}
-
 			#ifnotnull $sashsize
 			@{
 				#ifnotequal $sashsize "-1"
-			@{	$name->SetSashSize( $sashsize ); #nl @}
+			@{ $name->SetSashSize( $sashsize ); #nl @}
 			@}
-
+			#ifnotnull $sashpos
+			@{
+				#ifnotequal $sashpos "-1"
+			@{ $name->Connect( wxEVT_IDLE, wxIdleEventHandler( #form $name::$name #append OnIdle ), NULL, this ); #nl @}
+			@}
 			#ifnotnull $min_pane_size
 			@{
 				#ifnotequal $min_pane_size "0"
 			@{	$name->SetMinimumPaneSize( $min_pane_size ); #nl @}
 			@}
-			$name->Connect( wxEVT_IDLE, wxIdleEventHandler( #form $name::$name #append OnIdle ), NULL, this );
 		</template>
 		<template name="generated_event_handlers">
-			void $name #append OnIdle( wxIdleEvent&amp; ) #nl
-			{ #nl
-				$name->SetSashPosition( $sashpos ); #nl
-				$name->Disconnect( wxEVT_IDLE, wxIdleEventHandler( #form $name::$name #append OnIdle ), NULL, this ); #nl
-			} #nl
+			#ifnotnull $sashpos
+			@{
+				#ifnotequal $sashpos "-1"
+				@{
+				#nl void $name #append OnIdle( wxIdleEvent&amp; )
+				#nl { #indent
+					#nl $name->SetSashPosition( $sashpos );
+					#nl $name->Disconnect( wxEVT_IDLE, wxIdleEventHandler( #form $name::$name #append OnIdle ), NULL, this ); #unindent
+				#nl}
+				@}
+			@}
 		</template>
 		<template name="evt_entry_OnSplitterSashPosChanging">EVT_SPLITTER_SASH_POS_CHANGING( $id, #handler )</template>
 		<template name="evt_connect_OnSplitterSashPosChanging">$name->Connect( wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING, #handler, NULL, this );</template>
@@ -108,11 +116,11 @@ Written by
 				@{
 					#parent $name #append Bitmap = $bitmap; #nl
 					if ( #parent $name #append Bitmap.Ok() ) #nl
-					@{ #nl
+					@{ #indent #nl
 						#parent $name #append Image = #parent $name #append Bitmap.ConvertToImage(); #nl
 						#parent $name #append Images->Add( #parent $name #append Image.Scale( #parent $name #append ImageSize.GetWidth(), #parent $name #append ImageSize.GetHeight() ) ); #nl
 						#parent $name->SetPageImage( #parent $name #append Index, #parent $name #append Index ); #nl
-						#parent $name #append Index++; #nl
+						#parent $name #append Index++; #unindent #nl
 					@}
 				@}
 			@}
@@ -168,11 +176,11 @@ Written by
 				@{
 					#parent $name #append Bitmap = $bitmap; #nl
 					if ( #parent $name #append Bitmap.Ok() ) #nl
-					@{ #nl
+					@{ #indent #nl
 						#parent $name #append Image = #parent $name #append Bitmap.ConvertToImage(); #nl
 						#parent $name #append Images->Add( #parent $name #append Image.Scale( #parent $name #append ImageSize.GetWidth(), #parent $name #append ImageSize.GetHeight() ) ); #nl
 						#parent $name->SetPageImage( #parent $name #append Index, #parent $name #append Index ); #nl
-						#parent $name #append Index++; #nl
+						#parent $name #append Index++; #unindent #nl
 					@}
 				@}
 			@}

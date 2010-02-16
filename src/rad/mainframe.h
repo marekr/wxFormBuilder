@@ -39,6 +39,7 @@ class wxFBPropertyEvent;
 class wxFBEventHandlerEvent;
 
 class CppPanel;
+class PythonPanel;
 class XrcPanel;
 class ObjectTree;
 class ObjectInspector;
@@ -76,6 +77,7 @@ class MainFrame : public wxFrame
   ObjectInspector *m_objInsp;
   VisualEditor *m_visualEdit;
   CppPanel *m_cpp;
+  PythonPanel *m_python;
   XrcPanel *m_xrc;
   int m_style;
 

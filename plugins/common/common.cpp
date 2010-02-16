@@ -32,6 +32,7 @@
 #include <wx/listctrl.h>
 #include <wx/radiobox.h>
 #include <wx/bmpbuttn.h>
+#include <wx/animate.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Custom status bar class for windows to prevent the status bar gripper from
@@ -207,6 +208,125 @@ public:
 		filter.AddWindowProperties();
 		filter.AddProperty( _("title"), _("title"), XRC_TYPE_TEXT);
 		filter.AddProperty(_("centered"), _("center"), XRC_TYPE_BITLIST);
+		return filter.GetXfbObject();
+	}
+};
+
+class MenuBarFormComponent : public ComponentBase
+{
+public:
+
+	wxObject* Create(IObject *obj, wxObject* /*parent*/)
+	{
+		wxMenuBar *mb = new wxMenuBar(obj->GetPropertyAsInteger(_("style")) |
+			obj->GetPropertyAsInteger(_("window_style")));
+		return mb;
+	}
+
+	ticpp::Element* ExportToXrc(IObject *obj)
+	{
+		ObjectToXrcFilter xrc(obj, _("wxMenuBar"), obj->GetPropertyAsString(_("name")));
+		xrc.AddProperty(_("label"),_("label"),XRC_TYPE_TEXT);
+		return xrc.GetXrcObject();
+	}
+
+	ticpp::Element* ImportFromXrc( ticpp::Element* xrcObj )
+	{
+		XrcToXfbFilter filter(xrcObj, _("MenuBar"));
+		filter.AddProperty(_("label"),_("label"),XRC_TYPE_TEXT);
+		return filter.GetXfbObject();
+	}
+};
+
+class ToolBarFormComponent : public ComponentBase
+{
+public:
+	wxObject* Create(IObject *obj, wxObject *parent)
+	{
+		wxToolBar *tb = new wxToolBar((wxWindow*)parent, -1,
+			obj->GetPropertyAsPoint(_("pos")),
+			obj->GetPropertyAsSize(_("size")),
+			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")) | wxTB_NOALIGN | wxTB_NODIVIDER | wxNO_BORDER);
+
+		if (!obj->IsNull(_("bitmapsize")))
+			tb->SetToolBitmapSize(obj->GetPropertyAsSize(_("bitmapsize")));
+		if (!obj->IsNull(_("margins")))
+		{
+			wxSize margins(obj->GetPropertyAsSize(_("margins")));
+			tb->SetMargins(margins.GetWidth(), margins.GetHeight());
+		}
+		if (!obj->IsNull(_("packing")))
+			tb->SetToolPacking(obj->GetPropertyAsInteger(_("packing")));
+		if (!obj->IsNull(_("separation")))
+			tb->SetToolSeparation(obj->GetPropertyAsInteger(_("separation")));
+
+		tb->PushEventHandler( new ComponentEvtHandler( tb, GetManager() ) );
+
+		return tb;
+	}
+
+	void OnCreated( wxObject* wxobject, wxWindow* /*wxparent*/ )
+	{
+		wxToolBar* tb = wxDynamicCast( wxobject, wxToolBar );
+		if ( NULL == tb )
+		{
+			// very very strange
+			return;
+		}
+
+		size_t count = GetManager()->GetChildCount( wxobject );
+		for ( size_t i = 0; i < count; ++i )
+		{
+			wxObject* child = GetManager()->GetChild( wxobject, i );
+			IObject* childObj = GetManager()->GetIObject( child );
+			if ( wxT("tool") == childObj->GetClassName() )
+			{
+				tb->AddTool( 	wxID_ANY,
+								childObj->GetPropertyAsString( _("label") ),
+								childObj->GetPropertyAsBitmap( _("bitmap") ),
+								wxNullBitmap,
+								(wxItemKind)childObj->GetPropertyAsInteger( _("kind") ),
+								childObj->GetPropertyAsString( _("help") ),
+								wxEmptyString,
+								child
+							);
+			}
+			else if ( wxT("toolSeparator") == childObj->GetClassName() )
+			{
+				tb->AddSeparator();
+			}
+			else
+			{
+				wxControl* control = wxDynamicCast( child, wxControl );
+				if ( NULL != control )
+				{
+					tb->AddControl( control );
+				}
+			}
+		}
+		tb->Realize();
+
+	}
+
+	ticpp::Element* ExportToXrc(IObject *obj)
+	{
+		ObjectToXrcFilter xrc(obj, _("wxToolBar"), obj->GetPropertyAsString(_("name")));
+		xrc.AddWindowProperties();
+		xrc.AddProperty(_("bitmapsize"), _("bitmapsize"), XRC_TYPE_SIZE);
+		xrc.AddProperty(_("margins"), _("margins"), XRC_TYPE_SIZE);
+		xrc.AddProperty(_("packing"), _("packing"), XRC_TYPE_INTEGER);
+		xrc.AddProperty(_("separation"), _("separation"), XRC_TYPE_INTEGER);
+		return xrc.GetXrcObject();
+	}
+
+	ticpp::Element* ImportFromXrc( ticpp::Element* xrcObj )
+	{
+		XrcToXfbFilter filter(xrcObj, _("ToolBar"));
+		filter.AddWindowProperties();
+		filter.AddProperty(_("bitmapsize"), _("bitmapsize"), XRC_TYPE_SIZE);
+		filter.AddProperty(_("margins"), _("margins"), XRC_TYPE_SIZE);
+		filter.AddProperty(_("packing"), _("packing"), XRC_TYPE_INTEGER);
+		filter.AddProperty(_("separation"), _("separation"), XRC_TYPE_INTEGER);
 		return filter.GetXfbObject();
 	}
 };
@@ -890,7 +1010,7 @@ public:
 		if (shortcut.IsEmpty())
 			label = obj->GetPropertyAsString(_("label"));
 		else
-			label = obj->GetPropertyAsString(_("label")) + wxT("\\t") + shortcut;
+			label = obj->GetPropertyAsString(_("label")) + wxT("\t") + shortcut;
 
 		xrc.AddPropertyValue(_("label"), label, true);
 		xrc.AddProperty(_("help"),_("help"),XRC_TYPE_TEXT);
@@ -1278,6 +1398,57 @@ public:
 
 };
 
+class AnimCtrlComponent : public ComponentBase
+{
+public:
+	wxObject* Create(IObject *obj, wxObject *parent)
+	{
+		wxAnimationCtrl* ac = new wxAnimationCtrl((wxWindow *)parent, wxID_ANY,
+			wxNullAnimation,
+			obj->GetPropertyAsPoint(_("pos")),
+			obj->GetPropertyAsSize(_("size")),
+			obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
+
+		if ( !obj->IsNull( _("animation") ) )
+		{
+			if( ac->LoadFile( obj->GetPropertyAsString( _("animation") ) ) )
+			{
+				if ( !obj->IsNull( _("play") ) && ( obj->GetPropertyAsInteger( _("play") ) == 1 ) ) ac->Play();
+				else
+					ac->Stop();
+			}
+		}
+		
+		if ( !obj->IsNull( _("inactive_bitmap") ) )
+		{
+			wxBitmap bmp = obj->GetPropertyAsBitmap( _("inactive_bitmap") );
+			if( bmp.IsOk() ) ac->SetInactiveBitmap( bmp );
+			else
+				ac->SetInactiveBitmap( wxNullBitmap );
+		}
+
+		ac->PushEventHandler( new ComponentEvtHandler( ac, GetManager() ) );
+
+		return ac;
+	}
+
+	ticpp::Element* ExportToXrc(IObject *obj)
+	{
+		ObjectToXrcFilter xrc(obj, _("wxAnimationCtrl"), obj->GetPropertyAsString(_("name")));
+		xrc.AddWindowProperties();
+		xrc.AddProperty(_("animation"),_("animation"),XRC_TYPE_TEXT);
+		return xrc.GetXrcObject();
+	}
+
+	ticpp::Element* ImportFromXrc( ticpp::Element* xrcObj )
+	{
+		XrcToXfbFilter filter(xrcObj, _("wxAnimation"));
+		filter.AddWindowProperties();
+		filter.AddProperty(_("animation"),_("animation"),XRC_TYPE_TEXT);
+		return filter.GetXfbObject();
+	}
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 
 BEGIN_LIBRARY()
@@ -1286,6 +1457,8 @@ BEGIN_LIBRARY()
 ABSTRACT_COMPONENT("Frame",FrameFormComponent)
 ABSTRACT_COMPONENT("Panel",PanelFormComponent)
 ABSTRACT_COMPONENT("Dialog",DialogFormComponent)
+ABSTRACT_COMPONENT("MenuBar",MenuBarFormComponent)
+ABSTRACT_COMPONENT("ToolBar",ToolBarFormComponent)
 
 WINDOW_COMPONENT("wxButton",ButtonComponent)
 WINDOW_COMPONENT("wxBitmapButton",BitmapButtonComponent)
@@ -1299,10 +1472,10 @@ WINDOW_COMPONENT("wxCheckBox", CheckBoxComponent)
 WINDOW_COMPONENT("wxStaticBitmap", StaticBitmapComponent)
 WINDOW_COMPONENT("wxStaticLine", StaticLineComponent)
 WINDOW_COMPONENT("wxMenuBar", MenuBarComponent)
-WINDOW_COMPONENT("wxMenu", MenuComponent)
-WINDOW_COMPONENT("submenu", SubMenuComponent)
-WINDOW_COMPONENT("wxMenuItem", MenuItemComponent)
-WINDOW_COMPONENT("separator", SeparatorComponent)
+ABSTRACT_COMPONENT("wxMenu", MenuComponent)
+ABSTRACT_COMPONENT("submenu", SubMenuComponent)
+ABSTRACT_COMPONENT("wxMenuItem", MenuItemComponent)
+ABSTRACT_COMPONENT("separator", SeparatorComponent)
 WINDOW_COMPONENT("wxListCtrl", ListCtrlComponent)
 WINDOW_COMPONENT("wxStatusBar", StatusBarComponent)
 WINDOW_COMPONENT("wxToolBar", ToolBarComponent)
@@ -1311,6 +1484,7 @@ ABSTRACT_COMPONENT("toolSeparator", ToolSeparatorComponent)
 WINDOW_COMPONENT("wxChoice", ChoiceComponent)
 WINDOW_COMPONENT("wxSlider", SliderComponent)
 WINDOW_COMPONENT("wxGauge", GaugeComponent)
+WINDOW_COMPONENT("wxAnimationCtrl",AnimCtrlComponent)
 
 // wxWindow style macros
 MACRO(wxSIMPLE_BORDER)
@@ -1496,6 +1670,10 @@ MACRO(wxGA_VERTICAL)
 //wxDialog
 MACRO(wxBOTH)
 SYNONYMOUS(1,wxBOTH)
+
+//wxAnimationCtrl
+MACRO(wxAC_DEFAULT_STYLE)
+MACRO(wxAC_NO_AUTORESIZE)
 
 END_LIBRARY()
 

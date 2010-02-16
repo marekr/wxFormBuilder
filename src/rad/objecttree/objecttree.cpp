@@ -91,6 +91,7 @@ PObjectBase ObjectTree::GetObjectFromTreeItem( wxTreeItemId item )
 void ObjectTree::RebuildTree()
 {
 	m_tcObjects->Freeze();
+	
 	Disconnect( wxID_ANY, wxEVT_COMMAND_TREE_ITEM_EXPANDED, wxTreeEventHandler( ObjectTree::OnExpansionChange ) );
 	Disconnect( wxID_ANY, wxEVT_COMMAND_TREE_ITEM_COLLAPSED, wxTreeEventHandler( ObjectTree::OnExpansionChange ) );
 
@@ -111,6 +112,7 @@ void ObjectTree::RebuildTree()
 
 	Connect( wxID_ANY, wxEVT_COMMAND_TREE_ITEM_COLLAPSED, wxTreeEventHandler( ObjectTree::OnExpansionChange ) );
 	Connect( wxID_ANY, wxEVT_COMMAND_TREE_ITEM_EXPANDED, wxTreeEventHandler( ObjectTree::OnExpansionChange ) );
+	
 	m_tcObjects->Thaw();
 }
 
@@ -226,9 +228,14 @@ void ObjectTree::OnExpansionChange(wxTreeEvent &event)
 	{
 		PObjectBase obj(((ObjectTreeItemData *)item_data)->GetObject());
 		assert(obj);
+		
 		Disconnect( wxID_ANY, wxEVT_FB_OBJECT_EXPANDED, wxFBObjectEventHandler( ObjectTree::OnObjectExpanded ) );
+		Disconnect( wxID_ANY, wxEVT_COMMAND_TREE_ITEM_EXPANDED, wxTreeEventHandler( ObjectTree::OnExpansionChange ) );
+		
 		AppData()->ExpandObject( obj, m_tcObjects->IsExpanded( id ) );
+
 		Connect( wxID_ANY, wxEVT_FB_OBJECT_EXPANDED, wxFBObjectEventHandler( ObjectTree::OnObjectExpanded ) );
+		Connect( wxID_ANY, wxEVT_COMMAND_TREE_ITEM_EXPANDED, wxTreeEventHandler( ObjectTree::OnExpansionChange ) );
 	}
 }
 
@@ -274,8 +281,7 @@ void ObjectTree::AddChildren(PObjectBase obj, wxTreeItemId &parent, bool is_root
 
 		// Set the name
 		UpdateItem( new_parent, obj );
-
-
+		
 		// Add the rest of the children
 		unsigned int count = obj->GetChildCount();
 		unsigned int i;
@@ -354,8 +360,8 @@ void ObjectTree::RestoreItemStatus(PObjectBase obj)
 
 		if ( obj->GetExpanded() )
 			m_tcObjects->Expand(id);
-		else
-			m_tcObjects->Collapse(id);
+		/*else
+			m_tcObjects->Collapse(id);*/
 	}
 
 	unsigned int i,count = obj->GetChildCount();
@@ -363,15 +369,53 @@ void ObjectTree::RestoreItemStatus(PObjectBase obj)
 		RestoreItemStatus(obj->GetChild(i));
 }
 
+void ObjectTree::AddItem(PObjectBase item, PObjectBase parent)
+{
+	if( item && parent )
+	{
+		// find parent item displayed in the object tree
+		while( parent && parent->GetObjectInfo()->GetObjectType()->IsItem() ) parent = parent->GetParent();
+		
+		// add new item to the object tree
+		ObjectItemMap::iterator it = m_map.find( parent );
+		if( (it != m_map.end()) && it->second.IsOk() )
+		{
+			AddChildren( item, it->second, false );
+		}
+	}
+}
+
+void ObjectTree::RemoveItem(PObjectBase item)
+{
+	// remove affected object tree items only
+	ObjectItemMap::iterator it = m_map.find( item );
+	if( (it != m_map.end()) && it->second.IsOk() )
+	{
+		m_tcObjects->Delete( it->second );
+		// clear map records for all item's children
+		ClearMap( it->first );
+	}
+}
+
+void ObjectTree::ClearMap(PObjectBase obj)
+{
+	m_map.erase( obj );
+	
+	for ( unsigned int i = 0; i < obj->GetChildCount(); i++ )
+	{
+		ClearMap( obj->GetChild( i ) );
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // wxFormBuilder Event Handlers
 /////////////////////////////////////////////////////////////////////////////
-void ObjectTree::OnProjectLoaded ( wxFBEvent &)
+void ObjectTree::OnProjectLoaded( wxFBEvent &)
 {
 	RebuildTree();
 }
 
-void ObjectTree::OnProjectSaved  ( wxFBEvent &)
+void ObjectTree::OnProjectSaved( wxFBEvent &)
 {
 }
 
@@ -397,7 +441,7 @@ void ObjectTree::OnObjectExpanded( wxFBObjectEvent& event )
 
 void ObjectTree::OnObjectSelected( wxFBObjectEvent &event )
 {
-  PObjectBase obj = event.GetFBObject();
+    PObjectBase obj = event.GetFBObject();
 
 	// Find the tree item associated with the object and select it
 	ObjectItemMap::iterator it = m_map.find(obj);
@@ -420,14 +464,18 @@ void ObjectTree::OnObjectSelected( wxFBObjectEvent &event )
 	}
 }
 
-void ObjectTree::OnObjectCreated ( wxFBObjectEvent &)
+void ObjectTree::OnObjectCreated ( wxFBObjectEvent &event )
 {
-	RebuildTree();
+	//RebuildTree();
+	
+	if( event.GetFBObject() ) AddItem( event.GetFBObject(), event.GetFBObject()->GetParent() );
 }
 
-void ObjectTree::OnObjectRemoved ( wxFBObjectEvent &)
+void ObjectTree::OnObjectRemoved ( wxFBObjectEvent &event )
 {
-	RebuildTree();
+	//RebuildTree();
+	
+	RemoveItem( event.GetFBObject() );
 }
 
 void ObjectTree::OnPropertyModified ( wxFBPropertyEvent &event )
@@ -441,12 +489,12 @@ void ObjectTree::OnPropertyModified ( wxFBPropertyEvent &event )
 		{
 			UpdateItem(it->second,it->first);
 		}
-	};
+	}
 }
 
 void ObjectTree::OnProjectRefresh ( wxFBEvent &)
 {
-  RebuildTree();
+	RebuildTree();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -25,7 +25,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "cpppanel.h"
+#include "pythonpanel.h"
 
 #include "rad/codeeditor/codeeditor.h"
 #include "rad/wxfbevent.h"
@@ -40,56 +40,37 @@
 #include "model/objectbase.h"
 
 #include "codegen/codewriter.h"
-#include "codegen/cppcg.h"
+#include "codegen/pythoncg.h"
 
 #include <wx/fdrepdlg.h>
 #include <wx/config.h>
 
 #include <wx/wxScintilla/wxscintilla.h>
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 
-BEGIN_EVENT_TABLE ( CppPanel,  wxPanel )
-	EVT_FB_CODE_GENERATION( CppPanel::OnCodeGeneration )
-	EVT_FB_PROJECT_REFRESH( CppPanel::OnProjectRefresh )
-	EVT_FB_PROPERTY_MODIFIED( CppPanel::OnPropertyModified )
-	EVT_FB_OBJECT_CREATED( CppPanel::OnObjectChange )
-	EVT_FB_OBJECT_REMOVED( CppPanel::OnObjectChange )
-	EVT_FB_OBJECT_SELECTED( CppPanel::OnObjectChange )
-	EVT_FB_EVENT_HANDLER_MODIFIED( CppPanel::OnEventHandlerModified )
+BEGIN_EVENT_TABLE ( PythonPanel,  wxPanel )
+	EVT_FB_CODE_GENERATION( PythonPanel::OnCodeGeneration )
+	EVT_FB_PROJECT_REFRESH( PythonPanel::OnProjectRefresh )
+	EVT_FB_PROPERTY_MODIFIED( PythonPanel::OnPropertyModified )
+	EVT_FB_OBJECT_CREATED( PythonPanel::OnObjectChange )
+	EVT_FB_OBJECT_REMOVED( PythonPanel::OnObjectChange )
+	EVT_FB_OBJECT_SELECTED( PythonPanel::OnObjectChange )
+	EVT_FB_EVENT_HANDLER_MODIFIED( PythonPanel::OnEventHandlerModified )
 
-	EVT_FIND( wxID_ANY, CppPanel::OnFind )
-	EVT_FIND_NEXT( wxID_ANY, CppPanel::OnFind )
+	EVT_FIND( wxID_ANY, PythonPanel::OnFind )
+	EVT_FIND_NEXT( wxID_ANY, PythonPanel::OnFind )
 END_EVENT_TABLE()
 
-CppPanel::CppPanel( wxWindow *parent, int id )
+PythonPanel::PythonPanel( wxWindow *parent, int id )
 :
-wxPanel( parent, id ),
-m_icons( new wxFlatNotebookImageList )
+wxPanel( parent, id )
 {
 	AppData()->AddHandler( this->GetEventHandler() );
 	wxBoxSizer *top_sizer = new wxBoxSizer( wxVERTICAL );
 
-	long nbStyle;
-	wxConfigBase* config = wxConfigBase::Get();
-	config->Read( wxT("/mainframe/editor/cpp/notebook_style"), &nbStyle, wxFNB_NO_X_BUTTON | wxFNB_NO_NAV_BUTTONS | wxFNB_NODRAG | wxFNB_FF2 | wxFNB_CUSTOM_DLG );
+	m_pythonPanel = new CodeEditor( this, -1 );
+	InitStyledTextCtrl( m_pythonPanel->GetTextCtrl() );
 
-	m_notebook = new wxFlatNotebook( this, -1, wxDefaultPosition, wxDefaultSize, FNB_STYLE_OVERRIDES( nbStyle ) );
-	m_notebook->SetCustomizeOptions( wxFNB_CUSTOM_TAB_LOOK | wxFNB_CUSTOM_ORIENTATION | wxFNB_CUSTOM_LOCAL_DRAG );
-
-	// Set notebook icons
-	m_icons->Add( AppBitmaps::GetBitmap( wxT( "cpp" ), 16 ) );
-	m_icons->Add( AppBitmaps::GetBitmap( wxT( "h" ), 16 ) );
-	m_notebook->SetImageList( m_icons );
-
-	m_cppPanel = new CodeEditor( m_notebook, -1 );
-	InitStyledTextCtrl( m_cppPanel->GetTextCtrl() );
-	m_notebook->AddPage( m_cppPanel, wxT( "cpp" ), false, 0 );
-
-	m_hPanel = new CodeEditor( m_notebook, -1 );
-	InitStyledTextCtrl( m_hPanel->GetTextCtrl() );
-	m_notebook->AddPage( m_hPanel, wxT( "h" ), false, 1 );
-
-	top_sizer->Add( m_notebook, 1, wxEXPAND, 0 );
+	top_sizer->Add( m_pythonPanel, 1, wxEXPAND, 0 );
 
 	SetSizer( top_sizer );
 	SetAutoLayout( true );
@@ -97,32 +78,23 @@ m_icons( new wxFlatNotebookImageList )
 	top_sizer->Fit( this );
 	top_sizer->Layout();
 
-	m_hCW = PTCCodeWriter( new TCCodeWriter( m_hPanel->GetTextCtrl() ) );
-	m_cppCW = PTCCodeWriter( new TCCodeWriter( m_cppPanel->GetTextCtrl() ) );
+	m_pythonCW = PTCCodeWriter( new TCCodeWriter( m_pythonPanel->GetTextCtrl() ) );
 }
 
-CppPanel::~CppPanel()
+PythonPanel::~PythonPanel()
 {
-	delete m_icons;
+	//delete m_icons;
 	AppData()->RemoveHandler( this->GetEventHandler() );
-	wxConfigBase *config = wxConfigBase::Get();
-	config->Write( wxT("/mainframe/editor/cpp/notebook_style"), m_notebook->GetWindowStyleFlag() );
 }
 
-void CppPanel::InitStyledTextCtrl( wxScintilla *stc )
+void PythonPanel::InitStyledTextCtrl( wxScintilla *stc )
 {
-	stc->SetLexer( wxSCI_LEX_CPP );
-	stc->SetKeyWords( 0, wxT( "asm auto bool break case catch char class const const_cast \
-	                          continue default delete do double dynamic_cast else enum explicit \
-	                          export extern false float for friend goto if inline int long \
-	                          mutable namespace new operator private protected public register \
-	                          reinterpret_cast return short signed sizeof static static_cast \
-	                          struct switch template this throw true try typedef typeid \
-	                          typename union unsigned using virtual void volatile wchar_t \
-	                          while" ) );
+	stc->SetLexer( wxSCI_LEX_PYTHON );
+	stc->SetKeyWords( 0, wxT( "and assert break class continue def del elif else \
+							   except exec finally for from global if import in \
+							   is lambda not or pass print raise return try while" ) );
 
 #ifdef __WXGTK__
-	// Debe haber un bug en wxGTK ya que la familia wxMODERN no es de ancho fijo.
 	wxFont font( 8, wxMODERN, wxNORMAL, wxNORMAL );
 	font.SetFaceName( wxT( "Monospace" ) );
 #else
@@ -152,78 +124,40 @@ void CppPanel::InitStyledTextCtrl( wxScintilla *stc )
 	stc->SetReadOnly( true );
 }
 
-void CppPanel::OnFind( wxFindDialogEvent& event )
+void PythonPanel::OnFind( wxFindDialogEvent& event )
 {
-	wxFlatNotebook* languageBook = wxDynamicCast( this->GetParent(), wxFlatNotebook );
-	if ( NULL == languageBook )
-	{
-		return;
-	}
-
-	int languageSelection = languageBook->GetSelection();
-	if ( languageSelection < 0 )
-	{
-		return;
-	}
-
-	wxString languageText = languageBook->GetPageText( languageSelection );
-	if ( wxT("C++") != languageText )
-	{
-		return;
-	}
-
-	wxFlatNotebook* notebook = wxDynamicCast( m_cppPanel->GetParent(), wxFlatNotebook );
-	if ( NULL == notebook )
-	{
-		return;
-	}
-
-	int selection = notebook->GetSelection();
-	if ( selection < 0 )
-	{
-		return;
-	}
-
-	wxString text = notebook->GetPageText( selection );
-	if ( wxT("cpp") == text )
-	{
-		m_cppPanel->ProcessEvent( event );
-	}
-	else if ( wxT("h") == text )
-	{
-		m_hPanel->ProcessEvent( event );
-	}
+	m_pythonPanel->ProcessEvent( event );
 }
 
-void CppPanel::OnPropertyModified( wxFBPropertyEvent& event )
+void PythonPanel::OnPropertyModified( wxFBPropertyEvent& event )
 {
 	// Generate code to the panel only
 	event.SetId( 1 );
 	OnCodeGeneration( event );
 }
 
-void CppPanel::OnProjectRefresh( wxFBEvent& event )
+void PythonPanel::OnProjectRefresh( wxFBEvent& event )
 {
 	// Generate code to the panel only
 	event.SetId( 1 );
 	OnCodeGeneration( event );
 }
 
-void CppPanel::OnObjectChange( wxFBObjectEvent& event )
+void PythonPanel::OnObjectChange( wxFBObjectEvent& event )
 {
 	// Generate code to the panel only
 	event.SetId( 1 );
 	OnCodeGeneration( event );
 }
 
-void CppPanel::OnEventHandlerModified( wxFBEventHandlerEvent& event )
+void PythonPanel::OnEventHandlerModified( wxFBEventHandlerEvent& event )
 {
 	// Generate code to the panel only
 	event.SetId( 1 );
 	OnCodeGeneration( event );
 }
 
-void CppPanel::OnCodeGeneration( wxFBEvent& event )
+void PythonPanel::OnCodeGeneration( wxFBEvent& event )
 {
     PObjectBase objectToGenerate;
 
@@ -238,7 +172,7 @@ void CppPanel::OnCodeGeneration( wxFBEvent& event )
 	{
 		return;
 	}
-	
+
 	// For code preview generate only code relevant to selected form,
 	// otherwise generate full project code.
 
@@ -276,14 +210,15 @@ void CppPanel::OnCodeGeneration( wxFBEvent& event )
 
     if(!project || !objectToGenerate)return;
 
-    // Get C++ properties from the project
+    // Get Python properties from the project
 
-	// If C++ generation is not enabled, do not generate the file
+	// If Python generation is not enabled, do not generate the file
 	bool doFile = false;
 	PProperty pCodeGen = project->GetProperty( wxT( "code_generation" ) );
 	if ( pCodeGen )
 	{
-		doFile = TypeConv::FlagSet( wxT("C++"), pCodeGen->GetValue() ) && !panelOnly;
+		//doFile = TypeConv::FlagSet( wxT("C++"), pCodeGen->GetValue() ) && !panelOnly;
+		doFile = TypeConv::FlagSet( wxT("Python"), pCodeGen->GetValue() ) && !panelOnly;
 	}
 
 	if ( !(doPanel || doFile ) )
@@ -334,11 +269,11 @@ void CppPanel::OnCodeGeneration( wxFBEvent& event )
 			return;
 		}
 	}
-
+	
 	// Generate code in the panel
 	if ( doPanel )
 	{
-		CppCodeGenerator codegen;
+		PythonCodeGenerator codegen;
 		codegen.UseRelativePath( useRelativePath, path );
 
 		if ( pFirstID )
@@ -346,34 +281,22 @@ void CppPanel::OnCodeGeneration( wxFBEvent& event )
 			codegen.SetFirstID( firstID );
 		}
 
-		codegen.SetHeaderWriter( m_hCW );
-		codegen.SetSourceWriter( m_cppCW );
+		codegen.SetSourceWriter( m_pythonCW );
 
 		Freeze();
 
-		wxScintilla* cppEditor = m_cppPanel->GetTextCtrl();
-		cppEditor->SetReadOnly( false );
-		int cppLine = cppEditor->GetFirstVisibleLine() + cppEditor->LinesOnScreen() - 1;
-		int cppXOffset = cppEditor->GetXOffset();
-
-		wxScintilla* hEditor = m_hPanel->GetTextCtrl();
-		hEditor->SetReadOnly( false );
-		int hLine = hEditor->GetFirstVisibleLine() + hEditor->LinesOnScreen() - 1;
-		int hXOffset = hEditor->GetXOffset();
+		wxScintilla* pythonEditor = m_pythonPanel->GetTextCtrl();
+		pythonEditor->SetReadOnly( false );
+		int pythonLine = pythonEditor->GetFirstVisibleLine() + pythonEditor->LinesOnScreen() - 1;
+		int pythonXOffset = pythonEditor->GetXOffset();
 
 		codegen.GenerateCode( project );
 
-		cppEditor->SetReadOnly( true );
-		cppEditor->GotoLine( cppLine );
-		cppEditor->SetXOffset( cppXOffset );
-		cppEditor->SetAnchor( 0 );
-		cppEditor->SetCurrentPos( 0 );
-
-		hEditor->SetReadOnly( true );
-		hEditor->GotoLine( hLine );
-		hEditor->SetXOffset( hXOffset );
-		hEditor->SetAnchor( 0 );
-		hEditor->SetCurrentPos( 0 );
+		pythonEditor->SetReadOnly( true );
+		pythonEditor->GotoLine( pythonLine );
+		pythonEditor->SetXOffset( pythonXOffset );
+		pythonEditor->SetAnchor( 0 );
+		pythonEditor->SetCurrentPos( 0 );
 
 		Thaw();
 	}
@@ -383,7 +306,7 @@ void CppPanel::OnCodeGeneration( wxFBEvent& event )
 	{
 		try
 		{
-			CppCodeGenerator codegen;
+			PythonCodeGenerator codegen;
 			codegen.UseRelativePath( useRelativePath, path );
 
 			if ( pFirstID )
@@ -410,20 +333,16 @@ void CppPanel::OnCodeGeneration( wxFBEvent& event )
 				useUtf8 = ( pUseUtf8->GetValueAsString() != wxT("ANSI") );
 			}
 
-			PCodeWriter h_cw( new FileCodeWriter( path + file + wxT( ".h" ), useMicrosoftBOM, useUtf8 ) );
+			PCodeWriter python_cw( new FileCodeWriter( path + file + wxT( ".py" ), useMicrosoftBOM, useUtf8 ) );
 
-			PCodeWriter cpp_cw( new FileCodeWriter( path + file + wxT( ".cpp" ), useMicrosoftBOM, useUtf8 ) );
-
-			codegen.SetHeaderWriter( h_cw );
-			codegen.SetSourceWriter( cpp_cw );
+			codegen.SetSourceWriter( python_cw );
 			codegen.GenerateCode( project );
 			wxLogStatus( wxT( "Code generated on \'%s\'." ), path.c_str() );
 
 			// check if we have to convert to ANSI encoding
 			if (project->GetPropertyAsString(wxT("encoding")) == wxT("ANSI"))
 			{
-				UTF8ToAnsi(path + file + wxT( ".h" ));
-				UTF8ToAnsi(path + file + wxT( ".cpp" ));
+				UTF8ToAnsi(path + file + wxT( ".py" ));
 			}
 		}
 		catch ( wxFBException& ex )

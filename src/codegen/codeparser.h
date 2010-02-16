@@ -57,42 +57,20 @@ class CodeParser
 	public:
 		//constructor
 		CodeParser()
-		{}
-
-		//constructor that calls ParseFiles()
-		CodeParser(wxString headerFileName, wxString sourceFileName, wxString className)
-		{
-			ParseFiles(headerFileName, sourceFileName, className);
+		{ 
 		}
 
 		~CodeParser()
 		{}
+		
+		
 
-		//opens the header and source,  'className' is the Inherited class
-		void ParseFiles(wxString headerFileName, wxString sourceFileName, wxString className);
-
-		//extracts the contents of the files.  take the the entire contents of both files in string form
-		void ParseCode(wxString header, wxString source);
-
-		//extracts all user header include code before the class declaration
-		wxString ParseUserHInclude(wxString code);
-
-		//extracts the contents of the generated class declaration
-		wxString ParseClass(wxString code);
-
-		//extracts user class members
-		void ParseUserMembers(wxString code);
-
-		//parses all functions belonging to the generated class, including user functions
-		wxString ParseSourceFunctions(wxString code);
-
-		//extracts the contents of a codes block
-		int ParseBrackets(wxString code, int& functionStart );
-
+		///////////////////////////////////////////////////////////////////
+		
 		//returns all user header include code before the class declaration
-		wxString GetUserHeaderIncludes()
+		wxString GetUserIncludes()
 		{
-			return m_userHInclude;
+			return m_userInclude;
 		}
 
 		//returns user class members
@@ -101,7 +79,7 @@ class CodeParser
 			return m_userMemebers;
 		}
 		
-          //returns the Documantation of a function by name
+          //returns the Documentation of a function by name
 		wxString GetFunctionDocumentation( wxString function );
           
 		//returns the contents of a function by name and then removes it from the list of remaining functions
@@ -116,9 +94,8 @@ class CodeParser
 			return m_trailingCode;
 		}
 
-	private:
-		wxString m_userHInclude;
-		wxString m_userSInclude;
+	protected:
+		wxString m_userInclude;
 		wxString m_className;
 		wxString m_userMemebers;
 		wxString m_trailingCode;
@@ -128,6 +105,54 @@ class CodeParser
 
 };
 
+
+
+//parses the source and header files for all code added to the generated
+class CCodeParser : public CodeParser
+{
+	private:
+		wxString m_hFile;
+		wxString m_cFile;
+		
+	public:
+		//constructor
+		CCodeParser()
+		{
+		}
+		
+		CCodeParser(wxString headerFileName, wxString sourceFileName)
+		{
+			m_hFile = headerFileName;
+			m_cFile = sourceFileName;
+		}
+
+		~CCodeParser()
+		{}
+
+		/* c++ Parser */
+		
+			//opens the header and source,  'className' is the Inherited class
+			void ParseCFiles(wxString className);
+
+			//extracts the contents of the files.  take the the entire contents of both files in string form
+			void ParseCCode(wxString header, wxString source);
+
+			//extracts all user header include code before the class declaration
+			void ParseCInclude(wxString code);
+
+			//extracts the contents of the generated class declaration
+			void ParseCClass(wxString code);
+			
+			wxString ParseSourceFunctions(wxString code);
+			
+			wxString ParseBrackets(wxString code, int& functionStart);
+			
+			void ParseCUserMembers(wxString code);
+			
+		/***************/
+};
+
+//class PCodeParser : public CodeParser
 
 #endif // CODEPARSER_H_INCLUDED
 

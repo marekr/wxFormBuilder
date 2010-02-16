@@ -1,7 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // wxFormBuilder - A Visual Dialog Editor for wxWidgets.
-// Copyright (C) 2005 JosÈ Antonio Hurtado
+// Copyright (C) 2005 Jos√© Antonio Hurtado
+// Copyright (C) 2005 Jos√© Antonio Hurtado
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // Written by
-//   JosÈ Antonio Hurtado - joseantonio.hurtado@gmail.com
+//   Jos√© Antonio Hurtado - joseantonio.hurtado@gmail.com
 //   Juan Antonio Ortega  - jortegalalmolda@gmail.com
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +31,7 @@
 
 #include <wx/file.h>
 #include <wx/tokenzr.h>
+#include <wx/regex.h>
 
 #include <wx/wxScintilla/wxscintilla.h>
 
@@ -102,6 +104,7 @@ bool CodeWriter::StringOk( wxString s )
 
 void CodeWriter::FixWrite( wxString s , bool keepIndents)
 {
+	wxRegEx reIndent( wxT("%TAB%\\s*"), wxRE_ADVANCED );
 	wxStringTokenizer tkz( s, wxT("\n"), wxTOKEN_RET_EMPTY_ALL );
 
 	while ( tkz.HasMoreTokens() )
@@ -112,7 +115,10 @@ void CodeWriter::FixWrite( wxString s , bool keepIndents)
 			line.Trim( false );
 		}
 		line.Trim( true );
+		// replace indentations defined in code templates by #indent and #unindent macros...
+		reIndent.Replace( &line, wxT("\t") );
 		WriteLn( line, keepIndents );
+
 	}
 }
 
