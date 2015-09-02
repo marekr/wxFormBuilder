@@ -30,10 +30,12 @@
 
 MACRO( BUILD_PACKAGE PKG )
   # Include the package build definition
+  MESSAGE( STATUS "Attempting to find and build ${PKG}" )
   INCLUDE( "Build${PKG}" )
 
   # If it was not found, proceed with building it
   IF( NOT PKG_FOUND )
+    MESSAGE( STATUS "Attempting to download and build ${PKG}" )
     # Obtain plain archive name
     IF( NOT DEFINED PKG_ARCHIVE )
       GET_FILENAME_COMPONENT( PKG_ARCHIVE "${PKG_URL}" NAME )
