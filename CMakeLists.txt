@@ -58,6 +58,8 @@ if( NOT APPLE )
         CACHE PATH "Location of wxfb binaries." )
     set( WXFB_LIB lib/wxformbuilder
         CACHE PATH "Location of wxfb libraries." )
+    set( WXFB_SHARE share/wxformbuilder
+        CACHE PATH "Location of wxfb extra files." )
 else()
     # everything without leading / is relative to CMAKE_INSTALL_PREFIX.
     # CMAKE_INSTALL_PREFIX is root of .dmg image
