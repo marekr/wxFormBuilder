@@ -21,5 +21,5 @@ target_link_libraries(${target}
 
 # Library
 install(TARGETS ${target}
-    LIBRARY DESTINATION ${WXFB_BIN}
+    LIBRARY DESTINATION ${WXFB_LIB}
 )
