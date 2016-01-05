@@ -49,29 +49,6 @@
 #include <wx/xrc/xh_auinotbk.h>
 #endif
 
-// Abnormal Termination Handling
-#if wxUSE_ON_FATAL_EXCEPTION && wxUSE_STACKWALKER
-	#include <wx/stackwalk.h>
-	#include <wx/utils.h>
-#elif defined(_WIN32) && defined(__MINGW32__)
-	#include "dbg_stack_trace/stack.hpp"
-	#include <sstream>
-	#include <excpt.h>
-
-	#if defined  __MINGW64_VERSION_MAJOR && defined __MINGW64_VERSION_MINOR /* MinGW-w64 required */
-		__stdcall EXCEPTION_DISPOSITION StructuredExceptionHandler(	struct _EXCEPTION_RECORD *ExceptionRecord, /* breaks build with MinGW 32 */
-															void * EstablisherFrame,
-															struct _CONTEXT *ContextRecord,
-															void * DispatcherContext );
-	#else
-		EXCEPTION_DISPOSITION StructuredExceptionHandler(	struct _EXCEPTION_RECORD *ExceptionRecord,
-															void * EstablisherFrame,
-															struct _CONTEXT *ContextRecord,
-															void * DispatcherContext );
-	#endif
-#endif
-
-void LogStack();
 
 static const wxCmdLineEntryDesc s_cmdLineDesc[] =
 {
@@ -93,18 +70,6 @@ IMPLEMENT_APP( MyApp )
 
 int MyApp::OnRun()
 {
-	// Abnormal Termination Handling
-	#if wxUSE_ON_FATAL_EXCEPTION && wxUSE_STACKWALKER
-		::wxHandleFatalExceptions( true );
-	#elif defined(_WIN32) && defined(__MINGW32__)
-		// Structured Exception handlers are stored in a linked list at FS:[0]
-		// THIS MUST BE A LOCAL VARIABLE - windows won't use an object outside of the thread's stack frame
-		EXCEPTION_REGISTRATION ex;
-		ex.handler = StructuredExceptionHandler;
-		asm volatile ("movl %%fs:0, %0" : "=r" (ex.prev));
-		asm volatile ("movl %0, %%fs:0" : : "r" (&ex));
-	#endif
-
 	// Using a space so the initial 'w' will not be capitalized in wxLogGUI dialogs
 	wxApp::SetAppName( wxT( " wxFormBuilder" ) );
 
@@ -385,118 +350,5 @@ void MyApp::MacOpenFile(const wxString &fileName)
         if ( AppData()->LoadProject( fileName ) )
             m_frame->InsertRecentProject( fileName );
     }
-}
-#endif
-
-#if wxUSE_ON_FATAL_EXCEPTION && wxUSE_STACKWALKER
-	class StackLogger : public wxStackWalker
-	{
-	protected:
-		void OnStackFrame( const wxStackFrame& frame )
-		{
-			// Build param string
-			wxString params;
-			size_t paramCount = frame.GetParamCount();
-			if ( paramCount > 0 )
-			{
-				params << wxT("( ");
-
-				for ( size_t i = 0; i < paramCount; ++i )
-				{
-					wxString type, name, value;
-					if ( frame.GetParam( i, &type, &name, &value) )
-					{
-						params << type << wxT(" ") << name << wxT(" = ") << value << wxT(", ");
-					}
-				}
-
-				params << wxT(")");
-			}
-
-			wxString source;
-			if ( frame.HasSourceLocation() )
-			{
-				source.Printf( wxT("%s@%i"), frame.GetFileName().c_str(), frame.GetLine() );
-			}
-
-			wxLogError( wxT("%03i %i %s %s %s %s"),
-							frame.GetLevel(),
-							frame.GetAddress(),
-							frame.GetModule().c_str(),
-							frame.GetName().c_str(),
-							params.c_str(),
-							source.c_str() );
-		}
-	};
-
-	void MyApp::OnFatalException()
-	{
-		LogStack();
-	}
-#elif defined(_WIN32) && defined(__MINGW32__)
-	static _CONTEXT* context = 0;
-	EXCEPTION_DISPOSITION StructuredExceptionHandler(	struct _EXCEPTION_RECORD *ExceptionRecord,
-																void * EstablisherFrame,
-																struct _CONTEXT *ContextRecord,
-																void * DispatcherContext )
-	{
-		context = ContextRecord;
-		LogStack();
-		return ExceptionContinueSearch;
-	}
-
-	class StackLogger
-	{
-	public:
-		void WalkFromException()
-		{
-			try
-			{
-				std::stringstream output;
-				dbg::stack s( 0, context );
-				dbg::stack::const_iterator frame;
-				for ( frame = s.begin(); frame != s.end(); ++frame )
-				{
-					output << *frame;
-					wxLogError( wxString( output.str().c_str(), *wxConvCurrent ) );
-					output.str( "" );
-				}
-			}
-			catch ( std::exception& ex )
-			{
-				wxLogError( wxString( ex.what(), *wxConvCurrent ) );
-			}
-		}
-	};
-#endif
-
-#if (wxUSE_ON_FATAL_EXCEPTION && wxUSE_STACKWALKER) || (defined(_WIN32) && defined(__MINGW32__))
-class LoggingStackWalker : public StackLogger
-{
-public:
-    LoggingStackWalker()
-    :
-    StackLogger()
-    {
-        wxLog::Suspend();
-    }
-
-    ~LoggingStackWalker()
-    {
-        wxLogError( wxT("A Fatal Error Occurred. Click Details for a backtrace.") );
-        wxLog::Resume();
-        wxLog* logger = wxLog::GetActiveTarget();
-        if ( 0 != logger )
-        {
-            logger->Flush();
-        }
-        exit(1);
-    }
-};
-
-void LogStack()
-{
-    LoggingStackWalker walker;
-    walker.WalkFromException();
 }
 #endif
