@@ -31,6 +31,11 @@ if( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     set( CMAKE_C_FLAGS   "-Wall ${CMAKE_C_FLAGS}" )
     set( CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}" )
 
+    if( GCC_VERSION VERSION_EQUAL 5.1.0 OR GCC_VERSION VERSION_EQUAL 5.2.0 )
+        set( CMAKE_C_FLAGS   "-Wno-deprecated-declarations ${CMAKE_C_FLAGS}" )
+        set( CMAKE_CXX_FLAGS "-Wno-deprecated-declarations ${CMAKE_CXX_FLAGS}" )
+    endif()
+    
     set( CMAKE_C_FLAGS_DEBUG   "-g3 -ggdb3 -DDEBUG" )
     set( CMAKE_CXX_FLAGS_DEBUG "-g3 -ggdb3 -DDEBUG" )
 
@@ -69,7 +74,7 @@ else()
 endif()
 
 # See line 41 of CMakeModules/FindwxWidgets.cmake
-find_package( wxWidgets 3.0.0 COMPONENTS gl aui adv html core net base xml stc richtext propgrid ribbon media xrc REQUIRED )
+find_package( wxWidgets 3.0.0 COMPONENTS gl aui adv html core net base xml stc richtext propgrid ribbon xrc REQUIRED )
 
 # Include wxWidgets macros.
 include( ${wxWidgets_USE_FILE} )
