@@ -13,7 +13,6 @@ set( WXFB_SRCS
     splashscreen.cpp
     maingui.cpp
     ./md5/md5.cc
-    ./dbg_stack_trace/stack.cpp
     ./codegen/codegen.cpp
     ./codegen/codeparser.cpp
     ./codegen/codewriter.cpp
