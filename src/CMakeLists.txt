@@ -71,12 +71,20 @@ set( rad_SRCS
     ./rad/objecttree/objecttree.cpp
     )
 
+
+if( MINGW )
+    mingw_resource_compiler( wxFormBuilder )
+    # WXFORMBUILDER_RESOURCES variable is set by the macro.
+else()
+    set( WXFORMBUILDER_RESOURCES wxFormBuilder.rc )
+endif()
+
 add_executable( wxFormBuilder WIN32
     ${WXFB_SRCS}
     ${models_SRCS}
     ${utils_SRCS}
     ${rad_SRCS}
-    ${WXFB_RESOURCES}
+    ${WXFORMBUILDER_RESOURCES}
     )
 
 target_link_libraries( wxFormBuilder
@@ -86,13 +94,6 @@ target_link_libraries( wxFormBuilder
     )
 
 add_dependencies( wxFormBuilder additional common forms layout containers )
-
-if( MINGW )
-    # WXFB_RESOURCES variable is set by the macro.
-    mingw_resource_compiler( wxFormBuilder )
-else()
-    set( WXFB_RESOURCES wxFormBuilder.rc )
-endif()
 
 file(GLOB DEPLOY_FILES_AND_DIRS "${PROJECT_SOURCE_DIR}/output/*")
 foreach(ITEM ${DEPLOY_FILES_AND_DIRS})
