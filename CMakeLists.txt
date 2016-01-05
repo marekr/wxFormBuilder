@@ -43,11 +43,12 @@ if( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     endif()
 endif( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
 
-INCLUDE( "BuildPackage" )
+include( BuildPackage )
 BUILD_PACKAGE( "ticpp" )
 
 ADD_DEFINITIONS( -DTIXML_USE_TICPP )
 
+include( MinGWResourceCompiler )
 
 #================================================
 # Locations for install targets.
