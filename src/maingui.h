@@ -39,9 +39,6 @@ private:
   
 public:
   bool OnInit();
-  #if wxUSE_ON_FATAL_EXCEPTION && wxUSE_STACKWALKER
-  void OnFatalException();
-  #endif
   int OnRun();
   int OnExit();
   ~MyApp();
