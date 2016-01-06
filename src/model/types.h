@@ -26,17 +26,17 @@
 #ifndef __TYPES__
 #define __TYPES__
 
-#include <vector>
+#include <wx/wx.h>
 #include <wx/string.h>
-#include <map>
-#include <boost/smart_ptr.hpp>
 
-#include "wx/wx.h"
+#include <memory>
+#include <vector>
+#include <map>
 
 class ObjectType;
 
-typedef boost::shared_ptr<ObjectType> PObjectType;
-typedef boost::weak_ptr<ObjectType> WPObjectType;
+typedef std::shared_ptr<ObjectType> PObjectType;
+typedef std::weak_ptr<ObjectType> WPObjectType;
 
 /**
  * Representa el tipo de objeto.
@@ -115,7 +115,7 @@ private:
 	 * @note vamos a usar smart-pointers de tipo "weak" ya que puede haber muchas
 	 *       referencias cruzadas.
 	 */
-	typedef std::map<WPObjectType, ChildCount> ChildTypeMap;
+	typedef std::map<WPObjectType, ChildCount, std::owner_less<WPObjectType>> ChildTypeMap;
 
 	int m_id;        /**< identificador numérico del tipo de objeto */
 	wxString m_name;   /**< cadena de texto asociado al tipo */

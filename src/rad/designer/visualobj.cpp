@@ -122,18 +122,14 @@ void VObjEvtHandler::OnRightClick(wxMouseEvent &event)
 
 void VObjEvtHandler::OnPaint(wxPaintEvent &event)
 {
-/*	PObjectBase wo = boost::shared_dynamic_cast<ObjectBase>(m_object.lock());
-	if (wo->IsContainer())
-	{ TODO: what this check is for? */
-		wxWindow *aux = m_window;
-		while (!aux->IsKindOf(CLASSINFO(DesignerWindow))) aux = aux->GetParent();
-		DesignerWindow *dsgnWin = (DesignerWindow*) aux;
-		if (dsgnWin->GetActivePanel() == m_window)
-		{
-			wxPaintDC dc(m_window);
-			dsgnWin->HighlightSelection(dc);
-		}
-/*	}*/
+	wxWindow *aux = m_window;
+	while (!aux->IsKindOf(CLASSINFO(DesignerWindow))) aux = aux->GetParent();
+	DesignerWindow *dsgnWin = (DesignerWindow*) aux;
+	if (dsgnWin->GetActivePanel() == m_window)
+	{
+		wxPaintDC dc(m_window);
+		dsgnWin->HighlightSelection(dc);
+	}
 	event.Skip();
 }
 
