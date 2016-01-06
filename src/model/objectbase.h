@@ -40,7 +40,7 @@
 #include "types.h"
 #include "ticpp.h"
 
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include <component.h>
 
 #include "utils/wxfbdefs.h"

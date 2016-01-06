@@ -27,7 +27,7 @@
 #define __VISUAL_EDITOR__
 
 #include "plugin.h"
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include "utils/wxfbdefs.h"
 #include "rad/designer/visualobj.h"
 //#include "rad/designer/resizablepanel.h"

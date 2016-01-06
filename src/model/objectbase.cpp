@@ -24,7 +24,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "objectbase.h"
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include "utils/debug.h"
 #include "utils/typeconv.h"
 #include "utils/stringutils.h"
