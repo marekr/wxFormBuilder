@@ -36,7 +36,7 @@ class ObjectDatabase;
 class ObjectTypeDictionary;
 class PropertyCategory;
 
-typedef boost::shared_ptr<ObjectDatabase> PObjectDatabase;
+typedef std::shared_ptr<ObjectDatabase> PObjectDatabase;
 
 namespace ticpp
 {

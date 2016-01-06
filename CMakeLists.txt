@@ -29,7 +29,7 @@ if( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     # Establish -Wall early, so specialized relaxations of this may come
     # subsequently on the command line, such as in pcbnew/github/CMakeLists.txt
     set( CMAKE_C_FLAGS   "-Wall ${CMAKE_C_FLAGS}" )
-    set( CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}" )
+    set( CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS} -std=gnu++11" )
 
     if( GCC_VERSION VERSION_EQUAL 5.1.0 OR GCC_VERSION VERSION_EQUAL 5.2.0 )
         set( CMAKE_C_FLAGS   "-Wno-deprecated-declarations ${CMAKE_C_FLAGS}" )
