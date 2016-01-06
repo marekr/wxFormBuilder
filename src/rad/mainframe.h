@@ -26,7 +26,7 @@
 #ifndef __MAIN_FRAME__
 #define __MAIN_FRAME__
 
-#include "wx/wx.h"
+#include <wx/wx.h>
 #ifdef USE_FLATNOTEBOOK
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #else

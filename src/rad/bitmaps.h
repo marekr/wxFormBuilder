@@ -30,7 +30,7 @@
 #define TOOL_SIZE 22
 #define SMALL_ICON_SIZE 14
 
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include <map>
 
 class AppBitmaps

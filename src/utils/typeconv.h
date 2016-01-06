@@ -26,7 +26,7 @@
 #ifndef __TYPE_UTILS__
 #define __TYPE_UTILS__
 
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include <wx/string.h>
 #include <vector>
 #include <map>
