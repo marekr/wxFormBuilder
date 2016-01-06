@@ -21,19 +21,20 @@
 //   Ryan Mulder - rjmyst3@gmail.com
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include "wxfbipc.h"
 #include <wx/filename.h>
 #include "utils/debug.h"
+#include <utility>
 
 bool wxFBIPC::VerifySingleInstance( const wxString& file, bool switchTo )
 {
@@ -92,21 +93,20 @@ bool wxFBIPC::VerifySingleInstance( const wxString& file, bool switchTo )
 		}
 	}
 
-    std::auto_ptr< wxSingleInstanceChecker > checker;
-    {
-        // Suspend logging, because error messages here are not useful
-        #ifndef __WXFB_DEBUG__
-        wxLogNull stopLogging;
-        #endif
-        checker.reset( new wxSingleInstanceChecker( name ) );
-    }
+    std::unique_ptr< wxSingleInstanceChecker > checker;
+
+    // Suspend logging, because error messages here are not useful
+    #ifndef __WXFB_DEBUG__
+    wxLogNull stopLogging;
+    #endif
+    checker.reset( new wxSingleInstanceChecker( name ) );
 
     if ( !checker->IsAnotherRunning() )
 	{
 		// This is the first instance of this project, so setup a server and save the single instance checker
 		if ( CreateServer( name ) )
 		{
-			m_checker = checker;
+			m_checker = std::move(checker);
 			return true;
 		}
 		else
@@ -135,38 +135,40 @@ bool wxFBIPC::VerifySingleInstance( const wxString& file, bool switchTo )
 		}
 
 		// Create the client
-		std::auto_ptr< AppClient > client( new AppClient );
+		std::unique_ptr< AppClient > client( new AppClient );
 
 		// Create the connection
-		std::auto_ptr< wxConnectionBase > connection;
+		std::unique_ptr< wxConnectionBase > connection;
+
 		#ifdef __WXMSW__
-			connection.reset( client->MakeConnection( wxT("localhost"), name, name ) );
+		connection.reset( client->MakeConnection( wxT("localhost"), name, name ) );
 		#else
-			bool connected = false;
-			for ( int i = m_port; i < m_port + 20; ++i )
+		bool connected = false;
+		for ( int i = m_port; i < m_port + 20; ++i )
+		{
+        #if wxVERSION_NUMBER < 2900
+			wxString nameWithPort = wxString::Format( wxT("%i%s"), i, name.c_str() );
+			connection.reset( client->MakeConnection( wxT("127.0.0.1"), nameWithPort, name ) );
+        #else
+            wxString sPort = wxString::Format( "%i", i );
+            connection.reset( client->MakeConnection( "localhost", sPort, name ) );
+        #endif
+			if ( NULL != connection.get() )
 			{
-            #if wxVERSION_NUMBER < 2900
-				wxString nameWithPort = wxString::Format( wxT("%i%s"), i, name.c_str() );
-				connection.reset( client->MakeConnection( wxT("127.0.0.1"), nameWithPort, name ) );
-            #else
-                wxString sPort = wxString::Format( "%i", i );
-                connection.reset( client->MakeConnection( "localhost", sPort, name ) );
-            #endif
-				if ( NULL != connection.get() )
+				connected = true;
+				wxChar* pid = (wxChar*)connection->Request( wxT("PID"), NULL );
+				if ( NULL != pid )
 				{
-					connected = true;
-					wxChar* pid = (wxChar*)connection->Request( wxT("PID"), NULL );
-					if ( NULL != pid )
-					{
-						wxLogStatus( wxT("%s already open in process %s"), file.c_str(), pid );
-					}
-					break;
+					wxLogStatus( wxT("%s already open in process %s"), file.c_str(), pid );
 				}
+				break;
 			}
-			if ( !connected )
-			{
-				wxLogError( wxT("There is a lockfile named '%s', but unable to make a connection to that instance."), name.c_str() );
-			}
+		}
+
+		if ( !connected )
+		{
+			wxLogError( wxT("There is a lockfile named '%s', but unable to make a connection to that instance."), name.c_str() );
+		}
 		#endif
 
 		// Drop the connection and client
@@ -189,12 +191,12 @@ bool wxFBIPC::CreateServer( const wxString& name )
 	wxLogNull stopLogging;
 	#endif
 
-	std::auto_ptr< AppServer > server( new AppServer( name ) );
+	std::unique_ptr< AppServer > server( new AppServer( name ) );
 
 	#ifdef __WXMSW__
 		if ( server->Create( name ) )
 		{
-			m_server = server;
+			m_server = std::move(server);
 			return true;
 		}
 	#else
@@ -204,7 +206,7 @@ bool wxFBIPC::CreateServer( const wxString& name )
 			wxString nameWithPort = wxString::Format( wxT("%i%s"), i, name.c_str() );
 			if( server->Create( nameWithPort ) )
 			{
-				m_server = server;
+				m_server = std::move(server);
 				return true;
 			}
 			else
