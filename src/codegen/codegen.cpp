@@ -26,7 +26,7 @@
 #include "codegen.h"
 #include "utils/debug.h"
 #include "utils/typeconv.h"
-#include "wx/wx.h"
+#include <wx/wx.h>
 #include <wx/tokenzr.h>
 #include "rad/appdata.h"
 #include "model/objectbase.h"
