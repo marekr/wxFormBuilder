@@ -421,7 +421,7 @@ bool ObjectBase::ChildTypeOk (PObjectType type)
 	// check allowed child count
 	if( GetObjectInfo()->GetObjectType()->GetName() == wxT("form") )
 	{
-		nmax = GetObjectInfo()->GetObjectType()->FindChildType(type, this->GetPropertyAsInteger(wxT("aui_managed")));
+		nmax = GetObjectInfo()->GetObjectType()->FindChildType(type, this->GetPropertyAsBoolean(wxT("aui_managed")));
 	}
 	else
 		nmax = GetObjectInfo()->GetObjectType()->FindChildType(type, false);
@@ -642,6 +642,12 @@ int ObjectBase::GetPropertyAsInteger (const wxString& pname)
 		return property->GetValueAsInteger();
 	else
 		return 0;
+}
+
+
+bool ObjectBase::GetPropertyAsBoolean(const wxString& pname)
+{
+	return GetPropertyAsInteger(pname) != 0;
 }
 
 wxFontContainer ObjectBase::GetPropertyAsFont(const wxString& pname)
