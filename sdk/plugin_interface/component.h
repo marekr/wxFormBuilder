@@ -67,6 +67,7 @@ class IObject
  public:
   virtual bool     IsNull (const wxString& pname) = 0;
   virtual int      GetPropertyAsInteger (const wxString& pname) = 0;
+  virtual bool     GetPropertyAsBoolean(const wxString& pname) = 0;
   virtual wxFontContainer   GetPropertyAsFont    (const wxString& pname) = 0;
   virtual wxColour GetPropertyAsColour  (const wxString& pname) = 0;
   virtual wxString GetPropertyAsString  (const wxString& pname) = 0;
