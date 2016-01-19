@@ -133,6 +133,7 @@ wxString CppTemplateParser::ValueToCode( PropertyType type, wxString value )
 	case PT_MACRO:
 	case PT_TEXT:
 	case PT_OPTION:
+	case PT_EDIT_OPTION:
 	case PT_FLOAT:
 	case PT_INT:
 	case PT_UINT:
@@ -1676,6 +1677,7 @@ void CppCodeGenerator::GenConstruction( PObjectBase obj, bool is_widget )
 		           type == wxT( "toolbar" )          ||
 		           type == wxT( "tool" )             ||
 		           type == wxT( "listbook" )         ||
+		           type == wxT( "simplebook" )       ||
 		           type == wxT( "notebook" )         ||
 		           type == wxT( "auinotebook" )      ||
 		           type == wxT( "treelistctrl" )     ||
@@ -1722,6 +1724,7 @@ void CppCodeGenerator::GenConstruction( PObjectBase obj, bool is_widget )
 	          type == wxT( "flatnotebookpage" )	||
 	          type == wxT( "listbookpage" )		||
 	          type == wxT( "choicebookpage" )	||
+	          type == wxT( "simplebookpage" )	||
 	          type == wxT( "auinotebookpage" )  ||
               type == wxT(" wizardpagesimple" )
 	        )
