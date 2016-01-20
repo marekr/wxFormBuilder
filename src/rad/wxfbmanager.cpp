@@ -155,16 +155,22 @@ wxObject* wxFBManager::GetWxObject( PObjectBase obj )
 
 void wxFBManager::ModifyProperty( wxObject* wxobject, wxString property, wxString value, bool allowUndo )
 {
-	CHECK_VISUAL_EDITOR()
+// #pragma to get rid of the VisualStudio warning C4003: not enough actual parameters for macro 'CHECK_...'
+#pragma warning( push )
+#pragma warning( disable : 4003 )
+
+	CHECK_VISUAL_EDITOR( )
 
 	// Prevent modified event in visual editor - no need to redraw when the change is happening in the editor!
 	FlagFlipper stopModifiedEvent( m_visualEdit, &VisualEditor::PreventOnModified );
 
-	CHECK_WX_OBJECT()
+	CHECK_WX_OBJECT( )
 
 	PObjectBase obj = m_visualEdit->GetObjectBase( wxobject );
 
-	CHECK_OBJECT_BASE()
+	CHECK_OBJECT_BASE( )
+
+#pragma warning( pop )
 
 	PProperty prop = obj->GetProperty( property );
 
