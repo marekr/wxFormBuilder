@@ -1296,12 +1296,12 @@ public:
 
 		if ( !obj->IsNull( _("search_button") ) )
 		{
-			sc->ShowSearchButton( obj->GetPropertyAsInteger( _("search_button") ) );
+			sc->ShowSearchButton( obj->GetPropertyAsBoolean( _("search_button") ) );
 		}
 		
 		if ( !obj->IsNull( _("cancel_button") ) )
 		{
-			sc->ShowCancelButton( obj->GetPropertyAsInteger( _("cancel_button") ) );
+			sc->ShowCancelButton( obj->GetPropertyAsBoolean( _("cancel_button") ) );
 		}
 
 		sc->PushEventHandler( new ComponentEvtHandler( sc, GetManager() ) );
@@ -1488,7 +1488,7 @@ public:
             pgman->SetExtraStyle( obj->GetPropertyAsInteger( wxT("extra_style") ) );
         }
 		
-        pgman->ShowHeader( obj->GetPropertyAsInteger( wxT("show_header") ) );
+        pgman->ShowHeader( obj->GetPropertyAsBoolean( wxT("show_header") ) );
 		
         // Adding a page sets target page to the one added, so
         // we don't have to call SetTargetPage if we are filling
