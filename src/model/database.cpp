@@ -461,7 +461,8 @@ void ObjectDatabase::SetDefaultLayoutProperties(PObjectBase sizeritem)
 	}
 	else if (	obj_type == wxT("notebook")			||
 				obj_type == wxT("flatnotebook")		||
-				obj_type == wxT("listbook")			||
+				obj_type == wxT("listbook")			||				
+				obj_type == wxT("simplebook")       ||
 				obj_type == wxT("choicebook")		||
 				obj_type == wxT("auinotebook")		||
 				obj_type == wxT("treelistctrl")		||
@@ -877,6 +878,7 @@ bool ObjectDatabase::HasCppProperties(wxString type)
 	return (type == wxT("notebook")			||
 			type == wxT("flatnotebook")		||
 			type == wxT("listbook")			||
+			type == wxT("simplebook")		||
 			type == wxT("choicebook")		||
 			type == wxT("auinotebook")		||
 			type == wxT("widget")			||
@@ -1175,7 +1177,7 @@ void ObjectDatabase::ParseProperties( ticpp::Element* elem_obj, PObjectInfo obj_
 		// if the property is a "bitlist" then parse all of the options
 		POptionList opt_list;
 		std::list< PropertyChild > children;
-		if ( ptype == PT_BITLIST || ptype == PT_OPTION )
+		if ( ptype == PT_BITLIST || ptype == PT_OPTION || ptype == PT_EDIT_OPTION )
 		{
 			opt_list = POptionList( new OptionList() );
 			ticpp::Element* elem_opt = elem_prop->FirstChildElement( "option", false );
@@ -1350,6 +1352,7 @@ bool ObjectDatabase::ShowInPalette(wxString type)
 			type == wxT("notebook")				||
 			type == wxT("flatnotebook")			||
 			type == wxT("listbook")				||
+			type == wxT("simplebook")			||
 			type == wxT("choicebook")			||
 			type == wxT("auinotebook")			||
 			type == wxT("widget")				||
@@ -1532,6 +1535,7 @@ void ObjectDatabase::InitPropertyTypes()
 	PT( wxT("stringlist"),	PT_STRINGLIST	);
 	PT( wxT("float"),		PT_FLOAT		);
 	PT( wxT("parent"),		PT_PARENT		);
+	PT( wxT("editoption"),	PT_EDIT_OPTION	);
 }
 
 bool ObjectDatabase::LoadObjectTypes()

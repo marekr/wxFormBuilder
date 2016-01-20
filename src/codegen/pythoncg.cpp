@@ -137,6 +137,7 @@ wxString PythonTemplateParser::ValueToCode( PropertyType type, wxString value )
 	case PT_CLASS:
 	case PT_MACRO:
 	case PT_OPTION:
+	case PT_EDIT_OPTION:
 		{
 			result = value;
 			wxString pred = m_predModulePrefix[value];
@@ -1164,7 +1165,8 @@ void PythonCodeGenerator::GenConstruction(PObjectBase obj, bool is_widget )
 				type == wxT( "ribbonbar" )        ||
 				type == wxT("toolbar")	||
 				type == wxT("tool")	||
-				type == wxT("listbook")	||
+				type == wxT("listbook")	||					
+				type == wxT("simplebook" ) ||
 				type == wxT("notebook")	||
 				type == wxT("auinotebook")	||
 				type == wxT("treelistctrl")	||
@@ -1211,6 +1213,7 @@ void PythonCodeGenerator::GenConstruction(PObjectBase obj, bool is_widget )
 	else if (	type == wxT("notebookpage")		||
 				type == wxT("flatnotebookpage")	||
 				type == wxT("listbookpage")		||
+				type == wxT("simplebookpage")	||
 				type == wxT("choicebookpage")	||
 				type == wxT("auinotebookpage")
 			)
