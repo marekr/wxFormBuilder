@@ -962,18 +962,18 @@ void VisualEditor::SetupAui( PObjectBase obj, wxWindow* window )
 	if( obj->GetPropertyAsInteger( wxT("default_pane") )) info.DefaultPane();
 
 	if( !obj->IsNull(wxT("caption"))) info.Caption(obj->GetPropertyAsString(wxT("caption")));
-	info.CaptionVisible( obj->GetPropertyAsInteger( wxT("caption_visible") ) );
-	info.CloseButton( obj->GetPropertyAsInteger( wxT("close_button") ) );
-	info.MaximizeButton( obj->GetPropertyAsInteger( wxT("maximize_button") ) );
-	info.MinimizeButton( obj->GetPropertyAsInteger( wxT("minimize_button") ) );
-	info.PinButton( obj->GetPropertyAsInteger( wxT("pin_button") ) );
-	info.PaneBorder( obj->GetPropertyAsInteger( wxT("pane_border") ) );
-	info.Gripper(obj->GetPropertyAsInteger( wxT("gripper") ));
+	info.CaptionVisible( obj->GetPropertyAsBoolean( wxT("caption_visible") ) );
+	info.CloseButton( obj->GetPropertyAsBoolean( wxT("close_button") ) );
+	info.MaximizeButton( obj->GetPropertyAsBoolean( wxT("maximize_button") ) );
+	info.MinimizeButton( obj->GetPropertyAsBoolean( wxT("minimize_button") ) );
+	info.PinButton( obj->GetPropertyAsBoolean( wxT("pin_button") ) );
+	info.PaneBorder( obj->GetPropertyAsBoolean( wxT("pane_border") ) );
+	info.Gripper(obj->GetPropertyAsBoolean( wxT("gripper") ));
 
-	info.BottomDockable( obj->GetPropertyAsInteger( wxT("BottomDockable") ) );
-	info.TopDockable( obj->GetPropertyAsInteger( wxT("TopDockable") ) );
-	info.LeftDockable( obj->GetPropertyAsInteger( wxT("LeftDockable") ) );
-	info.RightDockable( obj->GetPropertyAsInteger( wxT("RightDockable") ) );
+	info.BottomDockable( obj->GetPropertyAsBoolean( wxT("BottomDockable") ) );
+	info.TopDockable( obj->GetPropertyAsBoolean( wxT("TopDockable") ) );
+	info.LeftDockable( obj->GetPropertyAsBoolean( wxT("LeftDockable") ) );
+	info.RightDockable( obj->GetPropertyAsBoolean( wxT("RightDockable") ) );
 
 	if( !obj->IsNull(wxT("dock")) )
 	{
@@ -1001,9 +1001,9 @@ void VisualEditor::SetupAui( PObjectBase obj, wxWindow* window )
 		else info.Fixed();
 	}
 
-	info.DockFixed( obj->GetPropertyAsInteger( wxT("dock_fixed") ) );
-	info.Movable( obj->GetPropertyAsInteger( wxT("moveable") ));
-	info.Floatable(obj->GetPropertyAsInteger( wxT("floatable") ));
+	info.DockFixed( obj->GetPropertyAsBoolean( wxT("dock_fixed") ) );
+	info.Movable( obj->GetPropertyAsBoolean( wxT("moveable") ));
+	info.Floatable(obj->GetPropertyAsBoolean( wxT("floatable") ));
 
 	if( !obj->GetProperty( wxT("pane_size" ) )->IsNull() ) info.FloatingSize( obj->GetPropertyAsSize( wxT("pane_size") ));
 	if( !obj->GetProperty( wxT("best_size" ) )->IsNull() ) info.BestSize( obj->GetPropertyAsSize( wxT("best_size") ) );

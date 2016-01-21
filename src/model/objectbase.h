@@ -519,6 +519,7 @@ public:
 	// plugins
 	bool     IsNull (const wxString& pname);
 	int      GetPropertyAsInteger (const wxString& pname);
+	bool	 GetPropertyAsBoolean(const wxString& pname);
 	wxFontContainer   GetPropertyAsFont    (const wxString& pname);
 	wxColour GetPropertyAsColour  (const wxString& pname);
 	wxString GetPropertyAsString  (const wxString& pname);
