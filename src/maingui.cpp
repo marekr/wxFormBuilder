@@ -259,7 +259,7 @@ int MyApp::OnRun()
 
 	if ( !projectToLoad.empty() )
 	{
-		if ( AppData()->LoadProject( projectToLoad, !justGenerate ) )
+		if ( AppData()->LoadProject( projectToLoad, justGenerate ) )
 		{
 			if ( justGenerate )
 			{
