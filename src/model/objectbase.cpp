@@ -909,16 +909,19 @@ bool ObjectInfo::IsSubclassOf(wxString classname)
 	bool found = false;
 
 	if (GetClassName() == classname)
+	{
 		found = true;
+	}
 	else
-
-		for (unsigned int i=0; !found && i < GetBaseClassCount() ; i++)
+	{
+		for (unsigned int i = 0; !found && i < GetBaseClassCount(); i++)
 		{
 			PObjectInfo base = GetBaseClass(i);
 			found = base->IsSubclassOf(classname);
 		}
+	}
 
-		return found;
+	return found;
 }
 
 //
