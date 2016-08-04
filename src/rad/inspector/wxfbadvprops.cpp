@@ -61,8 +61,6 @@ void wxFBSizeProperty::RefreshChildren()
     const wxSize& size = wxSizeRefFromVariant( m_value );
 #endif
 
-	if( ! &size ) return;
-
 	Item(0)->SetValue( (long)size.x );
 	Item(1)->SetValue( (long)size.y );
 }
@@ -81,13 +79,6 @@ wxFBSizeProperty::ChildChanged( wxVariant& thisValue, int childIndex, wxVariant&
     wxSize& size = wxSizeRefFromVariant( thisValue );
 #endif
 
-	if( ! &size ) return
-#if wxVERSION_NUMBER < 2900
-   ;
-#else
-    wxVariant();
-#endif
-	
     int val = childValue.GetLong();
     switch ( childIndex )
     {
@@ -133,7 +124,6 @@ void wxFBPointProperty::RefreshChildren()
     const wxPoint& point = wxPointRefFromVariant( m_value );
 #endif
 
-	if( ! &point ) return;
 
     Item(0)->SetValue( (long)point.x );
     Item(1)->SetValue( (long)point.y );
@@ -151,13 +141,6 @@ wxFBPointProperty::ChildChanged( wxVariant& thisValue, int childIndex, wxVariant
     wxPoint& point = wxPointFromVariant( thisValue );
 #else
     wxPoint& point = wxPointRefFromVariant( thisValue );
-#endif
-
-	if( ! &point ) return
-#if wxVERSION_NUMBER < 2900
-   ;
-#else
-    wxVariant();
 #endif
 	
     int val = childValue.GetLong();
