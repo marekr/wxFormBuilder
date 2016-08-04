@@ -1,5 +1,4 @@
 
-
 include_directories( BEFORE ${INC_BEFORE} )
 include_directories(
     ./
@@ -95,6 +94,29 @@ target_link_libraries( wxFormBuilder
 
 add_dependencies( wxFormBuilder additional common forms layout containers )
 
+# Allow debugging to work in some IDEs like CLion
+# the scattered location of resources is awkward on Windows, so this puts
+# build intermediates in the expected locations when it starts (in the wxFormBuilder.exe folder)
+# Todo Linux and OSX probably have similar issues with GDB
+macro(plugin_post_build_copy plugin)
+    add_custom_command(TARGET wxFormBuilder POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE:${plugin}> $<TARGET_FILE_DIR:wxFormBuilder>/plugins/${plugin})
+endmacro()
+
+if( WIN32 )
+    add_custom_command(TARGET wxFormBuilder POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/output $<TARGET_FILE_DIR:wxFormBuilder>)
+
+    plugin_post_build_copy(additional)
+    plugin_post_build_copy(common)
+    plugin_post_build_copy(forms)
+    plugin_post_build_copy(layout)
+    plugin_post_build_copy(containers)
+endif()
+
+# Staging of files for packaging
 file(GLOB DEPLOY_FILES_AND_DIRS "${PROJECT_SOURCE_DIR}/output/*")
 foreach(ITEM ${DEPLOY_FILES_AND_DIRS})
    IF( IS_DIRECTORY "${ITEM}" )
