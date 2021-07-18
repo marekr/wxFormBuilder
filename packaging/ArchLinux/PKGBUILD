@@ -5,7 +5,7 @@ pkgrel=1
 pkgdesc="Designer, GUI builder, and RAD tool for wxWidgets"
 arch=(i686 x86_64)
 license=('GPL')
-depends=('wxgtk')
+depends=('wxgtk3')
 makedepends=('git')
 provides=('wxformbuilder')
 conflicts=('wxformbuilder')
@@ -36,7 +36,7 @@ build() {
   #
   mkdir build
   cd build
-  cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+  cmake -DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-gtk3 -DCMAKE_INSTALL_PREFIX=/usr ..
   make -j4
 }
 
